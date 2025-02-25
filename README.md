@@ -1,50 +1,32 @@
-# React + TypeScript + Vite
+# FE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+프로 디지털 아카데미 5기 프론트엔드 repo
 
-Currently, two official plugins are available:
+## 📍협업규칙
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. 브랜치 규칙
 
-## Expanding the ESLint configuration
+feat/#이슈번호-기능요약
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+ex) feat/#12-login (영어로)
 
-- Configure the top-level `parserOptions` property like this:
+### 2. Commit Message
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+feat(#이슈번호): 작업내용
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+ex) feat(#12): 로그인 기능 추가
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- feat : 새로운 기능 추가
+- design : CSS 등 사용자 UI 디자인 변경
+- fix : 버그 수정, 기능 수정
+- docs : 문서 수정
+- refactor : 코드 리팩토링 (변수명 수정 등)
+- test : 테스트 코드, 리팩토링 테스트 코드 추가
+- style : 코드 스타일 변경, 코드 자체 변경이 없는 경우
+- remove : 파일 또는 코드, 리소스 제거
+- resource : 이미지 리소스, prefab 등의 코드와 상관없는 리소스 추가
+- settings : 인프라, 환경변수, 의존성 추가
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### 3. Pull Request
+
+pr feat/#이슈번호-기능요약
