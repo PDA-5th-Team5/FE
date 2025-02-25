@@ -41,7 +41,7 @@ export const HeaderLi = styled.li`
   display: flex;
   align-items: center;
   margin-left: 70px;
-  padding: 10px 0px;
+  padding: 11px 0px;
 `;
 
 export const HeaderLoginIcon = styled.img`
