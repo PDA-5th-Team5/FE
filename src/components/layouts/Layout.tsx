@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./header/Header";
+import * as S from "./Layout.styled";
 
 const Layout: FC = () => {
   const location = useLocation();
@@ -9,18 +10,12 @@ const Layout: FC = () => {
     location.pathname === "/login" || location.pathname === "/signup";
 
   return (
-    <>
-      <div
-        style={{
-          backgroundColor: "#151B24",
-          minHeight: "100vh",
-        }}
-      >
-        {isLoginPage ? null : <Header />}
-
+    <S.LayoutContainer>
+      {!isLoginPage && <Header />}
+      <S.ContentWrapper>
         <Outlet />
-      </div>
-    </>
+      </S.ContentWrapper>
+    </S.LayoutContainer>
   );
 };
 

@@ -1,3 +1,7 @@
+import * as S from "./MyPortfolioPage.styled";
+
 export default function MyPortfolioPage() {
-  return <>MyPortfolioPage</>;
+  return (
+    <S.MyPortfolioPageContainer>MyPortfolioPage</S.MyPortfolioPageContainer>
+  );
 }

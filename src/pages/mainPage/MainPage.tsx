@@ -1,3 +1,5 @@
+import * as S from "./MainPage.styled";
+
 export default function MainPage() {
-  return <>MainPage</>;
+  return <S.MainPageContainer>MainPage</S.MainPageContainer>;
 }
