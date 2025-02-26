@@ -114,6 +114,12 @@ const MainPage: React.FC = () => {
           </S.MainPageFilterSectionWraaper>
         </S.MainPageFilterContainer>
       </S.MainPageBox>
+
+      <S.MainPageConversionWrapper>
+        <S.MainPageConversion>시가총액 500억 ~ 1000억</S.MainPageConversion>
+        <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
+        <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
+      </S.MainPageConversionWrapper>
     </S.MainPageContainer>
   );
 };

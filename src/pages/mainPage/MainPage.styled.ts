@@ -237,3 +237,18 @@ export const MainPageFilterNoSector = styled.div`
   color: #8b8c90;
   font-size: 12px;
 `;
+
+// 변환 결과
+export const MainPageConversionWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+export const MainPageConversion = styled.div`
+  width: fit-content;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #373d47;
+  color: #d7d8da;
+  font-size: 14px;
+`;
