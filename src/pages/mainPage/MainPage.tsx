@@ -6,6 +6,7 @@ import PlusIcon from "../../assets/images/common/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
 import ResetIcon from "../../assets/images/common/icons/reset.png";
+import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -90,24 +91,14 @@ const MainPage: React.FC = () => {
             </S.MainPageTab>
           </S.MainPageTabWrapper>
 
+          {/* 추천 필터 리스트 */}
           <S.MainPageRecommendedFilterList>
-            {/* ----- 더미데이터 ----- */}
-            <S.MainPageRecommendedFilterWrapper>
-              <S.MainPageRecommendedFilterImg src={ExampleImg} />
-              <S.MainPageRecommendedFilterInfo>
-                <S.MainPageRecommendedFilterTitle>
-                  인기있는 필터링 Top10
-                </S.MainPageRecommendedFilterTitle>
-
-                <S.MainPageRecommendedFilterCntWrapper>
-                  <S.MainPageRecommendedFilterCntImg src={ImportIcon} />
-                  <S.MainPageRecommendedFilterCnt>
-                    12,000
-                  </S.MainPageRecommendedFilterCnt>
-                </S.MainPageRecommendedFilterCntWrapper>
-              </S.MainPageRecommendedFilterInfo>
-            </S.MainPageRecommendedFilterWrapper>
-            {/* ----- 더미데이터 ----- */}
+            <RecommendedFilter />
+            <RecommendedFilter />
+            <RecommendedFilter />
+            <RecommendedFilter />
+            <RecommendedFilter />
+            <RecommendedFilter />
           </S.MainPageRecommendedFilterList>
         </S.MainPageTabContainer>
       </S.MainPageBox>
