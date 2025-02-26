@@ -1,10 +1,20 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import * as S from "./MainPage.styled";
 import ExampleImg from "../../assets/images/common/example.png";
 import ImportIcon from "../../assets/images/common/icons/import.png";
 import PlusIcon from "../../assets/images/common/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
+import ResetIcon from "../../assets/images/common/icons/reset.png";
+
+// 초기 선택된 필터값
+const initialSelectedKeys = [
+  "시가총액",
+  "PER",
+  "부채비율",
+  "배당수익률",
+  "외국인 보유율",
+];
 
 const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"popular" | "investor">("popular");
@@ -41,16 +51,16 @@ const MainPage: React.FC = () => {
   ]);
 
   // 2) 선택된 항목 key 목록
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([
-    "시가총액",
-    "PER",
-    "부채비율",
-    "배당수익률",
-    "외국인 보유율",
-  ]);
+  const [selectedKeys, setSelectedKeys] =
+    useState<string[]>(initialSelectedKeys);
 
   // 3) 마켓 필터 항목
   const [marketFilter, setMarketFilter] = useState<string>("전체");
+
+  // 필터 항목 리셋 함수
+  const handleReset = () => {
+    setSelectedKeys(initialSelectedKeys);
+  };
 
   return (
     <S.MainPageContainer>
@@ -119,12 +129,15 @@ const MainPage: React.FC = () => {
           <S.MainPageFilterSectionWraaper>
             {/* 필터설정 */}
             <S.MainPageFilterSection>
-              <S.MainPageFilterTitleWrapper>
-                <S.MainPageFilterTitle>필터설정</S.MainPageFilterTitle>
-                <S.MainPageFilterSubTitle>
-                  * 최대 8개까지 선택 가능
-                </S.MainPageFilterSubTitle>
-              </S.MainPageFilterTitleWrapper>
+              <S.MainPageFilterHeader>
+                <S.MainPageFilterTitleWrapper>
+                  <S.MainPageFilterTitle>필터설정</S.MainPageFilterTitle>
+                  <S.MainPageFilterSubTitle>
+                    * 최대 8개까지 선택 가능
+                  </S.MainPageFilterSubTitle>
+                </S.MainPageFilterTitleWrapper>
+                <S.MainPageFilterReset src={ResetIcon} onClick={handleReset} />
+              </S.MainPageFilterHeader>
 
               <S.MainPageFilterWrapper>
                 <FilterGroup

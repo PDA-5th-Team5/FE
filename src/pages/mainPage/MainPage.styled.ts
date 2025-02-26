@@ -178,6 +178,11 @@ export const MainPageFilterSection = styled.div`
   padding: 20px;
 `;
 
+export const MainPageFilterHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const MainPageFilterTitleWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -193,6 +198,11 @@ export const MainPageFilterTitle = styled.div`
 export const MainPageFilterSubTitle = styled.div`
   color: #8b8c90;
   font-size: 12px;
+`;
+
+export const MainPageFilterReset = styled.img`
+  width: 24px;
+  cursor: pointer;
 `;
 
 export const MainPageFilterWrapper = styled.div`
