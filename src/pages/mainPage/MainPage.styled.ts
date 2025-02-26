@@ -47,9 +47,15 @@ export const MainPageHeaderButton = styled.div`
 
 // 추천 필터
 export const MainPageBox = styled.div`
+  display: flex;
   border-radius: 8px;
   background: #1b212d;
   padding: 20px;
+`;
+
+export const MainPageTabContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 export const MainPageTabWrapper = styled.div`
@@ -80,7 +86,6 @@ export const MainPageRecommendedFilterList = styled.div`
   overflow-x: auto;
   overflow-y: hidden;
 
-  /* 스크롤바 숨기기 */
   &::-webkit-scrollbar {
     display: none;
   }
@@ -125,5 +130,110 @@ export const MainPageRecommendedFilterCntImg = styled.img`
 `;
 export const MainPageRecommendedFilterCnt = styled.div`
   color: #dbdcdd;
+  font-size: 12px;
+`;
+
+// 필터 설정
+export const MainPageFilterContainer = styled.div`
+  width: 100%;
+  height: 634px;
+  display: flex;
+  gap: 28px;
+  justify-content: space-between;
+`;
+
+export const MainPageSnowflake = styled.div`
+  width: 512px;
+  height: 460px;
+  /* background-color: palegoldenrod; */
+`;
+
+export const MainPageFilterSectionWraaper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 608px;
+  gap: 16px;
+`;
+
+export const MainPageFilterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 8px;
+  background: #202833;
+  padding: 20px;
+`;
+
+export const MainPageFilterTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const MainPageFilterTitle = styled.div`
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+`;
+
+export const MainPageFilterSubTitle = styled.div`
+  color: #8b8c90;
+  font-size: 12px;
+`;
+
+export const MainPageFilterWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  flex-wrap: wrap;
+`;
+
+export const MainPageFilterItem = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 104px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #2595e0;
+
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+// 섹터설정
+export const MainPageFilterFixSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 8px;
+  background: #202833;
+  padding: 20px;
+  height: 100%;
+  box-sizing: border-box;
+`;
+
+export const MainPageFilterSector = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const MainPageFilterAddIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+`;
+
+export const MainPageFilterNoSector = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 40px;
+  color: #8b8c90;
   font-size: 12px;
 `;
