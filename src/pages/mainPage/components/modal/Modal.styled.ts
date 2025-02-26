@@ -43,7 +43,7 @@ export const ModalClose = styled.img`
 
 export const ModalContent = styled.div`
   width: 720px;
-  background-color: pink;
+  /* background-color: pink; */
   height: 332px;
 `;
 

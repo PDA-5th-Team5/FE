@@ -222,3 +222,49 @@ export const MainPageConversion = styled.div`
   color: #d7d8da;
   font-size: 14px;
 `;
+
+// 저장 모달 내용
+export const SaveModal = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+`;
+
+export const SaveModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const SaveModalTitle = styled.div`
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+export const SaveModalInput = styled.input`
+  border-radius: 8px;
+  border: 1px solid #3c4049;
+  background: #232a35;
+  width: 100%;
+  padding: 18px 24px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  color: #fff;
+  font-family: "Pretendard";
+`;
+
+export const SaveModalTextArea = styled.textarea`
+  border-radius: 8px;
+  border: 1px solid #3c4049;
+  background: #232a35;
+  width: 100%;
+  height: 120px;
+  padding: 18px 24px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  color: #fff;
+  resize: none;
+  font-family: "Pretendard";
+`;

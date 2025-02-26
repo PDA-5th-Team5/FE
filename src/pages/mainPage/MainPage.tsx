@@ -1,7 +1,5 @@
 import { useState } from "react";
 import * as S from "./MainPage.styled";
-import ExampleImg from "../../assets/images/common/example.png";
-import ImportIcon from "../../assets/images/common/icons/import.png";
 import PlusIcon from "../../assets/images/common/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
@@ -30,6 +28,17 @@ const MainPage: React.FC = () => {
 
   const closeSectorModal = () => {
     setIsSectorModalOpen(false);
+  };
+
+  // 저장 모달 관리
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+
+  const openSaveModal = () => {
+    setIsSaveModalOpen(true);
+  };
+
+  const closeSaveModal = () => {
+    setIsSaveModalOpen(false);
   };
 
   // 1) 필터 항목
@@ -89,11 +98,35 @@ const MainPage: React.FC = () => {
         </Modal>
       )}
 
+      {/* 저장 모달 */}
+      {isSaveModalOpen && (
+        <Modal
+          onClose={closeSaveModal}
+          title="내 포트폴리오로 저장하기"
+          confirmText="저장"
+          onCofirm={closeSaveModal}
+        >
+          <S.SaveModal>
+            <S.SaveModalContent>
+              <S.SaveModalTitle>포트폴리오 이름</S.SaveModalTitle>
+              <S.SaveModalInput placeholder="20자 이내로 작성해주세요" />
+            </S.SaveModalContent>
+
+            <S.SaveModalContent>
+              <S.SaveModalTitle>포트폴리오 설명</S.SaveModalTitle>
+              <S.SaveModalTextArea placeholder="50자 이내로 작성해주세요" />
+            </S.SaveModalContent>
+          </S.SaveModal>
+        </Modal>
+      )}
+
       <S.MainPageHeader>
         <S.MainPageTitle>Stock Snowper</S.MainPageTitle>
         <S.MainPageHeaderButtonWrapper>
           <S.MainPageHeaderReset>초기화</S.MainPageHeaderReset>
-          <S.MainPageHeaderButton>저장</S.MainPageHeaderButton>
+          <S.MainPageHeaderButton onClick={openSaveModal}>
+            저장
+          </S.MainPageHeaderButton>
         </S.MainPageHeaderButtonWrapper>
       </S.MainPageHeader>
 
