@@ -62,12 +62,12 @@ export const MainPageTabWrapper = styled.div`
   display: flex;
 `;
 
-export const MainPageTab = styled.div<{ isActive: boolean }>`
-  color: ${({ isActive }) => (isActive ? "#fff" : "#8B8D91")};
+export const MainPageTab = styled.div<{ $isActive: boolean }>`
+  color: ${({ $isActive }) => ($isActive ? "#fff" : "#8B8D91")};
   font-size: 16px;
-  font-weight: ${({ isActive }) => (isActive ? "700" : "400")};
+  font-weight: ${({ $isActive }) => ($isActive ? "700" : "400")};
   border-bottom: 2px solid
-    ${({ isActive }) => (isActive ? "#fff" : "transparent")};
+    ${({ $isActive }) => ($isActive ? "#fff" : "transparent")};
   padding: 11px 22px;
   cursor: pointer;
 
@@ -200,21 +200,6 @@ export const MainPageFilterWrapper = styled.div`
   width: 100%;
   gap: 12px;
   flex-wrap: wrap;
-`;
-
-export const MainPageFilterItem = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 104px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: #2595e0;
-
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
 `;
 
 // 섹터설정
