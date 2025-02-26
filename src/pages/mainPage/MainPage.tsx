@@ -7,6 +7,7 @@ import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
 import ResetIcon from "../../assets/images/common/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
+import Modal from "./components/modal/Modal";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -19,6 +20,17 @@ const initialSelectedKeys = [
 
 const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"popular" | "investor">("popular");
+
+  // 섹터 모달 관리
+  const [isSectorModalOpen, setIsSectorModalOpen] = useState(false);
+
+  const openSectorModal = () => {
+    setIsSectorModalOpen(true);
+  };
+
+  const closeSectorModal = () => {
+    setIsSectorModalOpen(false);
+  };
 
   // 1) 필터 항목
   const [allItems, setAllItems] = useState([
@@ -65,6 +77,18 @@ const MainPage: React.FC = () => {
 
   return (
     <S.MainPageContainer>
+      {/* 섹터 모달 */}
+      {isSectorModalOpen && (
+        <Modal
+          onClose={closeSectorModal}
+          title="섹터설정"
+          confirmText="확인"
+          onCofirm={closeSectorModal}
+        >
+          내용
+        </Modal>
+      )}
+
       <S.MainPageHeader>
         <S.MainPageTitle>Stock Snowper</S.MainPageTitle>
         <S.MainPageHeaderButtonWrapper>
@@ -158,7 +182,10 @@ const MainPage: React.FC = () => {
             <S.MainPageFilterFixSection>
               <S.MainPageFilterSector>
                 <S.MainPageFilterTitle>섹터설정</S.MainPageFilterTitle>
-                <S.MainPageFilterAddIcon src={PlusIcon} />
+                <S.MainPageFilterAddIcon
+                  src={PlusIcon}
+                  onClick={openSectorModal}
+                />
               </S.MainPageFilterSector>
               <S.MainPageFilterNoSector>
                 선택된 섹터가 없습니다
