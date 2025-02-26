@@ -142,10 +142,24 @@ export const MainPageFilterContainer = styled.div`
   justify-content: space-between;
 `;
 
+// 1. snowflake
+export const MainPageSnowflakeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* width: 520px;
+  height: 100%; */
+  margin-top: 20px;
+  /* background-color: pink; */
+`;
+
 export const MainPageSnowflake = styled.div`
-  width: 512px;
+  width: 520px;
+  margin-top: 30px;
+  /* width: 512px;
   height: 460px;
-  /* background-color: palegoldenrod; */
+  margin-top: 20px;
+  background-color: palegoldenrod; */
 `;
 
 export const MainPageFilterSectionWraaper = styled.div`

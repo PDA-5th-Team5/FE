@@ -3,6 +3,7 @@ import * as S from "./MainPage.styled";
 import ExampleImg from "../../assets/images/common/example.png";
 import ImportIcon from "../../assets/images/common/icons/import.png";
 import PlusIcon from "../../assets/images/common/icons/plus.png";
+import Snowflake from "./components/snowflake/Snowflake";
 
 const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"popular" | "investor">("popular");
@@ -59,7 +60,13 @@ const MainPage: React.FC = () => {
       {/* 필터 설정 */}
       <S.MainPageBox>
         <S.MainPageFilterContainer>
-          <S.MainPageSnowflake></S.MainPageSnowflake>
+          {/* snowflake */}
+          <S.MainPageSnowflakeWrapper>
+            <S.MainPageFilterTitle>Snowflake</S.MainPageFilterTitle>
+            <S.MainPageSnowflake>
+              <Snowflake />
+            </S.MainPageSnowflake>
+          </S.MainPageSnowflakeWrapper>
           <S.MainPageFilterSectionWraaper>
             {/* 필터설정 */}
             <S.MainPageFilterSection>
