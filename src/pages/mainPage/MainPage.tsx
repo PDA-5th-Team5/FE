@@ -225,7 +225,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={["전체", "코스닥", "코스피"]}
+                  options={["전체", "KOSPI", "KOSDAQ"]}
                   selected={marketFilter}
                   onChange={(newValue) => setMarketFilter(newValue)}
                 />
