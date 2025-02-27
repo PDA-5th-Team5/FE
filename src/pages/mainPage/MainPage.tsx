@@ -22,25 +22,13 @@ const MainPage: React.FC = () => {
 
   // 섹터 모달 관리
   const [isSectorModalOpen, setIsSectorModalOpen] = useState(false);
-
-  const openSectorModal = () => {
-    setIsSectorModalOpen(true);
-  };
-
-  const closeSectorModal = () => {
-    setIsSectorModalOpen(false);
-  };
+  const openSectorModal = () => setIsSectorModalOpen(true);
+  const closeSectorModal = () => setIsSectorModalOpen(false);
 
   // 저장 모달 관리
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-
-  const openSaveModal = () => {
-    setIsSaveModalOpen(true);
-  };
-
-  const closeSaveModal = () => {
-    setIsSaveModalOpen(false);
-  };
+  const openSaveModal = () => setIsSaveModalOpen(true);
+  const closeSaveModal = () => setIsSaveModalOpen(false);
 
   // 1) 필터 항목
   const [allItems, setAllItems] = useState([
@@ -254,9 +242,23 @@ const MainPage: React.FC = () => {
                   onClick={openSectorModal}
                 />
               </S.MainPageFilterSector>
-              <S.MainPageFilterNoSector>
-                선택된 섹터가 없습니다
-              </S.MainPageFilterNoSector>
+
+              {selectedSectorKeys.length === 0 ? (
+                <S.MainPageFilterNoSector>
+                  선택된 섹터가 없습니다
+                </S.MainPageFilterNoSector>
+              ) : (
+                <S.MainPageSectorFilterWrapper>
+                  <FilterGroup
+                    options={selectedSectorKeys}
+                    selected={selectedSectorKeys}
+                    multiple={true}
+                    onChange={(newSelected) =>
+                      setSelectedSectorKeys(newSelected)
+                    }
+                  />
+                </S.MainPageSectorFilterWrapper>
+              )}
             </S.MainPageFilterFixSection>
           </S.MainPageFilterSectionWraaper>
         </S.MainPageFilterContainer>

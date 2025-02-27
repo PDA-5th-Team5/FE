@@ -173,6 +173,26 @@ export const MainPageFilterWrapper = styled.div`
   flex-wrap: wrap;
 `;
 
+export const MainPageSectorFilterWrapper = styled(MainPageFilterWrapper)`
+  max-height: 146px;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #272e3b;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #8b8c90;
+    border-radius: 4px;
+  }
+`;
+
 // 섹터설정
 export const MainPageFilterFixSection = styled.div`
   display: flex;
