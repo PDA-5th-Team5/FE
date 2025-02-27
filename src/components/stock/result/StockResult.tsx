@@ -49,6 +49,8 @@ const StockResult: FC = () => {
     },
   ]);
 
+  const [view, setView] = useState("list");
+
   const onToggleBookmark = (id: number) => {
     setStocks((prevStocks) =>
       prevStocks.map((stock) =>
@@ -67,13 +69,46 @@ const StockResult: FC = () => {
             <S.StockResultSort>오름차순</S.StockResultSort>
           </S.StockResultSortWrapper>
           <S.StockResultViewWrapper>
-            <S.StockResultView src={ListOnIcon} />
-            <S.StockResultView src={GridOffIcon} />
+            {view === "list" ? (
+              <>
+                <S.StockResultViewOn>
+                  <S.StockResultView src={ListOnIcon} />
+                </S.StockResultViewOn>
+                <S.StockResultViewOff>
+                  <S.StockResultView
+                    src={GridOffIcon}
+                    onClick={() => {
+                      setView("grid");
+                    }}
+                  />
+                </S.StockResultViewOff>
+              </>
+            ) : (
+              <>
+                <S.StockResultViewOff>
+                  <S.StockResultView
+                    src={ListOffIcon}
+                    onClick={() => {
+                      setView("list");
+                    }}
+                  />
+                </S.StockResultViewOff>
+                <S.StockResultViewOn>
+                  <S.StockResultView src={GridOnIcon} />
+                </S.StockResultViewOn>
+              </>
+            )}
           </S.StockResultViewWrapper>
         </S.StockResultTool>
       </S.StockResultHeader>
 
-      <StockList stocks={stocks} onToggle={onToggleBookmark} />
+      {view === "list" ? (
+        <>
+          <StockList stocks={stocks} onToggle={onToggleBookmark} />
+        </>
+      ) : (
+        <></>
+      )}
     </S.StockResultContainer>
   );
 };
