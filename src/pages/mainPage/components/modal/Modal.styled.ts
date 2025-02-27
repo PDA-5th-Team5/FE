@@ -43,8 +43,22 @@ export const ModalClose = styled.img`
 
 export const ModalContent = styled.div`
   width: 720px;
-  /* background-color: pink; */
   height: 332px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #272e3b;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #8b8c90;
+    border-radius: 4px;
+  }
 `;
 
 export const ModalConfirmWrapper = styled.div`

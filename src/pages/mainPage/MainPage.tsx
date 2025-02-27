@@ -6,6 +6,7 @@ import FilterGroup from "./components/filterGroup/FilterGroup";
 import ResetIcon from "../../assets/images/common/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 import Modal from "./components/modal/Modal";
+import SectorSetting from "./components/sectorSetting/SectorSetting";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -79,6 +80,35 @@ const MainPage: React.FC = () => {
   // 3) 마켓 필터 항목
   const [marketFilter, setMarketFilter] = useState<string>("전체");
 
+  // 4) 섹터 필터 항목
+  const sectors = [
+    "반도체",
+    "금융",
+    "금융",
+    "금융",
+    "금융금융금융금융금융금융금융금융금융금융금융금융",
+    "헬스케어",
+    "자동차",
+    "IT",
+    "에너지",
+    "화학",
+    "바이오",
+    "통신",
+    "유통",
+    "부동산",
+    "소비재",
+    "제약",
+    "건설",
+    "농업",
+    "공업",
+    "전자",
+    "서비스",
+    "교육",
+    "문화",
+  ];
+
+  const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
+
   // 필터 항목 리셋 함수
   const handleReset = () => {
     setSelectedKeys(initialSelectedKeys);
@@ -94,7 +124,11 @@ const MainPage: React.FC = () => {
           confirmText="확인"
           onCofirm={closeSectorModal}
         >
-          내용
+          <SectorSetting
+            allSectors={sectors}
+            selectedKeys={selectedSectorKeys}
+            onChange={(newSelected) => setSelectedSectorKeys(newSelected)}
+          />
         </Modal>
       )}
 

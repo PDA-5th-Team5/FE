@@ -4,7 +4,7 @@ const MainPageFilterItem = styled.div<{ $isSelected: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 104px;
+  min-width: 104px;
   height: 36px;
   flex-shrink: 0;
   border-radius: 8px;
@@ -12,6 +12,8 @@ const MainPageFilterItem = styled.div<{ $isSelected: boolean }>`
   color: #fff;
   font-size: 14px;
   font-weight: ${({ $isSelected }) => ($isSelected ? "700" : "400")};
+  box-sizing: border-box;
+  padding: 0 8px;
   cursor: pointer;
 `;
 
