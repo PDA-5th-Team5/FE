@@ -1,5 +1,11 @@
 import styled from "styled-components";
 
+export const StockResultContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+`;
+
 export const StockResultHeader = styled.div`
   display: flex;
   justify-content: space-between;
