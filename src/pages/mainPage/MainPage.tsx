@@ -104,7 +104,8 @@ const MainPage: React.FC = () => {
   };
 
   const handleAllReset = () => {
-    alert("초기화");
+    handleReset();
+    setSelectedSectorKeys([]);
   };
 
   return (
