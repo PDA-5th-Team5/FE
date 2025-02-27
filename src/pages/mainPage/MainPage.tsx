@@ -7,6 +7,7 @@ import ResetIcon from "../../assets/images/common/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 import Modal from "./components/modal/Modal";
 import SectorSetting from "./components/sectorSetting/SectorSetting";
+import Button from "../../components/button/Button";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -146,9 +147,7 @@ const MainPage: React.FC = () => {
         <S.MainPageTitle>Stock Snowper</S.MainPageTitle>
         <S.MainPageHeaderButtonWrapper>
           <S.MainPageHeaderReset>초기화</S.MainPageHeaderReset>
-          <S.MainPageHeaderButton onClick={openSaveModal}>
-            저장
-          </S.MainPageHeaderButton>
+          <Button text="저장" onClick={openSaveModal} />
         </S.MainPageHeaderButtonWrapper>
       </S.MainPageHeader>
 

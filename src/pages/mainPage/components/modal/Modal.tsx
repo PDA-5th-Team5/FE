@@ -1,5 +1,6 @@
 import * as S from "./Modal.styled";
 import CloseIcon from "../../../../assets/images/common/icons/close.png";
+import Button from "../../../../components/button/Button";
 
 interface ModalProps {
   onClose: () => void;
@@ -13,7 +14,7 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   onCofirm,
   title,
-  confirmText,
+  confirmText = "확인",
   children,
 }) => {
   return (
@@ -25,8 +26,9 @@ const Modal: React.FC<ModalProps> = ({
         </S.ModalHeader>
 
         <S.ModalContent>{children}</S.ModalContent>
+
         <S.ModalConfirmWrapper>
-          <S.ModalConfirm onClick={onCofirm}>{confirmText}</S.ModalConfirm>
+          <Button text={confirmText} onClick={onCofirm} />
         </S.ModalConfirmWrapper>
       </S.ModalWrapper>
     </S.ModalBackground>

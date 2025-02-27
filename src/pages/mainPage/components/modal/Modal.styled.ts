@@ -65,18 +65,3 @@ export const ModalConfirmWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
 `;
-
-export const ModalConfirm = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 64px;
-  height: 40px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  background: #2595e0;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-`;
