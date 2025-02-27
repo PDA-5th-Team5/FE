@@ -95,6 +95,6 @@ export const StockListName = styled.div`
   font-size: 12px;
 `;
 
-export const ChangeTd = styled.td<{ isPositive: boolean }>`
-  color: ${({ isPositive }) => (isPositive ? "#E74142" : "#2D7AFF")};
+export const ChangeTd = styled.td<{ $isPositive: boolean }>`
+  color: ${({ $isPositive }) => ($isPositive ? "#E74142" : "#2D7AFF")};
 `;

@@ -50,11 +50,11 @@ const StockList = ({ stocks, onToggle }: StockTableProps) => {
             </td>
             <td>₩{stock.price}</td>
 
-            <S.ChangeTd isPositive={stock.change7d >= 0}>
+            <S.ChangeTd $isPositive={stock.change7d >= 0}>
               {stock.change7d}
             </S.ChangeTd>
 
-            <S.ChangeTd isPositive={stock.change1y >= 0}>
+            <S.ChangeTd $isPositive={stock.change1y >= 0}>
               {stock.change1y}%
             </S.ChangeTd>
             <td>{stock.marketCap}</td>
