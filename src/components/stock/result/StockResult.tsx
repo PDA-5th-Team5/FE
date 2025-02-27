@@ -9,7 +9,7 @@ import StockList, { Stock } from "../list/StockList";
 const StockResult: FC = () => {
   const [stocks, setStocks] = useState<Stock[]>([
     {
-      id: "A0001",
+      id: 1,
       ticker: "A0001",
       name: "삼성전자",
       price: 58900.0,
@@ -19,10 +19,10 @@ const StockResult: FC = () => {
       per: 15.22,
       debtRatio: 33.49,
       sector: "반도체",
-      favorite: false,
+      bookmark: false,
     },
     {
-      id: "A0001",
+      id: 2,
       ticker: "A0001",
       name: "삼성전자",
       price: 58900.0,
@@ -32,10 +32,10 @@ const StockResult: FC = () => {
       per: 15.22,
       debtRatio: 33.49,
       sector: "섹터들어갈부분",
-      favorite: false,
+      bookmark: false,
     },
     {
-      id: "A0001",
+      id: 3,
       ticker: "A0001",
       name: "삼성전자",
       price: 1234,
@@ -45,9 +45,17 @@ const StockResult: FC = () => {
       per: 15.22,
       debtRatio: 33.49,
       sector: "반도체",
-      favorite: false,
+      bookmark: true,
     },
   ]);
+
+  const onToggleBookmark = (id: number) => {
+    setStocks((prevStocks) =>
+      prevStocks.map((stock) =>
+        stock.id === id ? { ...stock, bookmark: !stock.bookmark } : stock
+      )
+    );
+  };
 
   return (
     <S.StockResultContainer>
@@ -65,7 +73,7 @@ const StockResult: FC = () => {
         </S.StockResultTool>
       </S.StockResultHeader>
 
-      <StockList stocks={stocks} />
+      <StockList stocks={stocks} onToggle={onToggleBookmark} />
     </S.StockResultContainer>
   );
 };

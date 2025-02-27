@@ -1,8 +1,9 @@
 import * as S from "./StockList.styled";
 import Example from "../../../assets/images/example.png";
+import Bookmark from "../../bookmark/Bookmark";
 
 export interface Stock {
-  id: string;
+  id: number;
   ticker: string;
   name: string;
   price: number;
@@ -12,14 +13,15 @@ export interface Stock {
   per: number;
   debtRatio: number;
   sector: string;
-  favorite: boolean;
+  bookmark: boolean;
 }
 
 interface StockTableProps {
   stocks: Stock[];
+  onToggle: (id: number) => void;
 }
 
-const StockList: React.FC<StockTableProps> = ({ stocks }) => {
+const StockList = ({ stocks, onToggle }: StockTableProps) => {
   return (
     <S.StyledTable>
       <thead>
@@ -59,7 +61,12 @@ const StockList: React.FC<StockTableProps> = ({ stocks }) => {
             <td>{stock.per}</td>
             <td>{stock.debtRatio}%</td>
             <td>{stock.sector}</td>
-            <td>즐찾</td>
+            <td>
+              <Bookmark
+                isBookmarked={stock.bookmark}
+                onToggle={() => onToggle(stock.id)}
+              />
+            </td>
           </tr>
         ))}
       </tbody>
