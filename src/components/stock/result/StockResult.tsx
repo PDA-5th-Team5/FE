@@ -5,6 +5,7 @@ import ListOffIcon from "../../../assets/images/icons/view/list_off.png";
 import GridOnIcon from "../../../assets/images/icons/view/grid_on.png";
 import GridOffIcon from "../../../assets/images/icons/view/grid_off.png";
 import StockList, { Stock } from "../list/StockList";
+import StockGrid from "../grid/StockGrid";
 
 const StockResult: FC = () => {
   const [stocks, setStocks] = useState<Stock[]>([
@@ -107,7 +108,9 @@ const StockResult: FC = () => {
           <StockList stocks={stocks} onToggle={onToggleBookmark} />
         </>
       ) : (
-        <></>
+        <>
+          <StockGrid />
+        </>
       )}
     </S.StockResultContainer>
   );
