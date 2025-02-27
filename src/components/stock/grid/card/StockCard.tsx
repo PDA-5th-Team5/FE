@@ -59,11 +59,15 @@ const StockCard = () => {
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>7D</S.CardFooterTitle>
-          <S.CardFooterChange>18.69%</S.CardFooterChange>
+          <S.CardFooterChange $isPositive={18.69 >= 0}>
+            18.69%
+          </S.CardFooterChange>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>1Y</S.CardFooterTitle>
-          <S.CardFooterChange>-18.7%</S.CardFooterChange>
+          <S.CardFooterChange $isPositive={-18.7 >= 0}>
+            -18.7%
+          </S.CardFooterChange>
         </S.CardFooterItem>
       </S.CardFooter>
     </S.CardContainer>

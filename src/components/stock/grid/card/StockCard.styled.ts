@@ -137,8 +137,8 @@ export const CardFooterPrice = styled.div`
   max-height: 20px;
 `;
 
-export const CardFooterChange = styled.div`
-  color: red;
+export const CardFooterChange = styled.div<{ $isPositive: boolean }>`
+  color: ${({ $isPositive }) => ($isPositive ? "#E74142" : "#2D7AFF")};
   font-size: 14px;
   border-radius: 4px;
   background-color: #262f3e;
