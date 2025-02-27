@@ -1,14 +1,15 @@
 import { useState } from "react";
 import * as S from "./MainPage.styled";
-import PlusIcon from "../../assets/images/common/icons/plus.png";
+import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
-import ResetIcon from "../../assets/images/common/icons/reset.png";
+import ResetIcon from "../../assets/images/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 import Modal from "./components/modal/Modal";
 import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
+import StockResult from "../../components/stock/result/StockResult";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -277,6 +278,8 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
+
+      <StockResult />
     </S.MainPageContainer>
   );
 };

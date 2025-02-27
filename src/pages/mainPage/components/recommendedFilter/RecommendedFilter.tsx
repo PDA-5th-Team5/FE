@@ -1,6 +1,6 @@
 import * as S from "./RecommendedFilter.styled";
-import ExampleImg from "../../../../assets/images/common/example.png";
-import ImportIcon from "../../../../assets/images/common/icons/import.png";
+import ExampleImg from "../../../../assets/images/example.png";
+import ImportIcon from "../../../../assets/images/icons/import.png";
 
 const RecommendedFilter: React.FC = () => {
   return (

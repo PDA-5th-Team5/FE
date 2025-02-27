@@ -1,5 +1,5 @@
 import * as S from "./Modal.styled";
-import CloseIcon from "../../../../assets/images/common/icons/close.png";
+import CloseIcon from "../../../../assets/images/icons/close.png";
 import Button from "../../../../components/button/Button";
 
 interface ModalProps {
