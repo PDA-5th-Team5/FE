@@ -14,15 +14,43 @@ const StockCard = () => {
         <S.CardHeaderRight>{/* <Bookmark /> */}</S.CardHeaderRight>
       </S.CardHeader>
 
-      <S.CardDescription>
-        회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한
-        설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-        저쩌구회사에 대한 설명 어쩌구 저쩌구회사에.
-      </S.CardDescription>
+      <S.CardContent>
+        {/* 앞면: 줄임표 설명 + 이미지 */}
+        <S.FrontContent className="front">
+          <S.ShortDescription>
+            회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에
+            대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한
+            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에.
+          </S.ShortDescription>
+          <S.CardImgWrapper>
+            <S.CardImg src={Example} />
+          </S.CardImgWrapper>
+        </S.FrontContent>
 
-      <S.CardImgWrapper>
-        <S.CardImg src={Example} />
-      </S.CardImgWrapper>
+        {/* 뒷면: 더 많은 텍스트 (이미지 없이) */}
+        <S.BackContent className="back">
+          <S.LongDescription>
+            회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에
+            대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한
+            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한
+            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명
+            어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
+            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에.
+          </S.LongDescription>
+        </S.BackContent>
+      </S.CardContent>
 
       <S.CardFooter>
         <S.CardFooterItem>

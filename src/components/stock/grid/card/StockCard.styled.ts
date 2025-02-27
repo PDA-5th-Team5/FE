@@ -12,6 +12,8 @@ export const CardContainer = styled.div`
   background: #10141b;
   padding: 12px;
   gap: 6px;
+  position: relative;
+  cursor: pointer;
 `;
 
 export const CardHeader = styled.div`
@@ -34,23 +36,68 @@ export const CardTitle = styled.div`
 export const CardMarketCap = styled.div`
   color: #b8b9ba;
   font-size: 14px;
-  font-weight: 400;
 `;
 
 export const CardHeaderRight = styled.div``;
 
-export const CardDescription = styled.div`
+// 가운데 내용
+export const FrontContent = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  transition: opacity 0.3s;
+`;
+
+export const BackContent = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+`;
+
+export const ShortDescription = styled.div`
   color: #fff;
   font-size: 14px;
-  height: 20px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: normal;
+`;
+
+export const LongDescription = styled.div`
+  color: #fff;
+  font-size: 14px;
+  line-height: normal;
+
+  /* 여러 줄 말줄임표 */
+  display: -webkit-box;
+  -webkit-line-clamp: 12;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
+export const CardContent = styled.div`
+  position: relative;
+  flex: 1;
+
+  ${CardContainer}:hover & ${FrontContent} {
+    opacity: 0;
+  }
+  ${CardContainer}:hover & ${BackContent} {
+    opacity: 1;
+  }
+`;
+
 export const CardImg = styled.img`
   width: 186px;
-  /* height: 148px; */
   flex-shrink: 0;
 `;
 
@@ -58,6 +105,7 @@ export const CardImgWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-top: 18px;
 `;
 
 export const CardFooter = styled.div`
