@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const MainPageFilterItem = styled.div<{ $isSelected: boolean }>`
+export const MainPageFilterItem = styled.div<{ $isSelected: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;

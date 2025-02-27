@@ -1,8 +1,20 @@
+import { MainPageFilterItem } from "../filterGroup/FilterGroup.tsx";
 import { groupByInitialConsonant, CHO } from "../../../../utils/hangulUtils.ts";
 import FilterGroup from "../filterGroup/FilterGroup";
 import styled from "styled-components";
 
-const ChoWrapper = styled.div`
+const ChoContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+`;
+
+const ChoAllButton = styled(MainPageFilterItem)`
+  min-width: auto;
+  width: 104px;
+`;
+
+const ChoItem = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -17,7 +29,6 @@ const ChoTitle = styled.div`
 const ChoGroup = styled.div`
   display: flex;
   gap: 16px;
-  margin-bottom: 28px;
   flex-wrap: wrap;
 `;
 
@@ -40,19 +51,36 @@ const SectorSetting: React.FC<SectorSettingProps> = ({
     (a, b) => CHO.indexOf(a) - CHO.indexOf(b)
   );
 
-  return sortedInitials.map((initial) => (
-    <ChoWrapper key={initial}>
-      <ChoTitle>{initial}</ChoTitle>
-      <ChoGroup>
-        <FilterGroup
-          options={grouped[initial]}
-          selected={selectedKeys}
-          multiple={true}
-          onChange={onChange}
-        />
-      </ChoGroup>
-    </ChoWrapper>
-  ));
+  const isAllSelected = selectedKeys.length === allSectors.length;
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      onChange([]);
+    } else {
+      onChange([...allSectors]);
+    }
+  };
+
+  return (
+    <ChoContainer>
+      <ChoAllButton $isSelected={isAllSelected} onClick={handleSelectAll}>
+        전체선택
+      </ChoAllButton>
+      {sortedInitials.map((initial) => (
+        <ChoItem key={initial}>
+          <ChoTitle>{initial}</ChoTitle>
+          <ChoGroup>
+            <FilterGroup
+              options={grouped[initial]}
+              selected={selectedKeys}
+              multiple={true}
+              onChange={onChange}
+            />
+          </ChoGroup>
+        </ChoItem>
+      ))}
+    </ChoContainer>
+  );
 };
 
 export default SectorSetting;
