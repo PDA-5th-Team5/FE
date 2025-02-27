@@ -13,6 +13,7 @@ export const CardContainer = styled.div`
   padding: 12px;
   gap: 6px;
   position: relative;
+  box-sizing: border-box;
   cursor: pointer;
 `;
 
@@ -78,7 +79,7 @@ export const LongDescription = styled.div`
 
   /* 여러 줄 말줄임표 */
   display: -webkit-box;
-  -webkit-line-clamp: 12;
+  -webkit-line-clamp: 11;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -97,7 +98,7 @@ export const CardContent = styled.div`
 `;
 
 export const CardImg = styled.img`
-  width: 186px;
+  width: 171px;
   flex-shrink: 0;
 `;
 
