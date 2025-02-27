@@ -7,7 +7,7 @@ import ResetIcon from "../../assets/images/common/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 import Modal from "./components/modal/Modal";
 import SectorSetting from "./components/sectorSetting/SectorSetting";
-import Button from "../../components/button/Button";
+import PageHeader from "../../components/pageHeader/PageHeader";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -103,6 +103,10 @@ const MainPage: React.FC = () => {
     setSelectedKeys(initialSelectedKeys);
   };
 
+  const handleAllReset = () => {
+    alert("초기화");
+  };
+
   return (
     <S.MainPageContainer>
       {/* 섹터 모달 */}
@@ -143,13 +147,15 @@ const MainPage: React.FC = () => {
         </Modal>
       )}
 
-      <S.MainPageHeader>
-        <S.MainPageTitle>Stock Snowper</S.MainPageTitle>
-        <S.MainPageHeaderButtonWrapper>
-          <S.MainPageHeaderReset>초기화</S.MainPageHeaderReset>
-          <Button text="저장" onClick={openSaveModal} />
-        </S.MainPageHeaderButtonWrapper>
-      </S.MainPageHeader>
+      <PageHeader
+        title="Stock Snowper"
+        headerButtons={{
+          leftText: "초기화",
+          onLeftClick: handleAllReset,
+          rightText: "저장",
+          onRightClick: openSaveModal,
+        }}
+      />
 
       {/* 추천필터 */}
       <S.MainPageBox>
