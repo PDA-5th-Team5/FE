@@ -20,24 +20,6 @@ export const MainPageTabContainer = styled.div`
   flex-direction: column;
 `;
 
-export const MainPageTabWrapper = styled.div`
-  display: flex;
-`;
-
-export const MainPageTab = styled.div<{ $isActive: boolean }>`
-  color: ${({ $isActive }) => ($isActive ? "#fff" : "#8B8D91")};
-  font-size: 16px;
-  font-weight: ${({ $isActive }) => ($isActive ? "700" : "400")};
-  border-bottom: 2px solid
-    ${({ $isActive }) => ($isActive ? "#fff" : "transparent")};
-  padding: 11px 22px;
-  cursor: pointer;
-
-  &:hover {
-    color: #fff;
-  }
-`;
-
 export const MainPageRecommendedFilterList = styled.div`
   display: flex;
   margin-top: 16px;

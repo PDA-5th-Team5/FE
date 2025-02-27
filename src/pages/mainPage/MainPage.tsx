@@ -8,6 +8,7 @@ import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter"
 import Modal from "./components/modal/Modal";
 import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
+import Tabs, { TabItem } from "../../components/tab/Tabs";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -19,7 +20,16 @@ const initialSelectedKeys = [
 ];
 
 const MainPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"popular" | "investor">("popular");
+  // 추천 필터
+  const [activeTab, setActiveTab] = useState("popular");
+  const tabItems: TabItem[] = [
+    { label: "인기있는 필터", value: "popular" },
+    { label: "유명 투자자 추천필터", value: "investor" },
+  ];
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
 
   // 섹터 모달 관리
   const [isSectorModalOpen, setIsSectorModalOpen] = useState(false);
@@ -105,6 +115,7 @@ const MainPage: React.FC = () => {
 
   const handleAllReset = () => {
     handleReset();
+    setMarketFilter("전체");
     setSelectedSectorKeys([]);
   };
 
@@ -161,20 +172,11 @@ const MainPage: React.FC = () => {
       {/* 추천필터 */}
       <S.MainPageBox>
         <S.MainPageTabContainer>
-          <S.MainPageTabWrapper>
-            <S.MainPageTab
-              $isActive={activeTab === "popular"}
-              onClick={() => setActiveTab("popular")}
-            >
-              인기있는 필터
-            </S.MainPageTab>
-            <S.MainPageTab
-              $isActive={activeTab === "investor"}
-              onClick={() => setActiveTab("investor")}
-            >
-              유명 투자자 필터
-            </S.MainPageTab>
-          </S.MainPageTabWrapper>
+          <Tabs
+            items={tabItems}
+            activeValue={activeTab}
+            onChange={handleTabChange}
+          />
 
           {/* 추천 필터 리스트 */}
           <S.MainPageRecommendedFilterList>
