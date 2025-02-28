@@ -3,6 +3,7 @@ import * as S from "./MyPortfolioPage.styled";
 import DropdownIcon from "../../../assets/images/icons/arrowDown.png";
 import PlusIcon from "../../../assets/images/icons/plus_blue.png";
 import HeaderButtons from "../../../components/pageHeader/HeaderButtons";
+import PortfolioPage from "../PortfolioPage";
 
 const MyPortfolioPage = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,6 +78,8 @@ const MyPortfolioPage = () => {
           onRightClick={onClickShare}
         />
       </S.MyPortfolioPageHeader>
+
+      <PortfolioPage />
     </S.MyPortfolioPageContainer>
   );
 };
