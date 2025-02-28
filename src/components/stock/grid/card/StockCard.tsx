@@ -10,7 +10,7 @@ export interface StockCardProps {
 
 const StockCard = ({ stock, onToggle }: StockCardProps) => {
   return (
-    <S.CardContainer>
+    <S.CardContainer to={`stock/${stock.id}`}>
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.name}</S.CardTitle>

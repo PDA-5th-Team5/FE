@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export const CardContainer = styled.div`
+export const CardContainer = styled(Link)`
   display: flex;
+  text-decoration: none;
   flex-direction: column;
   justify-content: space-between;
   width: 270px;
