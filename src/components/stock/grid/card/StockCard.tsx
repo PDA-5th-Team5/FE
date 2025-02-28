@@ -17,7 +17,12 @@ const StockCard = ({ stock, onToggle }: StockCardProps) => {
           <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
         </S.CardHeaderLeft>
 
-        <S.CardHeaderRight>{/* <Bookmark /> */}</S.CardHeaderRight>
+        <S.CardHeaderRight>
+          <Bookmark
+            isBookmarked={stock.bookmark}
+            onToggle={() => onToggle(stock.id)}
+          />
+        </S.CardHeaderRight>
       </S.CardHeader>
 
       <S.CardContent>

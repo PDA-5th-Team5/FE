@@ -11,7 +11,7 @@ export const CardContainer = styled.div`
   border: 1px solid #2c333d;
   background: #10141b;
   padding: 12px;
-  gap: 6px;
+  gap: 8px;
   position: relative;
   box-sizing: border-box;
   cursor: pointer;
@@ -106,13 +106,12 @@ export const CardImgWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 18px;
+  margin-top: 16px;
 `;
 
 export const CardFooter = styled.div`
   display: flex;
   gap: 12px;
-  margin-top: 12px;
 `;
 
 export const CardFooterItem = styled.div`
