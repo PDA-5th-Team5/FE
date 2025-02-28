@@ -176,6 +176,7 @@ export const MainPageFilterNoSector = styled.div`
 export const MainPageConversionWrapper = styled.div`
   display: flex;
   gap: 12px;
+  margin-bottom: 20px;
 `;
 
 export const MainPageConversion = styled.div`

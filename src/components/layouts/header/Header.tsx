@@ -1,9 +1,9 @@
 import { FC } from "react";
 import * as S from "./Header.styled";
-import Logo from "../../../assets/images/common/logo.png";
-import ArrowDownIcon from "../../../assets/images/common/icons/arrowDown.png";
-import PersonIcon from "../../../assets/images/common/icons/person.png";
-import SearchIcon from "../../../assets/images/common/icons/search.png";
+import Logo from "../../../assets/images/logo.png";
+import ArrowDownIcon from "../../../assets/images/icons/arrowDown.png";
+import PersonIcon from "../../../assets/images/icons/person.png";
+import SearchIcon from "../../../assets/images/icons/search.png";
 
 const Header: FC = () => {
   return (

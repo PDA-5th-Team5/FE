@@ -1,14 +1,15 @@
 import { useState } from "react";
 import * as S from "./MainPage.styled";
-import PlusIcon from "../../assets/images/common/icons/plus.png";
+import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
 import FilterGroup from "./components/filterGroup/FilterGroup";
-import ResetIcon from "../../assets/images/common/icons/reset.png";
+import ResetIcon from "../../assets/images/icons/reset.png";
 import RecommendedFilter from "./components/recommendedFilter/RecommendedFilter";
 import Modal from "./components/modal/Modal";
 import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
+import StockResult from "../../components/stock/result/StockResult";
 
 // 초기 선택된 필터값
 const initialSelectedKeys = [
@@ -52,24 +53,26 @@ const MainPage: React.FC = () => {
     { key: "PER", label: "PER ⓘ", D1Value: 19, D2Value: 5 },
     { key: "BPS", label: "BPS ⓘ", D1Value: 19, D2Value: 5 },
     { key: "매출액 증가율", label: "매출액 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-    {
-      key: "영업이익 증가율",
-      label: "영업이익 증가율 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
+
     { key: "순이익 증가율", label: "순이익 증가율 ⓘ", D1Value: 19, D2Value: 5 },
+
+    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
     {
       key: "총자본 순이익률",
       label: "총자본 순이익률 ⓘ",
       D1Value: 19,
       D2Value: 5,
     },
-    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
+    {
+      key: "영업이익 증가율",
+      label: "영업이익 증가율 ⓘ",
+      D1Value: 19,
+      D2Value: 5,
+    },
   ]);
 
   // 2) 선택된 항목 key 목록
@@ -277,6 +280,8 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
+
+      <StockResult />
     </S.MainPageContainer>
   );
 };
