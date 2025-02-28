@@ -2,6 +2,7 @@ import { useState } from "react";
 import SortDropdown from "../../components/sortDropdown/SortDropdown";
 import * as S from "./SharePortfolioPage.styled";
 import DropdownIcon from "../../assets/images/icons/arrowDonw_gray.png";
+import PortfolioCard from "./portfolioCard/PortfolioCard";
 
 const SharePortfolioPage = () => {
   const [sortKey, setSortKey] = useState("최신순");
@@ -26,7 +27,9 @@ const SharePortfolioPage = () => {
         />
       </S.SharePortfolioListHeader>
 
-      <S.SharePortfolioList></S.SharePortfolioList>
+      <S.SharePortfolioList>
+        <PortfolioCard />
+      </S.SharePortfolioList>
     </S.SharePortfolioListContainer>
   );
 };
