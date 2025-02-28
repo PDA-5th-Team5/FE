@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export const CardContainer = styled(Link)`
+interface CardContainerProps {
+  bgColor: string;
+}
+
+export const CardContainer = styled(Link)<CardContainerProps>`
   display: flex;
   text-decoration: none;
   flex-direction: column;
@@ -11,7 +15,7 @@ export const CardContainer = styled(Link)`
   flex-shrink: 0;
   border-radius: 8px;
   border: 1px solid #2c333d;
-  background: #10141b;
+  background-color: ${({ bgColor }) => bgColor};
   padding: 12px;
   gap: 8px;
   position: relative;

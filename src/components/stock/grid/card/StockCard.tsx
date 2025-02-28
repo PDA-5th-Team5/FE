@@ -2,6 +2,7 @@ import Bookmark from "../../../bookmark/Bookmark";
 import * as S from "./StockCard.styled";
 import Example from "../../../../assets/images/exampleCard.png";
 import { Stock } from "../../list/StockList";
+import { getRandomColor } from "../../../../utils/colorUtils";
 
 export interface StockCardProps {
   stock: Stock;
@@ -9,8 +10,9 @@ export interface StockCardProps {
 }
 
 const StockCard = ({ stock, onToggle }: StockCardProps) => {
+  const bgColor = getRandomColor(stock.id);
   return (
-    <S.CardContainer to={`stock/${stock.id}`}>
+    <S.CardContainer to={`stock/${stock.id}`} bgColor={bgColor}>
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.name}</S.CardTitle>
