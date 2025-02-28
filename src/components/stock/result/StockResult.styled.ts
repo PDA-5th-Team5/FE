@@ -24,7 +24,7 @@ export const StockResultTool = styled.div`
 
 export const StockResultSortWrapper = styled.div`
   display: flex;
-  gap: 28px;
+  gap: 12px;
 `;
 
 export const StockResultSort = styled.div`

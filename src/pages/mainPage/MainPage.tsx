@@ -53,24 +53,26 @@ const MainPage: React.FC = () => {
     { key: "PER", label: "PER ⓘ", D1Value: 19, D2Value: 5 },
     { key: "BPS", label: "BPS ⓘ", D1Value: 19, D2Value: 5 },
     { key: "매출액 증가율", label: "매출액 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-    {
-      key: "영업이익 증가율",
-      label: "영업이익 증가율 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
+
     { key: "순이익 증가율", label: "순이익 증가율 ⓘ", D1Value: 19, D2Value: 5 },
+
+    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
+    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
     {
       key: "총자본 순이익률",
       label: "총자본 순이익률 ⓘ",
       D1Value: 19,
       D2Value: 5,
     },
-    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
+    {
+      key: "영업이익 증가율",
+      label: "영업이익 증가율 ⓘ",
+      D1Value: 19,
+      D2Value: 5,
+    },
   ]);
 
   // 2) 선택된 항목 key 목록
