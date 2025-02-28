@@ -54,7 +54,36 @@ const SharePortfolioPage = () => {
           sector: ["반도체", "바이오"],
         },
       },
-      // 추가 데이터...
+      {
+        sharePortfolioId: 2,
+        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioDescription: "공유 포트폴리오 설명",
+        sharePortfolioImportCnt: 12,
+        snowflake: {
+          elements: {
+            bsopPrti: [5, 19],
+            thtrNtin: [1, 3],
+            roeVal: [10, 16],
+          },
+          market: "KOSPI",
+          sector: ["반도체", "바이오"],
+        },
+      },
+      {
+        sharePortfolioId: 2,
+        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioDescription: "공유 포트폴리오 설명",
+        sharePortfolioImportCnt: 12,
+        snowflake: {
+          elements: {
+            bsopPrti: [5, 19],
+            thtrNtin: [1, 3],
+            roeVal: [10, 16],
+          },
+          market: "KOSPI",
+          sector: ["반도체", "바이오"],
+        },
+      },
     ],
   };
 
