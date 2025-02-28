@@ -1,3 +1,4 @@
+import { useState } from "react";
 import * as S from "./SortDropdown.styled";
 
 interface SortDropdownProps {
@@ -5,8 +6,8 @@ interface SortDropdownProps {
   selected: string;
   onChange: (value: string) => void;
   icon?: string;
-  isOpen: boolean;
-  onToggle: () => void;
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 const SortDropdown = ({
@@ -17,20 +18,37 @@ const SortDropdown = ({
   isOpen,
   onToggle,
 }: SortDropdownProps) => {
+  const [localOpen, setLocalOpen] = useState(false);
+
+  const actualIsOpen = isOpen ?? localOpen;
+  const actualToggle = () => {
+    if (onToggle) {
+      // 부모 제어
+      onToggle();
+    } else {
+      // 자체 제어
+      setLocalOpen((prev) => !prev);
+    }
+  };
+
   const handleSelect = (value: string) => {
     onChange(value);
-    onToggle();
+    if (onToggle) {
+      onToggle();
+    } else {
+      setLocalOpen(false);
+    }
   };
 
   return (
     <>
       <S.SortDropdownContainer>
-        <S.SortDropdownButton onClick={onToggle}>
+        <S.SortDropdownButton onClick={actualToggle}>
           {selected}
           {icon && <S.SortKeyIcon src={icon} />}
         </S.SortDropdownButton>
 
-        <S.SortDropdownMenu isOpen={isOpen}>
+        <S.SortDropdownMenu isOpen={actualIsOpen}>
           {options.map((opt) => (
             <S.SortDropdownItem
               key={opt}

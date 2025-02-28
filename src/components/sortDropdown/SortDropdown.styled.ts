@@ -30,6 +30,7 @@ export const SortDropdownMenu = styled.ul<{ isOpen: boolean }>`
   position: absolute;
   top: 44px;
   left: 0;
+  z-index: 1000;
   background: #f5f5f5;
   border-radius: 8px;
   padding: 8px 0;
