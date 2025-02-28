@@ -2,12 +2,18 @@ import styled from "styled-components";
 
 export const MyPortfolioPageContainer = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 40px 0;
 `;
 
 export const MyPortfolioPageHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+// 나의 포트폴리오명 드롭다운
+export const MyPortfolioNameContainer = styled.div`
   position: relative;
   display: inline-block;
 `;
