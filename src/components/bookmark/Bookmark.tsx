@@ -24,9 +24,15 @@ const BookmarkIcon = styled.img`
 `;
 
 const Bookmark = ({ isBookmarked, onToggle }: BookmarkProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggle();
+  };
+
   return (
     <>
-      <StyledBookmark onClick={onToggle}>
+      <StyledBookmark onClick={handleClick}>
         <BookmarkIcon src={isBookmarked ? BookmarkIconOn : BookmarkIconOff} />
       </StyledBookmark>
     </>

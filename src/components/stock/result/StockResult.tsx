@@ -55,7 +55,7 @@ const StockResult: FC = () => {
     },
   ]);
 
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState("list");
 
   const onToggleBookmark = (id: number) => {
     setStocks((prevStocks) =>

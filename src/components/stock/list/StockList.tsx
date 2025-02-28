@@ -1,6 +1,7 @@
 import * as S from "./StockList.styled";
 import Example from "../../../assets/images/example.png";
 import Bookmark from "../../bookmark/Bookmark";
+import { useNavigate } from "react-router-dom";
 
 export interface Stock {
   id: number;
@@ -23,6 +24,12 @@ export interface StockProps {
 }
 
 const StockList = ({ stocks, onToggle }: StockProps) => {
+  const navigate = useNavigate();
+
+  const handleRowClick = (id: number) => {
+    navigate(`stock/${id}`);
+  };
+
   return (
     <S.StyledTable>
       <thead>
@@ -41,7 +48,12 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
       </thead>
       <tbody>
         {stocks.map((stock) => (
-          <tr key={stock.id}>
+          <tr
+            key={stock.id}
+            onClick={() => {
+              handleRowClick(stock.id);
+            }}
+          >
             <td>
               <S.StockListImg src={Example} />
             </td>
@@ -62,7 +74,7 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
             <td>{stock.per}</td>
             <td>{stock.debtRatio}%</td>
             <td>{stock.sector}</td>
-            <td>
+            <td onClick={(e) => e.stopPropagation}>
               <Bookmark
                 isBookmarked={stock.bookmark}
                 onToggle={() => onToggle(stock.id)}

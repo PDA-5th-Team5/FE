@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export const StyledTable = styled.table`
@@ -21,6 +22,13 @@ export const StyledTable = styled.table`
   tbody td {
     font-size: 12px;
     text-align: left;
+  }
+
+  tbody tr {
+    cursor: pointer;
+    &:hover {
+      background-color: #1a222d;
+    }
   }
 
   tr {
@@ -78,6 +86,11 @@ export const StyledTable = styled.table`
   tbody td:nth-child(10) {
     width: 40px;
   }
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  display: none;
 `;
 
 export const StockListImg = styled.img`
