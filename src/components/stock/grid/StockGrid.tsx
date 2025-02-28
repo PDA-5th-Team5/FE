@@ -1,22 +1,20 @@
 import styled from "styled-components";
 import StockCard from "./card/StockCard";
+import { StockProps } from "../list/StockList";
 
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, 270px);
-  justify-content: space-between;
   align-items: start;
   gap: 40px;
 `;
 
-const StockGrid = () => {
+const StockGrid = ({ stocks, onToggle }: StockProps) => {
   return (
     <GridContainer>
-      <StockCard />
-      <StockCard />
-      <StockCard />
-      <StockCard />
-      <StockCard />
+      {stocks.map((stock) => (
+        <StockCard stock={stock} onToggle={onToggle} />
+      ))}
     </GridContainer>
   );
 };

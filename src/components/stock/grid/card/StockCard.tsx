@@ -1,14 +1,20 @@
 import Bookmark from "../../../bookmark/Bookmark";
 import * as S from "./StockCard.styled";
 import Example from "../../../../assets/images/exampleCard.png";
+import { Stock } from "../../list/StockList";
 
-const StockCard = () => {
+export interface StockCardProps {
+  stock: Stock;
+  onToggle: (id: number) => void;
+}
+
+const StockCard = ({ stock, onToggle }: StockCardProps) => {
   return (
     <S.CardContainer>
       <S.CardHeader>
         <S.CardHeaderLeft>
-          <S.CardTitle>삼성전자</S.CardTitle>
-          <S.CardMarketCap>₩4,500조</S.CardMarketCap>
+          <S.CardTitle>{stock.name}</S.CardTitle>
+          <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
         </S.CardHeaderLeft>
 
         <S.CardHeaderRight>{/* <Bookmark /> */}</S.CardHeaderRight>
@@ -17,11 +23,7 @@ const StockCard = () => {
       <S.CardContent>
         {/* 앞면: 줄임표 설명 + 이미지 */}
         <S.FrontContent className="front">
-          <S.ShortDescription>
-            회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에
-            대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한
-            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에.
-          </S.ShortDescription>
+          <S.ShortDescription>{stock.description}</S.ShortDescription>
           <S.CardImgWrapper>
             <S.CardImg src={Example} />
           </S.CardImgWrapper>
@@ -29,44 +31,25 @@ const StockCard = () => {
 
         {/* 뒷면: 더 많은 텍스트 (이미지 없이) */}
         <S.BackContent className="back">
-          <S.LongDescription>
-            회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에
-            대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한
-            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한
-            설명 어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명
-            어쩌구 저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에. 회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에 대한 설명 어쩌구
-            저쩌구회사에 대한 설명 어쩌구 저쩌구회사에.
-          </S.LongDescription>
+          <S.LongDescription>{stock.description}</S.LongDescription>
         </S.BackContent>
       </S.CardContent>
 
       <S.CardFooter>
         <S.CardFooterItem>
-          <S.CardFooterTitle>AA950170</S.CardFooterTitle>
-          <S.CardFooterPrice>₩4,500조</S.CardFooterPrice>
+          <S.CardFooterTitle>{stock.ticker}</S.CardFooterTitle>
+          <S.CardFooterPrice>₩{stock.price}</S.CardFooterPrice>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>7D</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={18.69 >= 0}>
-            18.69%
+          <S.CardFooterChange $isPositive={stock.change7d >= 0}>
+            {stock.change7d}%
           </S.CardFooterChange>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>1Y</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={-18.7 >= 0}>
-            -18.7%
+          <S.CardFooterChange $isPositive={stock.change1y >= 0}>
+            {stock.change1y}%
           </S.CardFooterChange>
         </S.CardFooterItem>
       </S.CardFooter>

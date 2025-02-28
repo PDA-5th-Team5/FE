@@ -14,14 +14,15 @@ export interface Stock {
   debtRatio: number;
   sector: string;
   bookmark: boolean;
+  description: string;
 }
 
-interface StockTableProps {
+export interface StockProps {
   stocks: Stock[];
   onToggle: (id: number) => void;
 }
 
-const StockList = ({ stocks, onToggle }: StockTableProps) => {
+const StockList = ({ stocks, onToggle }: StockProps) => {
   return (
     <S.StyledTable>
       <thead>
