@@ -28,6 +28,7 @@ const SharePortfolioPage = () => {
       </S.SharePortfolioListHeader>
 
       <S.SharePortfolioList>
+        <PortfolioCard /> <PortfolioCard /> <PortfolioCard /> <PortfolioCard />
         <PortfolioCard />
       </S.SharePortfolioList>
     </S.SharePortfolioListContainer>

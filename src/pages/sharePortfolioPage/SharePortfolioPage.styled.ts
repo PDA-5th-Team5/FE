@@ -34,5 +34,10 @@ export const SharePortfolioListCount = styled.div`
 `;
 
 export const SharePortfolioList = styled.div`
+  width: 100%;
   display: grid;
+  grid-template-columns: repeat(auto-fit, 270px);
+  align-items: start;
+  gap: 40px;
+  margin-top: 20px;
 `;
