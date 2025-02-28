@@ -3,9 +3,60 @@ import SortDropdown from "../../components/sortDropdown/SortDropdown";
 import * as S from "./SharePortfolioPage.styled";
 import DropdownIcon from "../../assets/images/icons/arrowDonw_gray.png";
 import PortfolioCard from "./portfolioCard/PortfolioCard";
+import { Snowflake } from "../../types/snowflakeTypes";
+
+export interface SharePortfolio {
+  sharePortfolioId: number;
+  sharePortfolioTitle: string;
+  sharePortfolioDescription: string;
+  sharePortfolioImportCnt: number;
+  snowflake: Snowflake;
+}
+
+interface SharePortfolioData {
+  sharePortfoliosCnt: number;
+  sharePortfolios: SharePortfolio[];
+}
 
 const SharePortfolioPage = () => {
   const [sortKey, setSortKey] = useState("최신순");
+
+  const data: SharePortfolioData = {
+    sharePortfoliosCnt: 12,
+    sharePortfolios: [
+      {
+        sharePortfolioId: 1,
+        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioDescription: "공유 포트폴리오 설명",
+        sharePortfolioImportCnt: 12,
+        snowflake: {
+          elements: {
+            bsopPrti: [5, 19],
+            thtrNtin: [1, 3],
+            roeVal: [10, 16],
+          },
+          market: "KOSPI",
+          sector: ["반도체", "바이오"],
+        },
+      },
+      {
+        sharePortfolioId: 2,
+        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioDescription: "공유 포트폴리오 설명",
+        sharePortfolioImportCnt: 12,
+        snowflake: {
+          elements: {
+            bsopPrti: [5, 19],
+            thtrNtin: [1, 3],
+            roeVal: [10, 16],
+          },
+          market: "KOSPI",
+          sector: ["반도체", "바이오"],
+        },
+      },
+      // 추가 데이터...
+    ],
+  };
 
   return (
     <S.SharePortfolioListContainer>
@@ -18,7 +69,9 @@ const SharePortfolioPage = () => {
       </S.SharePortfolioListSubTitle>
 
       <S.SharePortfolioListHeader>
-        <S.SharePortfolioListCount>총 1,234개</S.SharePortfolioListCount>
+        <S.SharePortfolioListCount>
+          총 {data.sharePortfoliosCnt}개
+        </S.SharePortfolioListCount>
         <SortDropdown
           options={["최신순", "인기순"]}
           selected={sortKey}
@@ -28,8 +81,12 @@ const SharePortfolioPage = () => {
       </S.SharePortfolioListHeader>
 
       <S.SharePortfolioList>
-        <PortfolioCard /> <PortfolioCard /> <PortfolioCard /> <PortfolioCard />
-        <PortfolioCard />
+        {data.sharePortfolios.map((portfolio) => (
+          <PortfolioCard
+            key={portfolio.sharePortfolioId}
+            portfolio={portfolio}
+          />
+        ))}
       </S.SharePortfolioList>
     </S.SharePortfolioListContainer>
   );

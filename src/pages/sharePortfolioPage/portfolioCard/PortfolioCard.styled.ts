@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export const PortfolioCardContainer = styled.div`
+export const PortfolioCardContainer = styled(Link)`
   display: flex;
   flex-direction: column;
   width: 270px;
@@ -14,6 +15,7 @@ export const PortfolioCardContainer = styled.div`
   position: relative;
   box-sizing: border-box;
   cursor: pointer;
+  text-decoration: none;
 `;
 
 // 1) 카드 헤더
@@ -111,7 +113,7 @@ export const CardFooterTitle = styled.div`
   font-size: 12px;
 `;
 
-export const CardFooterPrice = styled.div`
+export const CardFooterMarket = styled.div`
   color: #fff;
   font-size: 14px;
   border-radius: 4px;
