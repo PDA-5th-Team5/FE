@@ -23,7 +23,7 @@ export const MyPortfolioName = styled.div`
   display: flex;
   gap: 4px;
   color: #fff;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
   cursor: pointer;
   &:hover {
