@@ -1,4 +1,5 @@
 import PageHeader from "../../../components/pageHeader/PageHeader";
+import PortfolioPage from "../PortfolioPage";
 import * as S from "./SharePortfolioDetailPage.styled";
 
 const SharePortfolioDetailPage = () => {
@@ -15,6 +16,10 @@ const SharePortfolioDetailPage = () => {
           onRightClick: onClickSave,
         }}
       />
+
+      <S.PortfolioDetailContent>
+        <PortfolioPage />
+      </S.PortfolioDetailContent>
     </S.PortfolioDetailContainer>
   );
 };
