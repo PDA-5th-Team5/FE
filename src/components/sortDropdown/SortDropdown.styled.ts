@@ -26,7 +26,7 @@ export const SortKeyIcon = styled.img`
   width: 14px;
 `;
 
-export const SortDropdownMenu = styled.ul<{ isOpen: boolean }>`
+export const SortDropdownMenu = styled.ul<{ $isOpen: boolean }>`
   position: absolute;
   top: 44px;
   left: 0;
@@ -37,7 +37,7 @@ export const SortDropdownMenu = styled.ul<{ isOpen: boolean }>`
   margin: 0;
   list-style: none;
   width: 132px;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   box-sizing: border-box;
 `;
 
