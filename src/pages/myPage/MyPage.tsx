@@ -4,30 +4,55 @@ import Button from "../../components/button/Button";
 import StockGrid from "../../components/stock/grid/StockGrid";
 import { Stock } from "../../components/stock/list/StockList";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
+import { useNavigate } from "react-router-dom";
 
 const MyPage = () => {
-  const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
-    "profile"
-  );
-
-  const handleTabClick = (tab: "profile" | "stocks" | "comments") => {
-    setActiveTab(tab);
+  const navigate = useNavigate();
+  // 댓글 더미데이터
+  const portfolioComments = {
+    category: "portfolio",
+    commentsCnt: 8,
+    comments: [
+      {
+        connectId: 1,
+        name: "내 포트폴리오얌",
+        ticker: "005930",
+        commentId: 1,
+        content: "댓글내용",
+        date: "2024.02.18",
+      },
+      {
+        connectId: 2,
+        name: "포트폴리오명은 이거얌",
+        ticker: "005930",
+        commentId: 2,
+        content: "댓글내용2",
+        date: "2024.02.18",
+      },
+    ],
   };
 
-  const profileEdit = () => {
-    //TODO 프로필 수정 API
-    alert("프로필 변경");
-  };
-
-  // 나의 댓글 탭
-  const [activeCommentTab, setActiveCommentTab] = useState("stock");
-  const tabItems: TabItem[] = [
-    { label: "종목", value: "stock" },
-    { label: "포트폴리오", value: "portfolio" },
-  ];
-
-  const handleCommentTabClick = (value: string) => {
-    setActiveCommentTab(value);
+  const stockComments = {
+    category: "stock",
+    commentsCnt: 12,
+    comments: [
+      {
+        connectId: 1,
+        name: "삼성전자",
+        ticker: "005930",
+        commentId: 1,
+        content: "댓글내용",
+        date: "2024.02.18",
+      },
+      {
+        connectId: 2,
+        name: "LG전자",
+        ticker: "005930",
+        commentId: 2,
+        content: "댓글내용2",
+        date: "2024.02.18",
+      },
+    ],
   };
 
   const [stocks, setStocks] = useState<Stock[]>([
@@ -92,6 +117,41 @@ const MyPage = () => {
     },
   ]);
 
+  const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
+    "profile"
+  );
+
+  const handleTabClick = (tab: "profile" | "stocks" | "comments") => {
+    setActiveTab(tab);
+  };
+
+  const profileEdit = () => {
+    //TODO 프로필 수정 API
+    alert("프로필 변경");
+  };
+
+  // 나의 댓글 탭
+  const [activeCommentTab, setActiveCommentTab] = useState("stock");
+  const tabItems: TabItem[] = [
+    { label: `종목(${stockComments.commentsCnt})`, value: "stock" },
+    {
+      label: `포트폴리오(${portfolioComments.commentsCnt})`,
+      value: "portfolio",
+    },
+  ];
+
+  const handleCommentTabClick = (value: string) => {
+    setActiveCommentTab(value);
+  };
+
+  const handleCommentClick = (id: number) => {
+    if (activeCommentTab === "stock") {
+      navigate(`/stock/${id}`);
+    } else {
+      navigate(`/portfolio/share/${id}`);
+    }
+  };
+
   const onToggleBookmark = (id: number) => {
     setStocks((prevStocks) =>
       prevStocks.map((stock) =>
@@ -99,6 +159,11 @@ const MyPage = () => {
       )
     );
   };
+
+  const currentComments =
+    activeCommentTab === "stock"
+      ? stockComments.comments
+      : portfolioComments.comments;
 
   return (
     <S.MyPageContainer>
@@ -174,35 +239,18 @@ const MyPage = () => {
               />
 
               <S.CommentList>
-                <S.CommentItem>
-                  <S.CommentHeader>
-                    <S.CommentTitle>삼성전자</S.CommentTitle>
-                    <S.CommentDate>2025.10.12</S.CommentDate>
-                  </S.CommentHeader>
-                  <S.CommentContent>
-                    이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.
-                  </S.CommentContent>
-                </S.CommentItem>
-
-                <S.CommentItem>
-                  <S.CommentHeader>
-                    <S.CommentTitle>삼성전자</S.CommentTitle>
-                    <S.CommentDate>2025.10.12</S.CommentDate>
-                  </S.CommentHeader>
-                  <S.CommentContent>
-                    이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
-                    최곱니다.
-                  </S.CommentContent>
-                </S.CommentItem>
+                {currentComments.map((comment) => (
+                  <S.CommentItem
+                    key={comment.commentId}
+                    onClick={() => handleCommentClick(comment.connectId)}
+                  >
+                    <S.CommentHeader>
+                      <S.CommentTitle>{comment.name}</S.CommentTitle>
+                      <S.CommentDate>{comment.date}</S.CommentDate>
+                    </S.CommentHeader>
+                    <S.CommentContent>{comment.content}</S.CommentContent>
+                  </S.CommentItem>
+                ))}
               </S.CommentList>
             </S.SectionComment>
           </>

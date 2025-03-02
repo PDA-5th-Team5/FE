@@ -113,6 +113,7 @@ export const CommentList = styled.div`
   border-radius: 8px;
   background: #1a222d;
   padding: 40px 48px;
+  margin-top: 20px;
 `;
 
 export const CommentItem = styled.div`
