@@ -31,7 +31,7 @@ export const MyPageSidebarItem = styled.div<{ $active: boolean }>`
 `;
 
 export const MyPageContent = styled.div`
-  width: 885px;
+  width: 1000px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -84,4 +84,20 @@ export const ButtonWrapper = styled.div`
   > button {
     min-width: 100px;
   }
+`;
+
+// 관심 종목
+export const SectionTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+export const SectionCnt = styled.div`
+  color: #fff;
+  font-size: 20px;
+`;
+
+export const SectionGrid = styled.div`
+  display: grid;
 `;
