@@ -27,7 +27,7 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
   const navigate = useNavigate();
 
   const handleRowClick = (id: number) => {
-    navigate(`stock/${id}`);
+    navigate(`/stock/${id}`);
   };
 
   return (

@@ -12,7 +12,7 @@ export interface StockCardProps {
 const StockCard = ({ stock, onToggle }: StockCardProps) => {
   const bgColor = getRandomColor(stock.id);
   return (
-    <S.CardContainer to={`stock/${stock.id}`} bgColor={bgColor}>
+    <S.CardContainer to={`/stock/${stock.id}`} bgColor={bgColor}>
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.name}</S.CardTitle>
