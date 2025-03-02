@@ -11,6 +11,7 @@ const CommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 80px;
 `;
 
 const Comment = ({ commentsData }: CommentsProps) => {
