@@ -17,7 +17,7 @@ const router = createBrowserRouter([
       { element: <MainPage />, index: true },
       { element: <LoginPage />, path: "login" },
       { element: <SignupPage />, path: "signup" },
-      { element: <MyPage />, path: "my" },
+      { element: <MyPage />, path: "mypage" },
       { element: <MyPortfolioPage />, path: "portfolio/my/:num" },
       { element: <SharePortfolioPage />, path: "portfolio/share" },
       { element: <SharePortfolioDetailPage />, path: "portfolio/share/:num" },

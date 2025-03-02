@@ -42,12 +42,14 @@ export const HeaderLi = styled.li`
   align-items: center;
   margin-left: 70px;
   padding: 11px 0px;
+  position: relative;
 `;
 
-export const HeaderLoginIcon = styled.img`
+export const HeaderLoginIcon = styled.img<{ $isOpen: boolean }>`
   width: 24px;
   height: 24px;
   cursor: pointer;
+  rotate: ${({ $isOpen }) => ($isOpen ? "180deg" : "0deg")};
 `;
 
 export const HeaderSearchWrapper = styled.div`
@@ -70,4 +72,29 @@ export const HeaderSearchIcon = styled.img`
   left: 18px;
   top: 9px;
   cursor: pointer;
+`;
+
+// 드롭다운
+export const UserDropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 160px;
+  background: #272e3a;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+`;
+
+export const UserDropdownItem = styled.div`
+  padding: 16px;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: #2595e0;
+  }
 `;
