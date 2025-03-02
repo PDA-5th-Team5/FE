@@ -1,6 +1,11 @@
 import styled from "styled-components";
 import CommentInput from "./input/CommentInput";
 import CommentList from "./list/CommentList";
+import { CommentsData } from "../../types/commentTypes";
+
+interface CommentsProps {
+  commentsData: CommentsData;
+}
 
 const CommentContainer = styled.div`
   display: flex;
@@ -8,11 +13,11 @@ const CommentContainer = styled.div`
   width: 100%;
 `;
 
-const Comment = () => {
+const Comment = ({ commentsData }: CommentsProps) => {
   return (
     <CommentContainer>
       <CommentInput />
-      <CommentList />
+      <CommentList commentsData={commentsData} />
     </CommentContainer>
   );
 };

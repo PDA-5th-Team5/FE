@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import { CommentsData } from "../../../types/commentTypes";
+
+interface CommentListProps {
+  commentsData: CommentsData;
+}
 
 const CommentListContainer = styled.div`
   display: flex;
@@ -49,23 +54,21 @@ const CommentContent = styled.div`
   line-height: 30px;
 `;
 
-const CommentList = () => {
+const CommentList = ({ commentsData }: CommentListProps) => {
+  const { commentsCnt, comments } = commentsData;
   return (
     <CommentListContainer>
-      <CommentListHeader>댓글 7</CommentListHeader>
-      <Comment>
-        <CommentHeader>
-          <CommentName>이유진</CommentName>
-          <CommentDate>2025.10.12</CommentDate>
-        </CommentHeader>
-        <CommentContent>
-          이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말 최곱니다.이
-          포트폴리오는 정말 최곱니다.이 포트폴리오는 정말 최곱니다.이
-          포트폴리오는 정말 최곱니다.이 포트폴리오는 정말 최곱니다.이
-          포트폴리오는 정말 최곱니다.이 포트폴리오는 정말 최곱니다.이
-          포트폴리오는 정말 최곱니다.이 포트폴리오는 정말 최곱니다.
-        </CommentContent>
-      </Comment>
+      <CommentListHeader>댓글 {commentsCnt}</CommentListHeader>
+
+      {comments.map((comment) => (
+        <Comment key={comment.commentId}>
+          <CommentHeader>
+            <CommentName>{comment.nickname}</CommentName>
+            <CommentDate>{comment.date}</CommentDate>
+          </CommentHeader>
+          <CommentContent>{comment.content}</CommentContent>
+        </Comment>
+      ))}
     </CommentListContainer>
   );
 };
