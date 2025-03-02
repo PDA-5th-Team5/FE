@@ -16,7 +16,6 @@ const MyPortfolioPage = () => {
     "ETF 전용 포트폴리오",
     "내 포트폴리오",
     "내 포트폴리오아무거나",
-    "내 포트폴리오",
   ]);
 
   const handleTitleClick = () => {
@@ -50,8 +49,10 @@ const MyPortfolioPage = () => {
             <S.DropdownIcon src={DropdownIcon} />
           </S.MyPortfolioName>
 
-          <S.DropdownMenu isOpen={isOpen}>
-            <S.DropdownItem isCount>총 {portfolioList.length}개</S.DropdownItem>
+          <S.DropdownMenu $isOpen={isOpen}>
+            <S.DropdownItem $isCount>
+              총 {portfolioList.length}개
+            </S.DropdownItem>
             <S.DropdownItemScroll>
               {portfolioList.map((name) => (
                 <S.DropdownItem
@@ -64,7 +65,7 @@ const MyPortfolioPage = () => {
               ))}
             </S.DropdownItemScroll>
             <S.Separator />
-            <S.DropdownItem isCreateNew onClick={handleCreateNew}>
+            <S.DropdownItem $isCreateNew onClick={handleCreateNew}>
               <S.PlusIcon src={PlusIcon} />
               새로운 포트폴리오 만들기
             </S.DropdownItem>

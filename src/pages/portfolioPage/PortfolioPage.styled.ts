@@ -92,11 +92,42 @@ export const PortfolioLineGraph = styled.div`
 `;
 
 export const PortfolioContentRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 417px;
   height: 480px;
   flex-shrink: 0;
   border-radius: 8px;
   background: #1c242e;
   box-sizing: border-box;
-  padding: 20px 40px;
+  padding: 20px 20px;
+`;
+
+export const PortfolioContentImgWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
+
+export const PortfolioContentImg = styled.img`
+  width: 356px;
+`;
+
+export const PortfolioContentMarketWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+`;
+
+export const PortfolioContentMarket = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 36px;
+  border-radius: 8px;
+  background: #373d47;
+  color: #d7d8da;
+  font-size: 14px;
 `;

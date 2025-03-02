@@ -48,7 +48,7 @@ const SortDropdown = ({
           {icon && <S.SortKeyIcon src={icon} />}
         </S.SortDropdownButton>
 
-        <S.SortDropdownMenu isOpen={actualIsOpen}>
+        <S.SortDropdownMenu $isOpen={actualIsOpen}>
           {options.map((opt) => (
             <S.SortDropdownItem
               key={opt}

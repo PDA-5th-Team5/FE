@@ -1,4 +1,5 @@
 import * as S from "./PortfolioPage.styled";
+import Example from "../../assets/images/exampleCard.png";
 
 const PortfolioPage = () => {
   return (
@@ -70,13 +71,23 @@ const PortfolioPage = () => {
               </S.PortfolioSummaryItem>
             </S.PortfolioSummaryItemWrapper>
           </S.PortfolioSummary>
-          <S.PortfolioLineGraph></S.PortfolioLineGraph>
+          <S.PortfolioLineGraph>
+            <S.PortfolioContentTitle>
+              포트폴리오 vs 시장 그래프 비교
+            </S.PortfolioContentTitle>
+          </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
 
         <S.PortfolioContentRight>
           <S.PortfolioContentTitle>
             포트폴리오 Snowflake
           </S.PortfolioContentTitle>
+          <S.PortfolioContentImgWrapper>
+            <S.PortfolioContentImg src={Example} />
+          </S.PortfolioContentImgWrapper>
+          <S.PortfolioContentMarketWrapper>
+            <S.PortfolioContentMarket>KOSPI</S.PortfolioContentMarket>
+          </S.PortfolioContentMarketWrapper>
         </S.PortfolioContentRight>
       </S.PortfolioContent>
     </S.PortfolioPageContainer>

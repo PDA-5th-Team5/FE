@@ -36,7 +36,7 @@ export const DropdownIcon = styled.img`
   height: 24px;
 `;
 
-export const DropdownMenu = styled.ul<{ isOpen: boolean }>`
+export const DropdownMenu = styled.ul<{ $isOpen: boolean }>`
   position: absolute;
   top: 110%;
   left: 0;
@@ -47,7 +47,7 @@ export const DropdownMenu = styled.ul<{ isOpen: boolean }>`
   margin: 0;
   padding: 8px 0;
   list-style: none;
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   z-index: 1000;
   box-sizing: border-box;
 `;
@@ -81,8 +81,8 @@ export const Separator = styled.hr`
 `;
 
 export const DropdownItem = styled.li<{
-  isCreateNew?: boolean;
-  isCount?: boolean;
+  $isCreateNew?: boolean;
+  $isCount?: boolean;
   selected?: boolean;
 }>`
   font-size: 16px;
@@ -92,8 +92,8 @@ export const DropdownItem = styled.li<{
   padding: 20px 24px;
   cursor: pointer;
 
-  ${({ isCount, selected }) =>
-    !isCount &&
+  ${({ $isCount, selected }) =>
+    !$isCount &&
     !selected &&
     `
       &:hover {
@@ -101,16 +101,16 @@ export const DropdownItem = styled.li<{
       }
   `}
 
-  ${({ isCreateNew }) =>
-    isCreateNew &&
+  ${({ $isCreateNew }) =>
+    $isCreateNew &&
     `
       display: flex;
       gap: 12px;
       align-items: center;
   `}
 
-  ${({ isCount }) =>
-    isCount &&
+  ${({ $isCount }) =>
+    $isCount &&
     `
       color: #5F6875;
       font-size: 12px;
