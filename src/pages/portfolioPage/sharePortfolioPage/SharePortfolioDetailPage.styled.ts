@@ -9,3 +9,8 @@ export const PortfolioDetailContainer = styled.div`
 export const PortfolioDetailContent = styled.div`
   /* display: flex; */
 `;
+
+export const PortfolioDetailComments = styled.div`
+  display: flex;
+  margin: 80px 0;
+`;

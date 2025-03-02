@@ -1,3 +1,4 @@
+import Comments from "../../../components/comment/Comment";
 import PageHeader from "../../../components/pageHeader/PageHeader";
 import PortfolioPage from "../PortfolioPage";
 import * as S from "./SharePortfolioDetailPage.styled";
@@ -20,6 +21,10 @@ const SharePortfolioDetailPage = () => {
       <S.PortfolioDetailContent>
         <PortfolioPage />
       </S.PortfolioDetailContent>
+
+      <S.PortfolioDetailComments>
+        <Comments />
+      </S.PortfolioDetailComments>
     </S.PortfolioDetailContainer>
   );
 };
