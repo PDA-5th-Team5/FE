@@ -101,3 +101,50 @@ export const SectionCnt = styled.div`
 export const SectionGrid = styled.div`
   display: grid;
 `;
+
+// 나의 댓글
+export const SectionComment = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CommentList = styled.div`
+  width: 100%;
+  border-radius: 8px;
+  background: #1a222d;
+  padding: 40px 48px;
+`;
+
+export const CommentItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #404040;
+  gap: 20px;
+  padding: 20px 20px;
+
+  &:hover {
+    background: #253141;
+    cursor: pointer;
+  }
+`;
+
+export const CommentHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const CommentTitle = styled.div`
+  color: #8b8d91;
+  font-size: 16px;
+`;
+
+export const CommentDate = styled.div`
+  color: #8d9197;
+  font-size: 14px;
+`;
+
+export const CommentContent = styled.div`
+  color: #fff;
+  font-size: 14px;
+  line-height: 30px;
+`;

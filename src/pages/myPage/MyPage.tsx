@@ -3,6 +3,7 @@ import * as S from "./MyPage.styled";
 import Button from "../../components/button/Button";
 import StockGrid from "../../components/stock/grid/StockGrid";
 import { Stock } from "../../components/stock/list/StockList";
+import Tabs, { TabItem } from "../../components/tab/Tabs";
 
 const MyPage = () => {
   const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
@@ -16,6 +17,17 @@ const MyPage = () => {
   const profileEdit = () => {
     //TODO 프로필 수정 API
     alert("프로필 변경");
+  };
+
+  // 나의 댓글 탭
+  const [activeCommentTab, setActiveCommentTab] = useState("stock");
+  const tabItems: TabItem[] = [
+    { label: "종목", value: "stock" },
+    { label: "포트폴리오", value: "portfolio" },
+  ];
+
+  const handleCommentTabClick = (value: string) => {
+    setActiveCommentTab(value);
   };
 
   const [stocks, setStocks] = useState<Stock[]>([
@@ -154,6 +166,45 @@ const MyPage = () => {
         {activeTab === "comments" && (
           <>
             <S.SectionTitle>나의 댓글</S.SectionTitle>
+            <S.SectionComment>
+              <Tabs
+                items={tabItems}
+                activeValue={activeCommentTab}
+                onChange={handleCommentTabClick}
+              />
+
+              <S.CommentList>
+                <S.CommentItem>
+                  <S.CommentHeader>
+                    <S.CommentTitle>삼성전자</S.CommentTitle>
+                    <S.CommentDate>2025.10.12</S.CommentDate>
+                  </S.CommentHeader>
+                  <S.CommentContent>
+                    이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.
+                  </S.CommentContent>
+                </S.CommentItem>
+
+                <S.CommentItem>
+                  <S.CommentHeader>
+                    <S.CommentTitle>삼성전자</S.CommentTitle>
+                    <S.CommentDate>2025.10.12</S.CommentDate>
+                  </S.CommentHeader>
+                  <S.CommentContent>
+                    이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.이 포트폴리오는 정말 최곱니다.이 포트폴리오는 정말
+                    최곱니다.
+                  </S.CommentContent>
+                </S.CommentItem>
+              </S.CommentList>
+            </S.SectionComment>
           </>
         )}
       </S.MyPageContent>
