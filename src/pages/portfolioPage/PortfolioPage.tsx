@@ -1,5 +1,6 @@
 import * as S from "./PortfolioPage.styled";
 import Example from "../../assets/images/exampleCard.png";
+import StockResult from "../../components/stock/result/StockResult";
 
 const PortfolioPage = () => {
   return (
@@ -90,6 +91,10 @@ const PortfolioPage = () => {
           </S.PortfolioContentMarketWrapper>
         </S.PortfolioContentRight>
       </S.PortfolioContent>
+
+      <S.PortfolioStock>
+        <StockResult />
+      </S.PortfolioStock>
     </S.PortfolioPageContainer>
   );
 };

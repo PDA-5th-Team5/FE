@@ -131,3 +131,7 @@ export const PortfolioContentMarket = styled.div`
   color: #d7d8da;
   font-size: 14px;
 `;
+
+export const PortfolioStock = styled.div`
+  margin-top: 60px;
+`;
