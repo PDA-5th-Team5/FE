@@ -1,75 +1,70 @@
-import styled from "styled-components";
+import * as S from "./CommentList.styled";
 import { CommentsData } from "../../../types/commentTypes";
+import MoreIcon from "../../../assets/images/icons/more.png";
+import { useState } from "react";
 
 interface CommentListProps {
   commentsData: CommentsData;
 }
 
-const CommentListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-radius: 8px;
-  background: #1a222d;
-  padding: 60px;
-`;
-
-const CommentListHeader = styled.div`
-  color: #8d9197;
-  font-size: 18px;
-  font-weight: 700;
-  border-bottom: 1px solid #404040;
-  padding: 20px 40px;
-`;
-
-const Comment = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  border-bottom: 1px solid #404040;
-  padding: 36px 40px;
-`;
-
-const CommentHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const CommentName = styled.div`
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-`;
-
-const CommentDate = styled.div`
-  color: #8d9197;
-  font-size: 14px;
-  font-weight: 400;
-`;
-
-const CommentContent = styled.div`
-  color: #fff;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 30px;
-`;
-
 const CommentList = ({ commentsData }: CommentListProps) => {
   const { commentsCnt, comments } = commentsData;
+  // 임시
+  const [userId, setUserId] = useState(1);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+
+  const handleToggleDropdown = (commentId: number) => {
+    setOpenDropdownId((prev) => (prev === commentId ? null : commentId));
+  };
+
+  const handleEdit = (commentId: number) => {
+    alert(`수정 : ${commentId}`);
+    // TODO: 수정 로직
+    setOpenDropdownId(null);
+  };
+
+  const handleDelete = (commentId: number) => {
+    alert(`삭제 : ${commentId}`);
+    // TODO: 삭제 로직
+    setOpenDropdownId(null);
+  };
+
   return (
-    <CommentListContainer>
-      <CommentListHeader>댓글 {commentsCnt}</CommentListHeader>
+    <S.CommentListContainer>
+      <S.CommentListHeader>댓글 {commentsCnt}</S.CommentListHeader>
 
       {comments.map((comment) => (
-        <Comment key={comment.commentId}>
-          <CommentHeader>
-            <CommentName>{comment.nickname}</CommentName>
-            <CommentDate>{comment.date}</CommentDate>
-          </CommentHeader>
-          <CommentContent>{comment.content}</CommentContent>
-        </Comment>
+        <S.Comment key={comment.commentId}>
+          <S.CommentHeader>
+            <S.CommentName>{comment.nickname}</S.CommentName>
+            <S.CommentHeaderRight>
+              <S.CommentDate>{comment.date}</S.CommentDate>
+              {userId === comment.userId && (
+                <S.CommentMore
+                  src={MoreIcon}
+                  onClick={() => handleToggleDropdown(comment.commentId)}
+                />
+              )}
+            </S.CommentHeaderRight>
+          </S.CommentHeader>
+          <S.CommentContent>{comment.content}</S.CommentContent>
+
+          {/* 드롭다운  */}
+          {openDropdownId === comment.commentId && (
+            <S.MoreDropdown>
+              <S.MoreDropdownItem onClick={() => handleEdit(comment.commentId)}>
+                수정
+              </S.MoreDropdownItem>
+              <S.MoreDropdownItem
+                onClick={() => handleDelete(comment.commentId)}
+              >
+                삭제
+              </S.MoreDropdownItem>
+            </S.MoreDropdown>
+          )}
+        </S.Comment>
       ))}
-    </CommentListContainer>
+    </S.CommentListContainer>
   );
 };
 

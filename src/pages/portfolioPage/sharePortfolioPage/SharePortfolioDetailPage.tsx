@@ -11,7 +11,7 @@ const SharePortfolioDetailPage = () => {
       {
         commentId: 1,
         nickname: "김도은",
-        userId: 1,
+        userId: 2,
         content: "댓글내용 1",
         date: "2024.02.18",
       },
