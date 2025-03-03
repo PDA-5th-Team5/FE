@@ -1,8 +1,40 @@
 import * as S from "./PortfolioPage.styled";
 import Example from "../../assets/images/exampleCard.png";
 import StockResult from "../../components/stock/result/StockResult";
+import Snowflake from "../../components/snowflake/Snowflake";
+import { useState } from "react";
+import { Item, labelMapping } from "../../types/snowflakeTypes";
+import { transformElementsToItems } from "../../utils/snowflakeUtils";
+
+// 더미 데이터
+const dummyResponse = {
+  status: 200,
+  message: "성공입니다.",
+  data: {
+    snowflake: {
+      elements: {
+        bsopPrti: [5, 19], // 영업이익
+        thtrNtin: [1, 3], // 당기순이익
+        roeVal: [10, 16], // ROE (자기자본이익률)
+        cptlNtinRate: [2, 7], // 총자본 순이익률
+        eps: [3, 6], // EPS
+        per: [12, 18], // PER
+      },
+      market: "코스피",
+      sectors: ["반도체", "바이오"],
+    },
+  },
+};
 
 const PortfolioPage = () => {
+  // dummy 데이터의 elements를 이용하여 아이템 생성
+  const dummyItems = transformElementsToItems(
+    dummyResponse.data.snowflake.elements
+  );
+  const [allItems, setAllItems] = useState<Item[]>(dummyItems);
+  // 여기서는 모든 키를 선택한 상태로 가정
+  const selectedKeys = dummyItems.map((item) => item.key);
+
   return (
     <S.PortfolioPageContainer>
       <S.PortfolioDescription>
@@ -83,9 +115,15 @@ const PortfolioPage = () => {
           <S.PortfolioContentTitle>
             포트폴리오 Snowflake
           </S.PortfolioContentTitle>
-          <S.PortfolioContentImgWrapper>
-            <S.PortfolioContentImg src={Example} />
-          </S.PortfolioContentImgWrapper>
+          <S.PortfolioContentSnowflake>
+            <S.PortfolioContentSnowflakeWrapper>
+              <Snowflake
+                allItems={allItems}
+                selectedKeys={selectedKeys}
+                showLabels={true}
+              />
+            </S.PortfolioContentSnowflakeWrapper>
+          </S.PortfolioContentSnowflake>
           <S.PortfolioContentMarketWrapper>
             <S.PortfolioContentMarket>KOSPI</S.PortfolioContentMarket>
           </S.PortfolioContentMarketWrapper>

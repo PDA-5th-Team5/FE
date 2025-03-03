@@ -25,3 +25,32 @@ export interface Snowflake {
   market: string;
   sector: string[];
 }
+
+// 3. Snowflake 그래프 그릴 때 필요
+export interface Item {
+  key: string;
+  label: string;
+  D1Value: number;
+  D2Value: number;
+}
+
+// 한글 라벨 매핑 객체
+export const labelMapping: Record<string, string> = {
+  bsopPrti: "영업이익",
+  thtrNtin: "당기순이익",
+  roeVal: "ROE",
+  cptlNtinRate: "총자본 순이익률",
+  eps: "EPS",
+  per: "PER",
+  grs: "매출액 증가율",
+  bsopPrfiInrt: "영업이익 증가율",
+  ntinInrt: "순이익 증가율",
+  lbltRate: "부채 비율",
+  crntRate: "유동 비율",
+  bps: "BPS",
+  saleAccount: "매출액",
+  marketCap: "시가총액",
+  sps: "SPS",
+  divYield: "배당수익률",
+  foreignerRatio: "외국인 보유율",
+};
