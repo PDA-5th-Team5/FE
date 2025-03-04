@@ -4,72 +4,37 @@ import ListOnIcon from "../../../assets/images/icons/view/list_on.png";
 import ListOffIcon from "../../../assets/images/icons/view/list_off.png";
 import GridOnIcon from "../../../assets/images/icons/view/grid_on.png";
 import GridOffIcon from "../../../assets/images/icons/view/grid_off.png";
-import StockList, { Stock } from "../list/StockList";
+import StockList from "../list/StockList";
 import StockGrid from "../grid/StockGrid";
 import SortDropdown from "../../sortDropdown/SortDropdown";
 import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
 import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
+import { Stock } from "../../../types/stockTypes";
 
-const StockResult: FC = () => {
-  const [stocks, setStocks] = useState<Stock[]>([
-    {
-      id: 1,
-      ticker: "A0001",
-      name: "삼성전자",
-      price: 58900.0,
-      change7d: 5.2,
-      change1y: -9.8,
-      marketCap: 4500,
-      per: 15.22,
-      debtRatio: 33.49,
-      sector: "반도체",
-      bookmark: false,
-      description:
-        "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-    },
-    {
-      id: 2,
-      ticker: "A0002",
-      name: "하이닉스",
-      price: 105000.0,
-      change7d: 3.1,
-      change1y: 4.2,
-      marketCap: 9000,
-      per: 17.56,
-      debtRatio: 33.49,
-      sector: "반도체",
-      bookmark: false,
-      description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.",
-    },
-    {
-      id: 3,
-      ticker: "A0003",
-      name: "LG전자",
-      price: 1234,
-      change7d: 2.5,
-      change1y: -7.8,
-      marketCap: 3000,
-      per: 13.34,
-      debtRatio: 28.19,
-      sector: "가전",
-      bookmark: true,
-      description:
-        "LG전자는 가전제품과 디스플레이 분야에서 혁신적인 제품을 제공합니다.",
-    },
-  ]);
+export interface StockResultData {
+  stockCnt: number;
+  stockInfos: Stock[];
+}
 
+// StockResult 컴포넌트 Props 정의
+interface StockResultProps {
+  data: StockResultData;
+}
+
+const StockResult = ({ data }: StockResultProps) => {
+  const [stocks, setStocks] = useState<Stock[]>(data.stockInfos);
   const [view, setView] = useState("list");
+  const [sortKey, setSortKey] = useState("시가총액");
+  const [sortDirection, setSortDirection] = useState("내림차순");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const onToggleBookmark = (id: number) => {
     setStocks((prevStocks) =>
       prevStocks.map((stock) =>
-        stock.id === id ? { ...stock, bookmark: !stock.bookmark } : stock
+        stock.stockId === id ? { ...stock, bookmark: !stock.isBookmark } : stock
       )
     );
   };
-
-  const [sortKey, setSortKey] = useState("시가총액");
-  const [sortDirection, setSortDirection] = useState("내림차순");
 
   const handleSortKeyChange = (value: string) => {
     setSortKey(value);
@@ -80,8 +45,6 @@ const StockResult: FC = () => {
     setSortDirection(value);
     // TODO API 연결
   };
-
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const toggleDropdown = (id: string) => {
     setOpenDropdown((prev) => (prev === id ? null : id));

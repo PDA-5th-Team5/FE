@@ -23,14 +23,14 @@ export interface SnoflakeElements {
 export interface Snowflake {
   elements: SnoflakeElements;
   market: string;
-  sector: string[];
+  sectors: string[];
 }
 
 // 3. Snowflake 그래프 그릴 때 필요
 export interface Item {
   key: string;
   label: string;
-  D1Value: number;
+  D1Value?: number;
   D2Value: number;
 }
 

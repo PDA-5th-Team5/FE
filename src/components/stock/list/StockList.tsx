@@ -2,21 +2,9 @@ import * as S from "./StockList.styled";
 import Example from "../../../assets/images/example.png";
 import Bookmark from "../../bookmark/Bookmark";
 import { useNavigate } from "react-router-dom";
-
-export interface Stock {
-  id: number;
-  ticker: string;
-  name: string;
-  price: number;
-  change7d: number;
-  change1y: number;
-  marketCap: number;
-  per: number;
-  debtRatio: number;
-  sector: string;
-  bookmark: boolean;
-  description: string;
-}
+import { Stock } from "../../../types/stockTypes";
+import Snowflake from "../../snowflake/Snowflake";
+import { labelMapping } from "../../../types/snowflakeTypes";
 
 export interface StockProps {
   stocks: Stock[];
@@ -47,41 +35,68 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
         </tr>
       </thead>
       <tbody>
-        {stocks.map((stock) => (
-          <tr
-            key={stock.id}
-            onClick={() => {
-              handleRowClick(stock.id);
-            }}
-          >
-            <td>
-              <S.StockListImg src={Example} />
-            </td>
-            <td>
-              <S.StockListTicker>{stock.ticker}</S.StockListTicker>
-              <S.StockListName>{stock.name}</S.StockListName>
-            </td>
-            <td>₩{stock.price}</td>
+        {stocks.map((stock) => {
+          // 각 주식의 스노우플레이크 데이터가 있다면 Item 배열로 변환
+          const snowflakeItems = stock.snowFlake
+            ? Object.entries(stock.snowFlake.elements).map(([key, values]) => ({
+                key,
+                label: labelMapping[key] ?? key,
+                D2Value: values[1],
+                // D1Value: values[0],
+              }))
+            : [];
 
-            <S.ChangeTd $isPositive={stock.change7d >= 0}>
-              {stock.change7d}
-            </S.ChangeTd>
+          // 각 주식의 스노우플레이크 요소의 키 목록
+          const snowflakeSelectedKeys = stock.snowFlake
+            ? Object.keys(stock.snowFlake.elements)
+            : [];
 
-            <S.ChangeTd $isPositive={stock.change1y >= 0}>
-              {stock.change1y}%
-            </S.ChangeTd>
-            <td>{stock.marketCap}</td>
-            <td>{stock.per}</td>
-            <td>{stock.debtRatio}%</td>
-            <td>{stock.sector}</td>
-            <td onClick={(e) => e.stopPropagation}>
-              <Bookmark
-                isBookmarked={stock.bookmark}
-                onToggle={() => onToggle(stock.id)}
-              />
-            </td>
-          </tr>
-        ))}
+          return (
+            <tr
+              key={stock.stockId}
+              onClick={() => {
+                handleRowClick(stock.stockId);
+              }}
+            >
+              <td>
+                <S.SnowflakeWrapper>
+                  {stock.snowFlake && (
+                    <Snowflake
+                      allItems={snowflakeItems}
+                      selectedKeys={snowflakeSelectedKeys}
+                      showLabels={false}
+                    />
+                  )}
+                </S.SnowflakeWrapper>
+              </td>
+              <td>
+                <S.StockListTicker>{stock.ticker}</S.StockListTicker>
+                <S.StockListName>{stock.companyName}</S.StockListName>
+              </td>
+              <td>₩{stock.currentPrice}</td>
+
+              <S.ChangeTd $isPositive={stock["1WeekFluctuationRate"] >= 0}>
+                {stock["1WeekFluctuationRate"]}
+              </S.ChangeTd>
+
+              <S.ChangeTd $isPositive={stock["1YearFluctuationRate"] >= 0}>
+                {stock["1YearFluctuationRate"]}%
+              </S.ChangeTd>
+              <td>{stock.marketCap}</td>
+              <td>{stock.per}</td>
+              <td>{stock.debtRate}%</td>
+              <td>{stock.sector}</td>
+              <td onClick={(e) => e.stopPropagation}>
+                <S.BookmarkWrapper>
+                  <Bookmark
+                    isBookmarked={stock.isBookmark}
+                    onToggle={() => onToggle(stock.stockId)}
+                  />
+                </S.BookmarkWrapper>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </S.StyledTable>
   );

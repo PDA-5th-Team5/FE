@@ -28,7 +28,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
         {
           data: filteredItems.map((item) => item.D2Value),
           borderColor: "#FE2B2B",
-          borderWidth: 4,
+          borderWidth: showLabels ? 4 : 2,
           backgroundColor: "rgba(200, 52, 56, 0.67)",
           tension: 0.4,
           pointSize: 8,
@@ -59,6 +59,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
               size: 14,
               family: "Pretendard",
             },
+            display: showLabels ? true : false,
             padding: 12,
             color: showLabels ? "#ffffff" : "transparent",
           },
@@ -69,6 +70,8 @@ const Snowflake: React.FC<SnowflakeProps> = ({
         legend: { display: false },
         tooltip: { enabled: false },
       },
+      responsive: true,
+      maintainAspectRatio: false,
     };
   }, [filteredItems]);
 
