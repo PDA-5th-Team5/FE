@@ -218,7 +218,7 @@ const MyPage = () => {
               </S.SectionProfileItem>
 
               <S.SectionProfileItem>
-                <S.SectionProfileTitle>닉네임</S.SectionProfileTitle>
+                <S.SectionProfileTitle>이메일</S.SectionProfileTitle>
                 <S.SectionProfileInput
                   placeholder="abc@naver.com"
                   type="email"
