@@ -48,8 +48,10 @@ export const StyledTable = styled.table`
 
   thead th:nth-child(1),
   tbody td:nth-child(1) {
+    position: relative;
     width: 50px;
   }
+
   thead th:nth-child(2),
   tbody td:nth-child(2) {
     width: 140px;
@@ -85,16 +87,13 @@ export const StyledTable = styled.table`
   thead th:nth-child(10),
   tbody td:nth-child(10) {
     width: 40px;
+    padding-right: 10px;
   }
 `;
 
 export const StyledLink = styled(Link)`
   text-decoration: none;
   display: none;
-`;
-
-export const StockListImg = styled.img`
-  height: 40px;
 `;
 
 export const StockListTicker = styled.div`
@@ -111,3 +110,14 @@ export const StockListName = styled.div`
 export const ChangeTd = styled.td<{ $isPositive: boolean }>`
   color: ${({ $isPositive }) => ($isPositive ? "#E74142" : "#2D7AFF")};
 `;
+
+export const SnowflakeWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding-left: 10px;
+`;
+
+export const BookmarkWrapper = styled.div``;

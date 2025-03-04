@@ -104,14 +104,18 @@ export const PortfolioContentRight = styled.div`
   padding: 20px 20px;
 `;
 
-export const PortfolioContentImgWrapper = styled.div`
+export const PortfolioContentSnowflakeWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 356px;
+  height: 356px;
   justify-content: center;
+  align-items: center;
 `;
 
-export const PortfolioContentImg = styled.img`
-  width: 356px;
+export const PortfolioContentSnowflake = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const PortfolioContentMarketWrapper = styled.div`

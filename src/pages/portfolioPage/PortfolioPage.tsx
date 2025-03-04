@@ -1,8 +1,111 @@
 import * as S from "./PortfolioPage.styled";
-import Example from "../../assets/images/exampleCard.png";
-import StockResult from "../../components/stock/result/StockResult";
+import StockResult, {
+  StockResultData,
+} from "../../components/stock/result/StockResult";
+import { useState } from "react";
+import { Item } from "../../types/snowflakeTypes";
+import { transformElementsToItems } from "../../utils/snowflakeUtils";
+import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
+
+// 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
+const dummyPortfolioResponse = {
+  status: 200,
+  message: "성공입니다.",
+  data: {
+    portfolioTitle: "포트폴리오명",
+    portfolioDescription: "이 포트폴리오에 대한 설명을....",
+    stockCnt: 12,
+    stockInfos: [
+      {
+        snowflakeS: {
+          elements: {
+            bsopPrti: 19,
+            thtrNtin: 3,
+            roeVal: 16,
+            cptlNtinRate: 7,
+            eps: 6,
+            per: 18,
+          },
+        },
+        stockId: 1,
+        ticker: "05252",
+        companyName: "삼성전자",
+        currentPrice: 50000,
+        "1DayFluctuationRate": 0.2,
+        "1WeekFluctuationRate": 7.3,
+        "1YearFluctuationRate": 13.1,
+        marketCap: 4500,
+        per: 13.56,
+        debtRate: 30.49,
+        sector: "반도체",
+        isBookmark: true,
+        description:
+          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
+      },
+
+      {
+        snowflakeS: {
+          elements: {
+            bsopPrti: 8,
+            thtrNtin: 3,
+            roeVal: 20,
+            cptlNtinRate: 2,
+          },
+        },
+        stockId: 2,
+        ticker: "05252",
+        companyName: "삼성전자",
+        currentPrice: 50000,
+        "1DayFluctuationRate": 0.2,
+        "1WeekFluctuationRate": 7.3,
+        "1YearFluctuationRate": 13.1,
+        marketCap: 4500,
+        per: 13.56,
+        debtRate: 30.49,
+        sector: "반도체",
+        isBookmark: false,
+        description:
+          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
+      },
+    ],
+  },
+};
+
+const portfolioSnowflakeData = {
+  status: 200,
+  message: "성공입니다.",
+  data: {
+    snowflakeP: {
+      elements: {
+        bsopPrti: [5, 19], // 영업이익
+        thtrNtin: [1, 3], // 당기순이익
+        roeVal: [10, 16], // ROE (자기자본이익률)
+        cptlNtinRate: [2, 7], // 총자본 순이익률
+        eps: [3, 6], // EPS
+        per: [12, 18], // PER
+      },
+      market: "코스피",
+      sectors: ["반도체", "바이오"],
+    },
+  },
+};
 
 const PortfolioPage = () => {
+  // dummy 데이터의 elements를 이용하여 아이템 생성
+  const dummyPortfolioItems = transformElementsToItems(
+    portfolioSnowflakeData.data.snowflakeP.elements
+  );
+  const [allPortfolioItems, setAllPortfolioItems] =
+    useState<Item[]>(dummyPortfolioItems);
+
+  // 여기서는 모든 키를 선택한 상태로 가정
+  const selectedPortfolioKeys = dummyPortfolioItems.map((item) => item.key);
+
+  const stockResultData: StockResultData = {
+    stockCnt: dummyPortfolioResponse.data.stockCnt,
+    stockInfos: dummyPortfolioResponse.data.stockInfos,
+  };
+
   return (
     <S.PortfolioPageContainer>
       <S.PortfolioDescription>
@@ -83,9 +186,15 @@ const PortfolioPage = () => {
           <S.PortfolioContentTitle>
             포트폴리오 Snowflake
           </S.PortfolioContentTitle>
-          <S.PortfolioContentImgWrapper>
-            <S.PortfolioContentImg src={Example} />
-          </S.PortfolioContentImgWrapper>
+          <S.PortfolioContentSnowflake>
+            <S.PortfolioContentSnowflakeWrapper>
+              <PortfolioSnowflake
+                allItems={allPortfolioItems}
+                selectedKeys={selectedPortfolioKeys}
+                showLabels={true}
+              />
+            </S.PortfolioContentSnowflakeWrapper>
+          </S.PortfolioContentSnowflake>
           <S.PortfolioContentMarketWrapper>
             <S.PortfolioContentMarket>KOSPI</S.PortfolioContentMarket>
           </S.PortfolioContentMarketWrapper>
@@ -93,7 +202,7 @@ const PortfolioPage = () => {
       </S.PortfolioContent>
 
       <S.PortfolioStock>
-        <StockResult />
+        <StockResult data={stockResultData} />
       </S.PortfolioStock>
     </S.PortfolioPageContainer>
   );

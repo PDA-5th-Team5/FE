@@ -3,14 +3,14 @@ import SortDropdown from "../../components/sortDropdown/SortDropdown";
 import * as S from "./SharePortfolioPage.styled";
 import DropdownIcon from "../../assets/images/icons/arrowDonw_gray.png";
 import PortfolioCard from "./portfolioCard/PortfolioCard";
-import { Snowflake } from "../../types/snowflakeTypes";
+import { SnowflakeP } from "../../types/snowflakeTypes";
 
 export interface SharePortfolio {
   sharePortfolioId: number;
   sharePortfolioTitle: string;
   sharePortfolioDescription: string;
   sharePortfolioImportCnt: number;
-  snowflake: Snowflake;
+  snowflakeP: SnowflakeP;
 }
 
 interface SharePortfolioData {
@@ -26,62 +26,67 @@ const SharePortfolioPage = () => {
     sharePortfolios: [
       {
         sharePortfolioId: 1,
-        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioTitle: "공유 포트폴리ad;lkfl;slf오명",
         sharePortfolioDescription: "공유 포트폴리오 설명",
         sharePortfolioImportCnt: 12,
-        snowflake: {
+        snowflakeP: {
           elements: {
             bsopPrti: [5, 19],
-            thtrNtin: [1, 3],
+            thtrNtin: [1, 9],
             roeVal: [10, 16],
+            cptlNtinRate: [1, 19],
+            eps: [2, 3],
+            per: [2, 3],
+            ntinInrt: [2, 19],
+            foreignerRatio: [1, 20],
           },
           market: "KOSPI",
-          sector: ["반도체", "바이오"],
+          sectors: ["반도체", "바이오"],
         },
       },
       {
         sharePortfolioId: 2,
-        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioTitle: "공유 sldkjfl포트폴리오명",
         sharePortfolioDescription: "공유 포트폴리오 설명",
         sharePortfolioImportCnt: 12,
-        snowflake: {
+        snowflakeP: {
           elements: {
             bsopPrti: [5, 19],
             thtrNtin: [1, 3],
             roeVal: [10, 16],
           },
           market: "KOSPI",
-          sector: ["반도체", "바이오"],
+          sectors: ["반도체", "바이오"],
         },
       },
       {
-        sharePortfolioId: 2,
+        sharePortfolioId: 3,
         sharePortfolioTitle: "공유 포트폴리오명",
-        sharePortfolioDescription: "공유 포트폴리오 설명",
+        sharePortfolioDescription: "공유 포sdf트폴리오 설명",
         sharePortfolioImportCnt: 12,
-        snowflake: {
+        snowflakeP: {
           elements: {
             bsopPrti: [5, 19],
             thtrNtin: [1, 3],
             roeVal: [10, 16],
           },
           market: "KOSPI",
-          sector: ["반도체", "바이오"],
+          sectors: ["반도체", "바이오"],
         },
       },
       {
-        sharePortfolioId: 2,
-        sharePortfolioTitle: "공유 포트폴리오명",
+        sharePortfolioId: 4,
+        sharePortfolioTitle: "공유 포트폴asd리오명",
         sharePortfolioDescription: "공유 포트폴리오 설명",
         sharePortfolioImportCnt: 12,
-        snowflake: {
+        snowflakeP: {
           elements: {
             bsopPrti: [5, 19],
             thtrNtin: [1, 3],
             roeVal: [10, 16],
           },
           market: "KOSPI",
-          sector: ["반도체", "바이오"],
+          sectors: ["반도체", "바이오"],
         },
       },
     ],

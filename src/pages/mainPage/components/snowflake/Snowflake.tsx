@@ -1,17 +1,8 @@
 import "chartjs-plugin-dragdata";
 import "chart.js/auto";
-
 import { useMemo, useState } from "react";
 import { Radar } from "react-chartjs-2";
 import { DrawGridOnTop } from "./DrawGridOnTop";
-import styled from "styled-components";
-
-const MainPageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 40px 0px;
-  gap: 24px;
-`;
 
 interface Item {
   key: string;
