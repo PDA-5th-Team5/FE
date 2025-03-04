@@ -1,4 +1,4 @@
-import Comments from "../../../components/comment/Comment";
+import Comment from "../../../components/comment/Comment";
 import PageHeader from "../../../components/pageHeader/PageHeader";
 import { CommentsData } from "../../../types/commentTypes";
 import PortfolioPage from "../PortfolioPage";
@@ -43,7 +43,7 @@ const SharePortfolioDetailPage = () => {
       </S.PortfolioDetailContent>
 
       <S.PortfolioDetailComments>
-        <Comments commentsData={commentsData} />
+        <Comment commentsData={commentsData} />
       </S.PortfolioDetailComments>
     </S.PortfolioDetailContainer>
   );

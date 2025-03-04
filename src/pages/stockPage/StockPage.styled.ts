@@ -199,3 +199,6 @@ export const StockLineGraph = styled.div`
   padding: 32px 44px;
   box-sizing: border-box;
 `;
+
+// 댓글
+export const StockComments = styled.div``;

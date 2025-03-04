@@ -1,8 +1,30 @@
 import Bookmark from "../../components/bookmark/Bookmark";
 import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
+import Comment from "../../components/comment/Comment";
+import { CommentsData } from "../../types/commentTypes";
 
 const StockPage = () => {
+  const commentsData: CommentsData = {
+    commentsCnt: 12,
+    comments: [
+      {
+        commentId: 1,
+        nickname: "김도은",
+        userId: 2,
+        content: "댓글내용 1",
+        date: "2024.02.18",
+      },
+      {
+        commentId: 2,
+        nickname: "이수용",
+        userId: 1,
+        content: "댓글내용 2",
+        date: "2024.02.18",
+      },
+    ],
+  };
+
   return (
     <S.StockPageContainer>
       <S.StockInfoContainer>
@@ -107,6 +129,10 @@ const StockPage = () => {
       <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
       </S.StockLineGraph>
+
+      <S.StockComments>
+        <Comment commentsData={commentsData} />
+      </S.StockComments>
     </S.StockPageContainer>
   );
 };
