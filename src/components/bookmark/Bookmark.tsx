@@ -1,10 +1,12 @@
 import BookmarkIconOn from "../../assets/images/icons/bookmark_on.png";
 import BookmarkIconOff from "../../assets/images/icons/bookmark_off.png";
 import styled from "styled-components";
+import { Stock } from "../../types/stockTypes";
 
 interface BookmarkProps {
-  isBookmarked: boolean;
-  onToggle: () => void;
+  stockId: number;
+  stocks: Stock[];
+  setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
 }
 
 const StyledBookmark = styled.div`
@@ -23,12 +25,25 @@ const BookmarkIcon = styled.img`
   height: 20px;
 `;
 
-const Bookmark = ({ isBookmarked, onToggle }: BookmarkProps) => {
+const Bookmark = ({ stockId, stocks, setStocks }: BookmarkProps) => {
+  const onToggleBookmark = () => {
+    setStocks((prevStocks) =>
+      prevStocks.map((stock) =>
+        stock.stockId === stockId
+          ? { ...stock, isBookmark: !stock.isBookmark }
+          : stock
+      )
+    );
+    console.log(stockId, stocks);
+  };
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onToggle();
+    onToggleBookmark();
   };
+
+  const isBookmarked = stocks.find((s) => s.stockId === stockId)?.isBookmark;
 
   return (
     <>

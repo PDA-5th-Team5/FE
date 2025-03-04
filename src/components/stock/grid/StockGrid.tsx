@@ -9,11 +9,11 @@ const GridContainer = styled.div`
   gap: 40px;
 `;
 
-const StockGrid = ({ stocks, onToggle }: StockProps) => {
+const StockGrid = ({ stocks, setStocks }: StockProps) => {
   return (
     <GridContainer>
       {stocks.map((stock) => (
-        <StockCard stock={stock} onToggle={onToggle} />
+        <StockCard stock={stock} stocks={stocks} setStocks={setStocks} />
       ))}
     </GridContainer>
   );

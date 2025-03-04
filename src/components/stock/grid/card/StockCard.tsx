@@ -1,28 +1,30 @@
 import Bookmark from "../../../bookmark/Bookmark";
 import * as S from "./StockCard.styled";
 import Example from "../../../../assets/images/exampleCard.png";
-import { Stock } from "../../list/StockList";
 import { getRandomColor } from "../../../../utils/colorUtils";
+import { Stock } from "../../../../types/stockTypes";
 
 export interface StockCardProps {
   stock: Stock;
-  onToggle: (id: number) => void;
+  stocks: Stock[];
+  setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
 }
 
-const StockCard = ({ stock, onToggle }: StockCardProps) => {
-  const bgColor = getRandomColor(stock.id);
+const StockCard = ({ stock, stocks, setStocks }: StockCardProps) => {
+  const bgColor = getRandomColor(stock.stockId);
   return (
-    <S.CardContainer to={`/stock/${stock.id}`} bgColor={bgColor}>
+    <S.CardContainer to={`/stock/${stock.stockId}`} bgColor={bgColor}>
       <S.CardHeader>
         <S.CardHeaderLeft>
-          <S.CardTitle>{stock.name}</S.CardTitle>
+          <S.CardTitle>{stock.companyName}</S.CardTitle>
           <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
         </S.CardHeaderLeft>
 
         <S.CardHeaderRight>
           <Bookmark
-            isBookmarked={stock.bookmark}
-            onToggle={() => onToggle(stock.id)}
+            stockId={stock.stockId}
+            stocks={stocks}
+            setStocks={setStocks}
           />
         </S.CardHeaderRight>
       </S.CardHeader>
@@ -45,18 +47,18 @@ const StockCard = ({ stock, onToggle }: StockCardProps) => {
       <S.CardFooter>
         <S.CardFooterItem>
           <S.CardFooterTitle>{stock.ticker}</S.CardFooterTitle>
-          <S.CardFooterPrice>₩{stock.price}</S.CardFooterPrice>
+          <S.CardFooterPrice>₩{stock.currentPrice}</S.CardFooterPrice>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>7D</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={stock.change7d >= 0}>
-            {stock.change7d}%
+          <S.CardFooterChange $isPositive={stock["1WeekFluctuationRate"] >= 0}>
+            {stock["1WeekFluctuationRate"]}%
           </S.CardFooterChange>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>1Y</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={stock.change1y >= 0}>
-            {stock.change1y}%
+          <S.CardFooterChange $isPositive={stock["1YearFluctuationRate"] >= 0}>
+            {stock["1YearFluctuationRate"]}%
           </S.CardFooterChange>
         </S.CardFooterItem>
       </S.CardFooter>

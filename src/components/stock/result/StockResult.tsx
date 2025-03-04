@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import * as S from "./StockResult.styled";
 import ListOnIcon from "../../../assets/images/icons/view/list_on.png";
 import ListOffIcon from "../../../assets/images/icons/view/list_off.png";
@@ -29,14 +29,6 @@ const StockResult = ({ data }: StockResultProps) => {
   const [sortKey, setSortKey] = useState("시가총액");
   const [sortDirection, setSortDirection] = useState("내림차순");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
-  const onToggleBookmark = (id: number) => {
-    setStocks((prevStocks) =>
-      prevStocks.map((stock) =>
-        stock.stockId === id ? { ...stock, bookmark: !stock.isBookmark } : stock
-      )
-    );
-  };
 
   const handleSortKeyChange = (value: string) => {
     setSortKey(value);
@@ -118,11 +110,11 @@ const StockResult = ({ data }: StockResultProps) => {
 
       {view === "list" ? (
         <>
-          <StockList stocks={stocks} onToggle={onToggleBookmark} />
+          <StockList stocks={stocks} setStocks={setStocks} />
         </>
       ) : (
         <>
-          <StockGrid stocks={stocks} onToggle={onToggleBookmark} />
+          <StockGrid stocks={stocks} setStocks={setStocks} />
         </>
       )}
     </S.StockResultContainer>

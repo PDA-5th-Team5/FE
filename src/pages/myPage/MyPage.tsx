@@ -2,9 +2,9 @@ import { useState } from "react";
 import * as S from "./MyPage.styled";
 import Button from "../../components/button/Button";
 import StockGrid from "../../components/stock/grid/StockGrid";
-import { Stock } from "../../components/stock/list/StockList";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
+import { Stock } from "../../types/stockTypes";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -55,67 +55,90 @@ const MyPage = () => {
     ],
   };
 
-  const [stocks, setStocks] = useState<Stock[]>([
-    {
-      id: 1,
-      ticker: "A0001",
-      name: "삼성전자",
-      price: 58900.0,
-      change7d: 5.2,
-      change1y: -9.8,
-      marketCap: 4500,
-      per: 15.22,
-      debtRatio: 33.49,
-      sector: "반도체",
-      bookmark: false,
-      description:
-        "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
+  //더미데이터
+  const dummyStockResponse = {
+    status: 201,
+    message: "성공입니다.",
+    data: {
+      stockCnt: 4,
+      stockInfos: [
+        {
+          snowflakeS: {
+            elements: {
+              bsopPrti: 19,
+              thtrNtin: 19,
+              roeVal: 16,
+              cptlNtinRate: 7,
+              eps: 6,
+              per: 18,
+            },
+          },
+          stockId: 1,
+          ticker: "05252",
+          companyName: "삼성전자",
+          currentPrice: 50000,
+          "1DayFluctuationRate": 0.2,
+          "1WeekFluctuationRate": 7.3,
+          "1YearFluctuationRate": 13.1,
+          marketCap: 4500,
+          per: 13.56,
+          debtRate: 30.49,
+          sector: "반도체",
+          isBookmark: false,
+          description:
+            "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
+        },
+        {
+          snowflakeS: {
+            elements: {
+              bsopPrti: 19,
+              thtrNtin: 3,
+              roeVal: 16,
+            },
+          },
+          stockId: 2,
+          ticker: "013660",
+          companyName: "하이닉스",
+          currentPrice: 50000,
+          "1DayFluctuationRate": 0.4,
+          "1WeekFluctuationRate": 5.1,
+          "1YearFluctuationRate": 10.0,
+          marketCap: 9000,
+          per: 17.56,
+          debtRate: 33.49,
+          sector: "반도체",
+          isBookmark: false, // 추가
+          description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
+        },
+        {
+          snowflakeS: {
+            elements: {
+              thtrNtin: 3, // 당기순이익
+              roeVal: 10, // ROE
+            },
+          },
+          stockId: 3,
+          ticker: "013660",
+          companyName: "하이닉스",
+          currentPrice: 50000,
+          "1DayFluctuationRate": 0.4,
+          "1WeekFluctuationRate": 5.1,
+          "1YearFluctuationRate": 10.0,
+          marketCap: 9000,
+          per: 17.56,
+          debtRate: 33.49,
+          sector: "반도체",
+          isBookmark: false, // 추가
+          description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
+        },
+        // ...추가 주식 데이터
+      ],
     },
-    {
-      id: 2,
-      ticker: "A0002",
-      name: "하이닉스",
-      price: 105000.0,
-      change7d: 3.1,
-      change1y: 4.2,
-      marketCap: 9000,
-      per: 17.56,
-      debtRatio: 33.49,
-      sector: "반도체",
-      bookmark: false,
-      description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.",
-    },
-    {
-      id: 3,
-      ticker: "A0003",
-      name: "LG전자",
-      price: 1234,
-      change7d: 2.5,
-      change1y: -7.8,
-      marketCap: 3000,
-      per: 13.34,
-      debtRatio: 28.19,
-      sector: "가전",
-      bookmark: true,
-      description:
-        "LG전자는 가전제품과 디스플레이 분야에서 혁신적인 제품을 제공합니다.",
-    },
-    {
-      id: 4,
-      ticker: "A0003",
-      name: "LG전자",
-      price: 1234,
-      change7d: 2.5,
-      change1y: -7.8,
-      marketCap: 3000,
-      per: 13.34,
-      debtRatio: 28.19,
-      sector: "가전",
-      bookmark: true,
-      description:
-        "LG전자는 가전제품과 디스플레이 분야에서 혁신적인 제품을 제공합니다.",
-    },
-  ]);
+  };
+
+  const [stocks, setStocks] = useState<Stock[]>(
+    dummyStockResponse.data.stockInfos
+  );
 
   const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
     "profile"
@@ -150,14 +173,6 @@ const MyPage = () => {
     } else {
       navigate(`/portfolio/share/${id}`);
     }
-  };
-
-  const onToggleBookmark = (id: number) => {
-    setStocks((prevStocks) =>
-      prevStocks.map((stock) =>
-        stock.id === id ? { ...stock, bookmark: !stock.bookmark } : stock
-      )
-    );
   };
 
   const currentComments =
@@ -223,7 +238,7 @@ const MyPage = () => {
               <S.SectionCnt>12개</S.SectionCnt>
             </S.SectionTitleWrapper>
             <S.SectionGrid>
-              <StockGrid stocks={stocks} onToggle={onToggleBookmark} />
+              <StockGrid stocks={stocks} setStocks={setStocks} />
             </S.SectionGrid>
           </>
         )}

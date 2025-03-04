@@ -8,10 +8,10 @@ import { labelMapping } from "../../../types/snowflakeTypes";
 
 export interface StockProps {
   stocks: Stock[];
-  onToggle: (id: number) => void;
+  setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
 }
 
-const StockList = ({ stocks, onToggle }: StockProps) => {
+const StockList = ({ stocks, setStocks }: StockProps) => {
   const navigate = useNavigate();
 
   const handleRowClick = (id: number) => {
@@ -91,8 +91,11 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
               <td onClick={(e) => e.stopPropagation}>
                 <S.BookmarkWrapper>
                   <Bookmark
-                    isBookmarked={stock.isBookmark}
-                    onToggle={() => onToggle(stock.stockId)}
+                    // isBookmarked={stock.isBookmark}
+                    // onToggle={() => onToggle(stock.stockId)}
+                    stockId={stock.stockId}
+                    stocks={stocks}
+                    setStocks={setStocks}
                   />
                 </S.BookmarkWrapper>
               </td>
