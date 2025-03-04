@@ -19,17 +19,15 @@ const dummyStockResponse = {
     stockCnt: 4,
     stockInfos: [
       {
-        snowFlake: {
+        snowflakeS: {
           elements: {
-            bsopPrti: [5, 19],
-            thtrNtin: [1, 20], // 당기순이익
-            roeVal: [2, 16], // ROE
-            per: [2, 19],
-            eps: [1, 20],
-            ntinInrt: [3, 20],
+            bsopPrti: 19,
+            thtrNtin: 19,
+            roeVal: 16,
+            cptlNtinRate: 7,
+            eps: 6,
+            per: 18,
           },
-          market: "코스피",
-          sectors: ["반도체", "바이오"],
         },
         stockId: 1,
         ticker: "05252",
@@ -47,14 +45,12 @@ const dummyStockResponse = {
           "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
       },
       {
-        snowFlake: {
+        snowflakeS: {
           elements: {
-            bsopPrti: [5, 19],
-            thtrNtin: [1, 3], // 당기순이익
-            roeVal: [10, 16], // ROE
+            bsopPrti: 19,
+            thtrNtin: 3, // 당기순이익
+            roeVal: 16, // ROE
           },
-          market: "코스피",
-          sectors: ["반도체", "바이오"],
         },
         stockId: 2,
         ticker: "013660",
@@ -71,13 +67,11 @@ const dummyStockResponse = {
         description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
       },
       {
-        snowFlake: {
+        snowflakeS: {
           elements: {
-            thtrNtin: [1, 3], // 당기순이익
-            roeVal: [10, 16], // ROE
+            thtrNtin: 3, // 당기순이익
+            roeVal: 10, // ROE
           },
-          market: "코스피",
-          sectors: ["반도체", "바이오"],
         },
         stockId: 3,
         ticker: "013660",

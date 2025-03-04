@@ -1,4 +1,4 @@
-import { Snowflake } from "./snowflakeTypes";
+import { SnowflakeP, SnowflakeS } from "./snowflakeTypes";
 
 export interface Stock {
   stockId: number;
@@ -14,5 +14,6 @@ export interface Stock {
   sector: string;
   isBookmark: boolean;
   description: string;
-  snowFlake?: Snowflake;
+  snowflakeS?: SnowflakeS;
+  snowflakeP?: SnowflakeP;
 }

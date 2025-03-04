@@ -106,7 +106,8 @@ export const PortfolioContentRight = styled.div`
 
 export const PortfolioContentSnowflakeWrapper = styled.div`
   display: flex;
-  width: 100%;
+  width: 356px;
+  height: 356px;
   justify-content: center;
   align-items: center;
 `;

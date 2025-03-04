@@ -14,6 +14,8 @@ import { Stock } from "../../../types/stockTypes";
 export interface StockResultData {
   stockCnt: number;
   stockInfos: Stock[];
+  portfolioTitle?: string;
+  portfolioDescription?: string;
 }
 
 // StockResult 컴포넌트 Props 정의

@@ -3,7 +3,7 @@ import Example from "../../../assets/images/example.png";
 import Bookmark from "../../bookmark/Bookmark";
 import { useNavigate } from "react-router-dom";
 import { Stock } from "../../../types/stockTypes";
-import Snowflake from "../../snowflake/Snowflake";
+import Snowflake from "../../snowflake/StockSnowflake";
 import { labelMapping } from "../../../types/snowflakeTypes";
 
 export interface StockProps {
@@ -37,18 +37,20 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
       <tbody>
         {stocks.map((stock) => {
           // 각 주식의 스노우플레이크 데이터가 있다면 Item 배열로 변환
-          const snowflakeItems = stock.snowFlake
-            ? Object.entries(stock.snowFlake.elements).map(([key, values]) => ({
-                key,
-                label: labelMapping[key] ?? key,
-                D2Value: values[1],
-                // D1Value: values[0],
-              }))
+          const snowflakeItems = stock.snowflakeS
+            ? Object.entries(stock.snowflakeS.elements).map(
+                ([key, values]) => ({
+                  key,
+                  label: labelMapping[key] ?? key,
+                  D2Value: values,
+                  D1Value: values,
+                })
+              )
             : [];
 
           // 각 주식의 스노우플레이크 요소의 키 목록
-          const snowflakeSelectedKeys = stock.snowFlake
-            ? Object.keys(stock.snowFlake.elements)
+          const snowflakeSelectedKeys = stock.snowflakeS
+            ? Object.keys(stock.snowflakeS.elements)
             : [];
 
           return (
@@ -60,7 +62,7 @@ const StockList = ({ stocks, onToggle }: StockProps) => {
             >
               <td>
                 <S.SnowflakeWrapper>
-                  {stock.snowFlake && (
+                  {stock.snowflakeS && (
                     <Snowflake
                       allItems={snowflakeItems}
                       selectedKeys={snowflakeSelectedKeys}

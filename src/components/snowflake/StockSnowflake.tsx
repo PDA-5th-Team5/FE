@@ -10,7 +10,7 @@ interface SnowflakeProps {
   showLabels?: boolean;
 }
 
-const Snowflake: React.FC<SnowflakeProps> = ({
+const StockSnowflake: React.FC<SnowflakeProps> = ({
   allItems,
   selectedKeys,
   showLabels,
@@ -26,7 +26,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
       labels: filteredItems.map((item) => item.label),
       datasets: [
         {
-          data: filteredItems.map((item) => item.D2Value),
+          data: filteredItems.map((item) => item.D1Value),
           borderColor: "#FE2B2B",
           borderWidth: showLabels ? 4 : 2,
           backgroundColor: "rgba(200, 52, 56, 0.67)",
@@ -78,4 +78,4 @@ const Snowflake: React.FC<SnowflakeProps> = ({
   return <Radar data={chartData} options={options} plugins={[DrawGridOnTop]} />;
 };
 
-export default Snowflake;
+export default StockSnowflake;
