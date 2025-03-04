@@ -56,7 +56,7 @@ const StockSnowflake: React.FC<SnowflakeProps> = ({
           },
           pointLabels: {
             font: {
-              size: 14,
+              size: 8,
               family: "Pretendard",
             },
             display: showLabels ? true : false,

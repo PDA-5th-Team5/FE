@@ -1,16 +1,25 @@
 import Bookmark from "../../../bookmark/Bookmark";
 import * as S from "./StockCard.styled";
-import Example from "../../../../assets/images/exampleCard.png";
 import { getRandomColor } from "../../../../utils/colorUtils";
 import { Stock } from "../../../../types/stockTypes";
+import { Item } from "../../../../types/snowflakeTypes";
+import StockSnowflake from "../../../snowflake/StockSnowflake";
 
 export interface StockCardProps {
   stock: Stock;
   stocks: Stock[];
   setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
+  allItems: Item[];
+  selectedKeys: string[];
 }
 
-const StockCard = ({ stock, stocks, setStocks }: StockCardProps) => {
+const StockCard = ({
+  stock,
+  stocks,
+  setStocks,
+  allItems,
+  selectedKeys,
+}: StockCardProps) => {
   const bgColor = getRandomColor(stock.stockId);
   return (
     <S.CardContainer to={`/stock/${stock.stockId}`} bgColor={bgColor}>
@@ -34,7 +43,11 @@ const StockCard = ({ stock, stocks, setStocks }: StockCardProps) => {
         <S.FrontContent className="front">
           <S.ShortDescription>{stock.description}</S.ShortDescription>
           <S.CardImgWrapper>
-            <S.CardImg src={Example} />
+            <StockSnowflake
+              allItems={allItems}
+              selectedKeys={selectedKeys}
+              showLabels={true}
+            />
           </S.CardImgWrapper>
         </S.FrontContent>
 

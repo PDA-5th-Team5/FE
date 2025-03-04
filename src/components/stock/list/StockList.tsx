@@ -1,10 +1,9 @@
 import * as S from "./StockList.styled";
-import Example from "../../../assets/images/example.png";
 import Bookmark from "../../bookmark/Bookmark";
 import { useNavigate } from "react-router-dom";
 import { Stock } from "../../../types/stockTypes";
-import Snowflake from "../../snowflake/StockSnowflake";
 import { labelMapping } from "../../../types/snowflakeTypes";
+import StockSnowflake from "../../snowflake/StockSnowflake";
 
 export interface StockProps {
   stocks: Stock[];
@@ -63,7 +62,7 @@ const StockList = ({ stocks, setStocks }: StockProps) => {
               <td>
                 <S.SnowflakeWrapper>
                   {stock.snowflakeS && (
-                    <Snowflake
+                    <StockSnowflake
                       allItems={snowflakeItems}
                       selectedKeys={snowflakeSelectedKeys}
                       showLabels={false}
