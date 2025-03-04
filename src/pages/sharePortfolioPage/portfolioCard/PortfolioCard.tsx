@@ -1,13 +1,33 @@
 import * as S from "./PortfolioCard.styled";
-import Example from "../../../assets/images/exampleCard.png";
 import ImportIcon from "../../../assets/images/icons/import.png";
 import { SharePortfolio } from "../SharePortfolioPage";
+import PortfolioSnowflake from "../../../components/snowflake/PortfolioSnowflake";
+import { useState } from "react";
+import { Item, labelMapping } from "../../../types/snowflakeTypes";
 
 interface PortfolioCardProps {
   portfolio: SharePortfolio;
 }
 
 const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
+  console.log(portfolio);
+
+  // portfolio.snowflakeP.elements를 이용해 Item 배열 생성
+  const portfolioItems: Item[] = portfolio.snowflakeP
+    ? Object.entries(portfolio.snowflakeP.elements).map(([key, values]) => ({
+        key,
+        label: labelMapping[key] ?? key,
+        D2Value: values[0],
+        D1Value: values[1],
+      }))
+    : [];
+
+  const [allPortfolioItems, setAllPortfolioItems] =
+    useState<Item[]>(portfolioItems);
+
+  // 각 주식의 스노우플레이크 요소의 키 목록
+  const selectedPortfolioKeys = portfolioItems.map((item) => item.key);
+
   return (
     <S.PortfolioCardContainer
       to={`/portfolio/share/${portfolio.sharePortfolioId}`}
@@ -22,7 +42,12 @@ const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
             {portfolio.sharePortfolioDescription}
           </S.ShortDescription>
           <S.CardImgWrapper>
-            <S.CardImg src={Example} />
+            <PortfolioSnowflake
+              allItems={allPortfolioItems}
+              selectedKeys={selectedPortfolioKeys}
+              showLabels={true}
+              fontSize={10}
+            />
           </S.CardImgWrapper>
         </S.FrontContent>
 
@@ -37,7 +62,7 @@ const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
       <S.CardFooter>
         <S.CardFooterItem>
           <S.CardFooterTitle>마켓</S.CardFooterTitle>
-          <S.CardFooterMarket>{portfolio.snowflake.market}</S.CardFooterMarket>
+          <S.CardFooterMarket>{portfolio.snowflakeP.market}</S.CardFooterMarket>
         </S.CardFooterItem>
 
         <S.CardFooterItem>

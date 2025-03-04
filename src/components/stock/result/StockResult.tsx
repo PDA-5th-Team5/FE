@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useState } from "react";
 import * as S from "./StockResult.styled";
 import ListOnIcon from "../../../assets/images/icons/view/list_on.png";
 import ListOffIcon from "../../../assets/images/icons/view/list_off.png";

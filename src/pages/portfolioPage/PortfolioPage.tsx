@@ -3,7 +3,7 @@ import StockResult, {
   StockResultData,
 } from "../../components/stock/result/StockResult";
 import { useState } from "react";
-import { Item, labelMapping } from "../../types/snowflakeTypes";
+import { Item } from "../../types/snowflakeTypes";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 

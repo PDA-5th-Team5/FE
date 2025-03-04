@@ -1,5 +1,5 @@
 // 1. Snowflake 요소들의 값
-export interface SnoflakePElements {
+export interface SnowflakePElements {
   bsopPrti?: number[]; // 영업이익
   thtrNtin?: number[]; // 당기순이익
   roeVal?: number[]; // ROE (자기자본이익률)
@@ -19,7 +19,7 @@ export interface SnoflakePElements {
   foreignerRatio?: number[]; // 외국인 보유율
 }
 
-export interface SnoflakeSElements {
+export interface SnowflakeSElements {
   bsopPrti?: number; // 영업이익
   thtrNtin?: number; // 당기순이익
   roeVal?: number; // ROE (자기자본이익률)
@@ -41,11 +41,11 @@ export interface SnoflakeSElements {
 
 // 2. Snowflake 관련 데이터
 export interface SnowflakeS {
-  elements: SnoflakeSElements;
+  elements: SnowflakeSElements;
 }
 
 export interface SnowflakeP {
-  elements: SnoflakePElements;
+  elements: SnowflakePElements;
   market: string;
   sectors: string[];
 }
