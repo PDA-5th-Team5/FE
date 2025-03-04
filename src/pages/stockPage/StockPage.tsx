@@ -92,6 +92,21 @@ const StockPage = () => {
         </S.StockOutline>
         <S.StockSnowflake>O</S.StockSnowflake>
       </S.StockOutlineContainer>
+
+      <S.StockCandleChart>
+        <S.TitleWrapper>
+          <S.Title>캔들차트</S.Title>
+          <S.SubTitle>* 일봉 기준</S.SubTitle>
+        </S.TitleWrapper>
+      </S.StockCandleChart>
+
+      <S.StockCompetitor>
+        <S.Title>삼성전자(주) 경쟁사</S.Title>
+      </S.StockCompetitor>
+
+      <S.StockLineGraph>
+        <S.Title>라인그래프</S.Title>
+      </S.StockLineGraph>
     </S.StockPageContainer>
   );
 };

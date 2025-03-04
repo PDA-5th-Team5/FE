@@ -161,3 +161,41 @@ export const StockSnowflake = styled.div`
   width: 242px;
   height: 242px;
 `;
+
+// 캔들차트
+export const StockCandleChart = styled.div`
+  height: 642px;
+  border-radius: 8px;
+  background: #1b212d;
+  padding: 32px 44px;
+  box-sizing: border-box;
+`;
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const SubTitle = styled.div`
+  color: #8b8c90;
+  font-size: 14px;
+`;
+
+// 경쟁사
+export const StockCompetitor = styled.div`
+  height: 428px;
+  border-radius: 8px;
+  background: #1b212d;
+  padding: 32px 44px;
+  box-sizing: border-box;
+`;
+
+// 라인그래프
+export const StockLineGraph = styled.div`
+  height: 642px;
+  border-radius: 8px;
+  background: #1b212d;
+  padding: 32px 44px;
+  box-sizing: border-box;
+`;
