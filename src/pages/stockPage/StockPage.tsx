@@ -47,6 +47,51 @@ const StockPage = () => {
           {/* ------- */}
         </S.StockInfoBottom>
       </S.StockInfoContainer>
+
+      <S.StockOutlineContainer>
+        <S.StockOutline>
+          <S.StockOutlineLeft>
+            <S.Title>삼성전자 | 주식 개요</S.Title>
+            <S.Content>
+              한국 및 DX부문 해외 9개 지역총괄과 DS부문 해외 5개 지역총괄, SDC,
+              Harman 등 229개의 종속기업으로 구성된 글로벌 전자기업임.
+            </S.Content>
+          </S.StockOutlineLeft>
+          <S.StockOutlineRight>
+            {/* 아이템 하나 */}
+            <S.StockOutlineItem>
+              <S.StockOutlineTitle>eps</S.StockOutlineTitle>
+              <S.StockOutlineContent>4,359원</S.StockOutlineContent>
+            </S.StockOutlineItem>
+            {/* ------- */}
+            {/* 아이템 하나 */}
+            <S.StockOutlineItem>
+              <S.StockOutlineTitle>pbr</S.StockOutlineTitle>
+              <S.StockOutlineContent>1.01배</S.StockOutlineContent>
+            </S.StockOutlineItem>
+            {/* ------- */}
+            {/* 아이템 하나 */}
+            <S.StockOutlineItem>
+              <S.StockOutlineTitle>bps</S.StockOutlineTitle>
+              <S.StockOutlineContent>57,981원</S.StockOutlineContent>
+            </S.StockOutlineItem>
+            {/* ------- */}
+            {/* 아이템 하나 */}
+            <S.StockOutlineItem>
+              <S.StockOutlineTitle>배당수익률</S.StockOutlineTitle>
+              <S.StockOutlineContent>2.47%</S.StockOutlineContent>
+            </S.StockOutlineItem>
+            {/* ------- */}
+            {/* 아이템 하나 */}
+            <S.StockOutlineItem>
+              <S.StockOutlineTitle>동일업종 PER</S.StockOutlineTitle>
+              <S.StockOutlineContent>89.80배</S.StockOutlineContent>
+            </S.StockOutlineItem>
+            {/* ------- */}
+          </S.StockOutlineRight>
+        </S.StockOutline>
+        <S.StockSnowflake>O</S.StockSnowflake>
+      </S.StockOutlineContainer>
     </S.StockPageContainer>
   );
 };

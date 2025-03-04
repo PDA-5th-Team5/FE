@@ -4,6 +4,7 @@ export const StockPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 80px 0;
+  gap: 60px;
 `;
 
 export const StockInfoContainer = styled.div`
@@ -94,4 +95,69 @@ export const StockInfoContent = styled.div`
 export const StockInfoNum = styled.div<{ $isPositive: boolean }>`
   color: ${({ $isPositive }) => ($isPositive ? "#E74142" : "#2D7AFF")};
   font-size: 20px;
+`;
+
+// 주식 개요
+export const StockOutlineContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const StockOutline = styled.div`
+  display: flex;
+  width: 888px;
+  height: 242px;
+  border-radius: 8px;
+  background: #1b212d;
+  padding: 32px 44px;
+  box-sizing: border-box;
+  justify-content: space-between;
+`;
+
+export const StockOutlineLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+`;
+
+export const Title = styled.div`
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+`;
+
+export const Content = styled.div`
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 28px;
+  width: 500px;
+`;
+
+export const StockOutlineRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+export const StockOutlineItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+`;
+
+export const StockOutlineTitle = styled.div`
+  color: #c8c9cb;
+  font-size: 16px;
+`;
+
+export const StockOutlineContent = styled.div`
+  color: #fff;
+  font-size: 16px;
+`;
+
+export const StockSnowflake = styled.div`
+  background-color: pink;
+  width: 242px;
+  height: 242px;
 `;
