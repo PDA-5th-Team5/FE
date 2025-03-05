@@ -3,6 +3,7 @@ import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import { CommentsData } from "../../types/commentTypes";
+import CandleChart from "./components/CandleChart";
 
 const StockPage = () => {
   const commentsData: CommentsData = {
@@ -120,6 +121,7 @@ const StockPage = () => {
           <S.Title>캔들차트</S.Title>
           <S.SubTitle>* 일봉 기준</S.SubTitle>
         </S.TitleWrapper>
+        <CandleChart />
       </S.StockCandleChart>
 
       <S.StockCompetitor>

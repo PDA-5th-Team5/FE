@@ -164,17 +164,20 @@ export const StockSnowflake = styled.div`
 
 // 캔들차트
 export const StockCandleChart = styled.div`
-  height: 642px;
+  height: 613px;
   border-radius: 8px;
   background: #1b212d;
   padding: 32px 44px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const TitleWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 48px;
 `;
 
 export const SubTitle = styled.div`
