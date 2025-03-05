@@ -3,7 +3,8 @@ import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import { CommentsData } from "../../types/commentTypes";
-import CandleChart from "./components/CandleChart";
+import CandleChart from "./components/candleChart/CandleChart";
+import LineGraph from "./components/lineGraph/LineGrpah";
 
 const StockPage = () => {
   const commentsData: CommentsData = {
@@ -130,6 +131,7 @@ const StockPage = () => {
 
       <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
+        <LineGraph />
       </S.StockLineGraph>
 
       <S.StockComments>
