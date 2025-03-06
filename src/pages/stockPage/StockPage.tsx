@@ -7,7 +7,12 @@ import CandleChart from "./components/candleChart/CandleChart";
 import LineGraph from "./components/lineGraph/LineGrpah";
 import { useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
-import { SnowflakeSElements } from "../../types/snowflakeTypes";
+import {
+  Item,
+  labelMapping,
+  SnowflakeSElements,
+} from "../../types/snowflakeTypes";
+import StockSnowflake from "../../components/snowflake/StockSnowflake";
 
 export interface StockDataType {
   status: number;
@@ -74,6 +79,20 @@ const commentsData: CommentsData = {
 
 const StockPage = () => {
   const [stockData, setStockData] = useState<StockDataType>(dummyStockData);
+
+  const snowflakeItems: Item[] = stockData.data.snowflakeS
+    ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
+        key,
+        label: labelMapping[key] ?? key,
+        D2Value: values,
+        D1Value: values,
+      }))
+    : [];
+
+  // 각 주식의 스노우플레이크 요소의 키 목록
+  const snowflakeSelectedKeys: string[] = stockData.data.snowflakeS
+    ? Object.keys(stockData.data.snowflakeS)
+    : [];
 
   const handleToggleBookmark = (stockId: number, newState: boolean) => {
     setStockData((prevData) => ({
@@ -207,7 +226,14 @@ const StockPage = () => {
             {/* ------- */}
           </S.StockOutlineRight>
         </S.StockOutline>
-        <S.StockSnowflake>O</S.StockSnowflake>
+        <S.StockSnowflake>
+          <StockSnowflake
+            allItems={snowflakeItems}
+            selectedKeys={snowflakeSelectedKeys}
+            showLabels={true}
+            fontSize={12}
+          />
+        </S.StockSnowflake>
       </S.StockOutlineContainer>
 
       <S.StockCandleChart>

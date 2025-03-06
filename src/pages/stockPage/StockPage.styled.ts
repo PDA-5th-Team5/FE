@@ -155,9 +155,8 @@ export const StockOutlineContent = styled.div`
 `;
 
 export const StockSnowflake = styled.div`
-  background-color: pink;
-  width: 242px;
-  height: 242px;
+  width: 300px;
+  /* height: 260px; */
 `;
 
 // 캔들차트
