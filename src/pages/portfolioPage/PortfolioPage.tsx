@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Item } from "../../types/snowflakeTypes";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
+import LineGraph from "../../components/lineGraph/LineGraph";
 
 // 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
 const dummyPortfolioResponse = {
@@ -87,6 +88,23 @@ const portfolioSnowflakeData = {
       market: "코스피",
       sectors: ["반도체", "바이오"],
     },
+  },
+};
+
+const lineGraphData = {
+  status: 200,
+  message: "성공입니다.",
+  data: {
+    lineGraph: [
+      {
+        market: "KOSDAQ",
+        price: { "20230101": 53000, "20230102": 54001 },
+      },
+      {
+        portfolioTitle: "myPortfolio",
+        avgClosePrice: { "20230101": 54200, "20230102": 39440 },
+      },
+    ],
   },
 };
 
@@ -179,6 +197,7 @@ const PortfolioPage = () => {
             <S.PortfolioContentTitle>
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
+            <LineGraph data={lineGraphData} />
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
 
