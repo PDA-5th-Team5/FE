@@ -3,7 +3,7 @@ import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
-import LineGraph from "./components/lineGraph/LineGrpah";
+import LineGraph from "../../components/lineGraph/LineGraph";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 import {
@@ -12,7 +12,12 @@ import {
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
-import { commentsData, dummyCompetitors, dummyStockData } from "./dummy";
+import {
+  commentsData,
+  dummyCompetitors,
+  dummyStockData,
+  stockLineGraph,
+} from "./dummy";
 
 export interface StockDataType {
   status: number;
@@ -237,7 +242,7 @@ const StockPage = () => {
 
       <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
-        <LineGraph />
+        <LineGraph data={stockLineGraph} />
       </S.StockLineGraph>
 
       <S.StockComments>

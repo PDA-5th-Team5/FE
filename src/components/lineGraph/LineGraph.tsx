@@ -1,4 +1,3 @@
-import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,8 +11,6 @@ import {
   TimeScale,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
-import { apiResponse } from "./data";
-import { Cursor } from "react-financial-charts";
 
 ChartJS.register(
   CategoryScale,
@@ -26,19 +23,25 @@ ChartJS.register(
   TimeScale
 );
 
-type MarketData = {
-  market: string;
-  price?: { [key: string]: number };
-  closePrice?: { [key: string]: number };
-};
+interface LineGraphItem {
+  market?: string;
+  portfolioTitle?: string;
+  price?: { [date: string]: number };
+  closePrice?: { [date: string]: number };
+  avgClosePrice?: { [date: string]: number };
+}
 
-type LineGraphData = {
+interface LineGraphData {
   status: number;
   message: string;
   data: {
-    lineGraph: MarketData[];
+    lineGraph: LineGraphItem[];
   };
-};
+}
+
+interface LineGraphProps {
+  data: LineGraphData;
+}
 
 // YYYYMMDD 문자열을 Date 객체로 변환하는 함수
 const convertDate = (dateStr: string): Date => {
@@ -48,16 +51,25 @@ const convertDate = (dateStr: string): Date => {
   return new Date(year, month, day);
 };
 
-const ChartComponent: React.FC = () => {
-  // 각 시장별 데이터를 처리하여 chart.js의 dataset 형식으로 변환
-  const datasets = apiResponse.data.lineGraph.map((item) => {
-    const key = item.price ? "price" : "closePrice";
-    const dataPoints = Object.entries(item[key] || {})
-      .map(([dateStr, value]) => ({
-        x: convertDate(dateStr),
-        y: value,
-      }))
-      .sort((a, b) => a.x.getTime() - b.x.getTime());
+const LineGraph = ({ data }: LineGraphProps) => {
+  const datasets = data.data.lineGraph.map((item) => {
+    let key: keyof LineGraphItem | "" = "";
+    if (item.price) {
+      key = "price";
+    } else if (item.avgClosePrice) {
+      key = "avgClosePrice";
+    } else if (item.closePrice) {
+      key = "closePrice";
+    }
+
+    const dataPoints = key
+      ? Object.entries(item[key] || {})
+          .map(([dateStr, value]) => ({
+            x: convertDate(dateStr),
+            y: value,
+          }))
+          .sort((a, b) => a.x.getTime() - b.x.getTime())
+      : [];
 
     let borderColor;
     let customLabel;
@@ -67,7 +79,7 @@ const ChartComponent: React.FC = () => {
       borderColor = "#E5B443";
     } else {
       borderColor = "#63C685";
-      customLabel = "종가";
+      customLabel = item.avgClosePrice ? "종가 평균" : "종가";
     }
 
     return {
@@ -101,7 +113,6 @@ const ChartComponent: React.FC = () => {
       dragData: false,
       legend: {
         labels: {
-          // 항목 간 간격
           padding: 40,
         },
       },
@@ -115,4 +126,4 @@ const ChartComponent: React.FC = () => {
   return <Line data={chartData} options={options} />;
 };
 
-export default ChartComponent;
+export default LineGraph;
