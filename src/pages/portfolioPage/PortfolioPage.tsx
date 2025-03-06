@@ -2,8 +2,6 @@ import * as S from "./PortfolioPage.styled";
 import StockResult, {
   StockResultData,
 } from "../../components/stock/result/StockResult";
-import { useState } from "react";
-import { Item } from "../../types/snowflakeTypes";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
@@ -113,8 +111,6 @@ const PortfolioPage = () => {
   const dummyPortfolioItems = transformElementsToItems(
     portfolioSnowflakeData.data.snowflakeP.elements
   );
-  const [allPortfolioItems, setAllPortfolioItems] =
-    useState<Item[]>(dummyPortfolioItems);
 
   // 여기서는 모든 키를 선택한 상태로 가정
   const selectedPortfolioKeys = dummyPortfolioItems.map((item) => item.key);
@@ -208,7 +204,7 @@ const PortfolioPage = () => {
           <S.PortfolioContentSnowflake>
             <S.PortfolioContentSnowflakeWrapper>
               <PortfolioSnowflake
-                allItems={allPortfolioItems}
+                allItems={dummyPortfolioItems}
                 selectedKeys={selectedPortfolioKeys}
                 showLabels={true}
               />

@@ -10,7 +10,7 @@ interface CommentListProps {
 const CommentList = ({ commentsData }: CommentListProps) => {
   const { commentsCnt, comments } = commentsData;
   // 임시
-  const [userId, setUserId] = useState(1);
+  const userId = 1;
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   const handleToggleDropdown = (commentId: number) => {

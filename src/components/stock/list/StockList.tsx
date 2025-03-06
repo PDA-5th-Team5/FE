@@ -11,7 +11,7 @@ export interface StockProps {
   onToggleBookmark: (stockId: number, newState: boolean) => void;
 }
 
-const StockList = ({ stocks, setStocks, onToggleBookmark }: StockProps) => {
+const StockList = ({ stocks, onToggleBookmark }: StockProps) => {
   const navigate = useNavigate();
 
   const handleRowClick = (id: number) => {

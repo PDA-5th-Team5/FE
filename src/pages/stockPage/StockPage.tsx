@@ -50,6 +50,8 @@ const StockPage = () => {
     : [];
 
   const handleToggleBookmark = (stockId: number, newState: boolean) => {
+    console.log(stockId);
+
     setStockData((prevData) => ({
       ...prevData,
       data: {
