@@ -10,9 +10,7 @@ const GridContainer = styled.div`
   gap: 40px;
 `;
 
-const StockGrid = ({ stocks, setStocks }: StockProps) => {
-  console.log("stocks", stocks);
-
+const StockGrid = ({ stocks, setStocks, onToggleBookmark }: StockProps) => {
   return (
     <GridContainer>
       {stocks.map((stock) => {
@@ -39,6 +37,7 @@ const StockGrid = ({ stocks, setStocks }: StockProps) => {
             setStocks={setStocks}
             allItems={snowflakeItems}
             selectedKeys={snowflakeSelectedKeys}
+            onToggleBookmark={onToggleBookmark}
           />
         );
       })}

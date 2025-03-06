@@ -11,16 +11,18 @@ export interface StockCardProps {
   setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
   allItems: Item[];
   selectedKeys: string[];
+  onToggleBookmark: (stockId: number, newState: boolean) => void;
 }
 
 const StockCard = ({
   stock,
-  stocks,
-  setStocks,
+
   allItems,
   selectedKeys,
+  onToggleBookmark,
 }: StockCardProps) => {
   const bgColor = getRandomColor(stock.stockId);
+
   return (
     <S.CardContainer to={`/stock/${stock.stockId}`} bgColor={bgColor}>
       <S.CardHeader>
@@ -32,8 +34,8 @@ const StockCard = ({
         <S.CardHeaderRight>
           <Bookmark
             stockId={stock.stockId}
-            stocks={stocks}
-            setStocks={setStocks}
+            isBookmarked={stock.isBookmark}
+            onToggleBookmark={onToggleBookmark}
           />
         </S.CardHeaderRight>
       </S.CardHeader>

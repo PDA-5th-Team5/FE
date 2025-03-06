@@ -17,3 +17,23 @@ export interface Stock {
   snowflakeS?: SnowflakeS;
   snowflakeP?: SnowflakeP;
 }
+
+export interface StockDetail {
+  stockId: number;
+  ticker: string;
+  companyName: string;
+  marketType: string;
+  currentPrice: number;
+  marketCap: number;
+  "1WeekProfitRate": number;
+  "1YearProfitRate": number;
+  companyOverview: string;
+  sector: string;
+  eps: number;
+  pbr: number;
+  bps: number;
+  dividendYeild: number;
+  sectorAveragePer: number;
+  isBookmark: boolean;
+  snowflakeS?: SnowflakeS;
+}

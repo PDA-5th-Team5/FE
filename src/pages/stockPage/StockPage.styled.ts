@@ -68,9 +68,7 @@ export const StockInfoTicker = styled.div`
   font-size: 16px;
 `;
 
-export const StockInfoRight = styled.div`
-  background-color: pink;
-`;
+export const StockInfoRight = styled.div``;
 
 export const StockInfoBottom = styled.div`
   display: flex;

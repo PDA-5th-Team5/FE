@@ -180,6 +180,15 @@ const MyPage = () => {
       ? stockComments.comments
       : portfolioComments.comments;
 
+  // 북마크 토글 상태 업데이트 함수
+  const handleToggleBookmark = (stockId: number, newState: boolean) => {
+    setStocks((prevStocks) =>
+      prevStocks.map((stock) =>
+        stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
+      )
+    );
+  };
+
   return (
     <S.MyPageContainer>
       {/* 왼쪽 사이드바 */}
@@ -238,7 +247,11 @@ const MyPage = () => {
               <S.SectionCnt>12개</S.SectionCnt>
             </S.SectionTitleWrapper>
             <S.SectionGrid>
-              <StockGrid stocks={stocks} setStocks={setStocks} />
+              <StockGrid
+                stocks={stocks}
+                setStocks={setStocks}
+                onToggleBookmark={handleToggleBookmark}
+              />
             </S.SectionGrid>
           </>
         )}
