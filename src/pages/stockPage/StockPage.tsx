@@ -2,7 +2,6 @@ import Bookmark from "../../components/bookmark/Bookmark";
 import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
-import { CommentsData } from "../../types/commentTypes";
 import CandleChart from "./components/candleChart/CandleChart";
 import LineGraph from "./components/lineGraph/LineGrpah";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import {
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
+import { commentsData, dummyCompetitors, dummyStockData } from "./dummy";
 
 export interface StockDataType {
   status: number;
@@ -22,61 +22,6 @@ export interface StockDataType {
     snowflakeS: SnowflakeSElements;
   };
 }
-
-// 주식 더미
-const dummyStockData: StockDataType = {
-  status: 200,
-  message: "성공입니다.",
-  data: {
-    stockInfo: {
-      stockId: 24,
-      ticker: "005930",
-      companyName: "덴티움",
-      marketType: "KOSPI",
-      currentPrice: 12345,
-      marketCap: 5,
-      sector: "건강관리장비와용품",
-      companyOverview:
-        "동사는 2000년 설립되어 임플란트 제품을 주력으로 치과용 의료기기 및 생체재료를 Total Solution으로 개발, 생산, 판매하고 있음. 임플란트 전체 치료 과정 Package 판매 확대를 통해 매출 성장과 수익성을 확대해 나가고 있음. 동남아시아 등 해외시장에 적극적인 투자를 통한 성장동력 확보와 유통경로 다각화, 영업력 강화를 통해 지속적인 성장과 높은 수익성을 달성할 계획임.동사는 2000년 설립되어 임플란트 제품을 주력으로 치과용 의료기기 및 생체재료를 Total Solution으로 개발, 생산, 판매하고 있음. 임플란트 전체 치료 과정 Package 판매 확대를 통해 매출 성장과 수익성을 확대해 나가고 있음. 동남아시아 등 해외시장에 적극적인 투자를 통한 성장동력 확보와 유통경로 다각화, 영업력 강화를 통해 지속적인 성장과 높은 수익성을 달성할 계획임.",
-
-      eps: 8720.0,
-      bps: 43695.0,
-      pbr: 1.62,
-      "1WeekProfitRate": 1000,
-      "1YearProfitRate": 1000,
-      dividendYeild: 2.47,
-      sectorAveragePer: 89.8,
-      isBookmark: true,
-    },
-    snowflakeS: {
-      per: 15,
-      lbltRate: 2,
-      marketCap: 11,
-      divYield: 4,
-      foreignerRatio: 8,
-    },
-  },
-};
-// 댓글 더미
-const commentsData: CommentsData = {
-  commentsCnt: 12,
-  comments: [
-    {
-      commentId: 1,
-      nickname: "김도은",
-      userId: 2,
-      content: "댓글내용 1",
-      date: "2024.02.18",
-    },
-    {
-      commentId: 2,
-      nickname: "이수용",
-      userId: 1,
-      content: "댓글내용 2",
-      date: "2024.02.18",
-    },
-  ],
-};
 
 const StockPage = () => {
   const [stockData, setStockData] = useState<StockDataType>(dummyStockData);
@@ -108,6 +53,18 @@ const StockPage = () => {
     }));
     // TODO: 추가 로직 (예: API 호출 등)
   };
+
+  const competitorSnowflakeData = dummyCompetitors.map((competitor) => {
+    const items: Item[] = Object.entries(competitor.snowflakeS).map(
+      ([key, value]) => ({
+        key,
+        label: labelMapping[key] ?? key,
+        D1Value: value,
+        D2Value: value,
+      })
+    );
+    return { competitor, items };
+  });
 
   return (
     <S.StockPageContainer>
@@ -247,6 +204,31 @@ const StockPage = () => {
 
       <S.StockCompetitor>
         <S.Title>{stockData.data.stockInfo.companyName} 경쟁사</S.Title>
+        <S.StockCompetitorItemContainer>
+          {competitorSnowflakeData.map(({ competitor, items }, index) => (
+            <S.StockCompetitorItem key={index}>
+              {/* 스노우플레이크 차트 */}
+              <S.StockSnowflakeWrapper>
+                <StockSnowflake
+                  allItems={items}
+                  selectedKeys={items.map((item) => item.key)}
+                  showLabels={true}
+                  fontSize={10}
+                />
+              </S.StockSnowflakeWrapper>
+
+              {/* 회사명 + 티커 */}
+              <S.StockCompetitorNameWrapper>
+                <S.StockCompetitorName>
+                  {competitor.companyName}
+                </S.StockCompetitorName>
+                <S.StockCompetitorTicker>
+                  {competitor.ticker}
+                </S.StockCompetitorTicker>
+              </S.StockCompetitorNameWrapper>
+            </S.StockCompetitorItem>
+          ))}
+        </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
       <S.StockLineGraph>

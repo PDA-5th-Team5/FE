@@ -185,11 +185,49 @@ export const SubTitle = styled.div`
 
 // 경쟁사
 export const StockCompetitor = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   height: 428px;
   border-radius: 8px;
   background: #1b212d;
   padding: 32px 44px;
   box-sizing: border-box;
+`;
+
+export const StockCompetitorItemContainer = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+`;
+
+export const StockCompetitorItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const StockSnowflakeWrapper = styled.div`
+  width: 260px;
+  height: 260px;
+`;
+
+export const StockCompetitorNameWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const StockCompetitorName = styled.div`
+  color: #fff;
+  font-size: 16px;
+`;
+
+export const StockCompetitorTicker = styled.div`
+  color: #c8c9cb;
+  font-size: 16px;
 `;
 
 // 라인그래프

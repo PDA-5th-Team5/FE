@@ -37,3 +37,16 @@ export interface StockDetail {
   isBookmark: boolean;
   snowflakeS?: SnowflakeS;
 }
+
+export interface Competitor {
+  stockId: number;
+  companyName: string;
+  ticker: string;
+  snowflakeS: {
+    per: number;
+    lblt_rate: number;
+    marketCap: number;
+    divYield: number;
+    foreignerRatio: number;
+  };
+}
