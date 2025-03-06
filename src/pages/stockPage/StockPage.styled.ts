@@ -104,7 +104,7 @@ export const StockOutlineContainer = styled.div`
 export const StockOutline = styled.div`
   display: flex;
   width: 888px;
-  height: 242px;
+  min-height: 242px;
   border-radius: 8px;
   background: #1b212d;
   padding: 32px 44px;
@@ -135,7 +135,8 @@ export const Content = styled.div`
 export const StockOutlineRight = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  justify-content: space-evenly;
 `;
 
 export const StockOutlineItem = styled.div`
