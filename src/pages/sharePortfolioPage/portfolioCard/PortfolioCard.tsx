@@ -2,7 +2,6 @@ import * as S from "./PortfolioCard.styled";
 import ImportIcon from "../../../assets/images/icons/import.png";
 import { SharePortfolio } from "../SharePortfolioPage";
 import PortfolioSnowflake from "../../../components/snowflake/PortfolioSnowflake";
-import { useState } from "react";
 import { Item, labelMapping } from "../../../types/snowflakeTypes";
 
 interface PortfolioCardProps {
@@ -10,8 +9,6 @@ interface PortfolioCardProps {
 }
 
 const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
-  console.log(portfolio);
-
   // portfolio.snowflakeP.elements를 이용해 Item 배열 생성
   const portfolioItems: Item[] = portfolio.snowflakeP
     ? Object.entries(portfolio.snowflakeP.elements).map(([key, values]) => ({
@@ -21,9 +18,6 @@ const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
         D1Value: values[1],
       }))
     : [];
-
-  const [allPortfolioItems, setAllPortfolioItems] =
-    useState<Item[]>(portfolioItems);
 
   // 각 주식의 스노우플레이크 요소의 키 목록
   const selectedPortfolioKeys = portfolioItems.map((item) => item.key);
@@ -43,7 +37,7 @@ const PortfolioCard = ({ portfolio }: PortfolioCardProps) => {
           </S.ShortDescription>
           <S.CardImgWrapper>
             <PortfolioSnowflake
-              allItems={allPortfolioItems}
+              allItems={portfolioItems}
               selectedKeys={selectedPortfolioKeys}
               showLabels={true}
               fontSize={10}
