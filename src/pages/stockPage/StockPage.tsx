@@ -4,7 +4,7 @@ import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
 import LineGraph from "./components/lineGraph/LineGrpah";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 import {
   Item,
@@ -25,6 +25,10 @@ export interface StockDataType {
 
 const StockPage = () => {
   const [stockData, setStockData] = useState<StockDataType>(dummyStockData);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const snowflakeItems: Item[] = stockData.data.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
