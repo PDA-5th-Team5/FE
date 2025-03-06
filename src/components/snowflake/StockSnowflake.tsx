@@ -8,12 +8,14 @@ interface SnowflakeProps {
   allItems: Item[];
   selectedKeys: string[];
   showLabels?: boolean;
+  fontSize?: number;
 }
 
 const StockSnowflake: React.FC<SnowflakeProps> = ({
   allItems,
   selectedKeys,
   showLabels,
+  fontSize = 8,
 }) => {
   // 선택된 항목들만 필터링
   const filteredItems = useMemo(() => {
@@ -56,7 +58,7 @@ const StockSnowflake: React.FC<SnowflakeProps> = ({
           },
           pointLabels: {
             font: {
-              size: 8,
+              size: fontSize,
               family: "Pretendard",
             },
             display: showLabels ? true : false,

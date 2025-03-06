@@ -44,6 +44,15 @@ const StockResult = ({ data }: StockResultProps) => {
     setOpenDropdown((prev) => (prev === id ? null : id));
   };
 
+  // 북마크 토글 상태 업데이트 함수
+  const handleToggleBookmark = (stockId: number, newState: boolean) => {
+    setStocks((prevStocks) =>
+      prevStocks.map((stock) =>
+        stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
+      )
+    );
+  };
+
   return (
     <S.StockResultContainer>
       <S.StockResultHeader>
@@ -110,11 +119,19 @@ const StockResult = ({ data }: StockResultProps) => {
 
       {view === "list" ? (
         <>
-          <StockList stocks={stocks} setStocks={setStocks} />
+          <StockList
+            stocks={stocks}
+            setStocks={setStocks}
+            onToggleBookmark={handleToggleBookmark}
+          />
         </>
       ) : (
         <>
-          <StockGrid stocks={stocks} setStocks={setStocks} />
+          <StockGrid
+            stocks={stocks}
+            setStocks={setStocks}
+            onToggleBookmark={handleToggleBookmark}
+          />
         </>
       )}
     </S.StockResultContainer>
