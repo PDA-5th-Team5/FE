@@ -1,6 +1,6 @@
 import "chartjs-plugin-dragdata";
 import "chart.js/auto";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Radar } from "react-chartjs-2";
 import { DrawGridOnTop } from "./DrawGridOnTop";
 
@@ -139,7 +139,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
       plugins: {
         dragData: {
           onDrag: (
-            event: any,
+            _event: any,
             datasetIndex: number,
             index: number,
             value: number | null
