@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 import "chartjs-adapter-date-fns";
 import { apiResponse } from "./data";
+import { Cursor } from "react-financial-charts";
 
 ChartJS.register(
   CategoryScale,
@@ -59,16 +60,18 @@ const ChartComponent: React.FC = () => {
       .sort((a, b) => a.x.getTime() - b.x.getTime());
 
     let borderColor;
+    let customLabel;
     if (item.market === "KOSPI") {
       borderColor = "#D44F48";
     } else if (item.market === "KOSDAQ") {
       borderColor = "#E5B443";
     } else {
       borderColor = "#63C685";
+      customLabel = "종가";
     }
 
     return {
-      label: item.market,
+      label: customLabel ?? item.market,
       data: dataPoints,
       fill: false,
       borderColor,
@@ -96,6 +99,12 @@ const ChartComponent: React.FC = () => {
     },
     plugins: {
       dragData: false,
+      legend: {
+        labels: {
+          // 항목 간 간격
+          padding: 40,
+        },
+      },
     },
   };
 
