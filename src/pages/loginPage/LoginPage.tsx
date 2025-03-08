@@ -25,7 +25,7 @@ const LogoWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 59px;
-  margin-bottom: 44px;
+  margin-bottom: 88px;
 `;
 
 // 폼 전체 감싸는 컨테이너
@@ -78,12 +78,14 @@ const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-top: 186px;
 `;
 
 // '로그인' 텍스트 버튼(링크) 스타일
 const LoginLink = styled.div`
   font-size: 14px;
   color: #878f9a; /* 스크린샷과 유사한 회색 톤 (원하는 색상으로 변경) */
+  font-family: "Pretendard";
   cursor: pointer;
 
   /* '>' 기호를 자동으로 붙이기 위해 ::after 사용 */
@@ -138,20 +140,10 @@ const SignUpPage = () => {
             />
           </FormField>
 
-          <FormField>
-            <FormLabel>이메일</FormLabel>
-            <FormInput placeholder="ex. abc@email.com" />
-          </FormField>
-
-          <FormField>
-            <FormLabel>닉네임</FormLabel>
-            <FormInput placeholder="10자 이내로 입력해주세요" />
-          </FormField>
-
           <ButtonWrapper>
             {/* 로그인 가기 버튼 */}
             <LoginWrapper>
-              <LoginLink>로그인</LoginLink>
+              <LoginLink>회원가입</LoginLink>
             </LoginWrapper>
 
             {/* 확인 버튼 */}
