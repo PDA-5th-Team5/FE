@@ -10,8 +10,15 @@ import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import StockResult from "../../components/stock/result/StockResult";
-import { PopularPortfolio, popularPortfolioAPI } from "../../apis/portfolio";
-import { error } from "console";
+import {
+  RecommededPortfolio,
+  recommededPortfolioAPI,
+} from "../../apis/portfolio";
+import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
+import {
+  defaultFilterItems,
+  initialSelectedKeys,
+} from "./constants/defaultFilterItems";
 
 //더미데이터
 const dummyStockResponse = {
@@ -94,15 +101,6 @@ const dummyStockResponse = {
   },
 };
 
-// 초기 선택된 필터값
-const initialSelectedKeys = [
-  "시가총액",
-  "PER",
-  "부채비율",
-  "배당수익률",
-  "외국인 보유율",
-];
-
 const MainPage: React.FC = () => {
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
@@ -126,37 +124,7 @@ const MainPage: React.FC = () => {
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
   // 1) 필터 항목
-  const [allItems, setAllItems] = useState([
-    { key: "시가총액", label: "시가총액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액", label: "매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "영업이익", label: "영업이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "당기순이익", label: "당기순이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "ROE", label: "ROE ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "EPS", label: "EPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "PER", label: "PER ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "BPS", label: "BPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액 증가율", label: "매출액 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "순이익 증가율", label: "순이익 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
-    {
-      key: "총자본 순이익률",
-      label: "총자본 순이익률 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-    {
-      key: "영업이익 증가율",
-      label: "영업이익 증가율 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-  ]);
+  const [allItems, setAllItems] = useState(defaultFilterItems);
 
   // 2) 선택된 항목 key 목록
   const [selectedKeys, setSelectedKeys] =
@@ -191,12 +159,13 @@ const MainPage: React.FC = () => {
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
-    PopularPortfolio[]
+    RecommededPortfolio[]
   >([]);
   // const [loading, setLoading] = useState<boolean>(true);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
+    setAllItems(defaultFilterItems);
     setSelectedKeys(initialSelectedKeys);
   };
 
@@ -208,7 +177,7 @@ const MainPage: React.FC = () => {
 
   // [API] 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
   const fetchRecommendedData = (activeTab: string) => {
-    popularPortfolioAPI(activeTab)
+    recommededPortfolioAPI(activeTab)
       .then((data) => {
         setRecommendedPortfolios(data);
       })
@@ -220,6 +189,30 @@ const MainPage: React.FC = () => {
   useEffect(() => {
     fetchRecommendedData(activeTab);
   }, [activeTab]);
+
+  const handleSelectRecommended = (portfolio: RecommededPortfolio) => {
+    const items = transformPortfolioToItems(portfolio.portfolio);
+    setSelectedKeys(items.map((item) => item.label));
+
+    const merged = defaultFilterItems.map((def) => {
+      const found = items.find((it) => it.key === def.key);
+      if (found) {
+        return { ...def, D1Value: found.D1Value, D2Value: found.D2Value };
+      }
+      return def;
+    });
+
+    setAllItems(merged);
+    setSelectedKeys(items.map((item) => item.key));
+
+    if (portfolio.portfolio.market) {
+      setMarketFilter(portfolio.portfolio.market);
+    }
+
+    if (portfolio.portfolio.sector) {
+      setSelectedSectorKeys(portfolio.portfolio.sector);
+    }
+  };
 
   return (
     <S.MainPageContainer>
@@ -284,7 +277,11 @@ const MainPage: React.FC = () => {
           <S.MainPageRecommendedFilterList>
             {recommendedPortfolios.map((item) => {
               return (
-                <RecommendedFilter key={item.sharePortfolioId} data={item} />
+                <RecommendedFilter
+                  key={item.sharePortfolioId}
+                  data={item}
+                  onSelectRecommended={handleSelectRecommended}
+                />
               );
             })}
           </S.MainPageRecommendedFilterList>
@@ -320,7 +317,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={allItems.map((item) => item.key)}
+                  options={defaultFilterItems.map((item) => item.key)}
                   selected={selectedKeys}
                   multiple={true}
                   onChange={(newSelected) => setSelectedKeys(newSelected)}

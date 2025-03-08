@@ -54,7 +54,7 @@ export interface SnowflakeP {
 export interface Item {
   key: string;
   label: string;
-  D1Value?: number;
+  D1Value: number;
   D2Value: number;
 }
 

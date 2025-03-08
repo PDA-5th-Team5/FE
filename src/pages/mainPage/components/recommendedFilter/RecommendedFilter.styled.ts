@@ -12,6 +12,11 @@ export const MainPageRecommendedFilterWrapper = styled.div`
   gap: 16px;
   padding: 14px 20px;
   box-sizing: border-box;
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(40, 50, 64);
+  }
 `;
 
 export const MainPageRecommendedFilterImg = styled.img`

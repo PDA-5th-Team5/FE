@@ -1,19 +1,26 @@
 import * as S from "./RecommendedFilter.styled";
 import ImportIcon from "../../../../assets/images/icons/import.png";
-import { PopularPortfolio } from "../../../../apis/portfolio";
+import { RecommededPortfolio } from "../../../../apis/portfolio";
 import PortfolioSnowflake from "../../../../components/snowflake/PortfolioSnowflake";
 import { transformPortfolioToItems } from "../../../../utils/snowflakeUtils";
 
 interface RecommendedFilterProps {
-  data: PopularPortfolio;
+  data: RecommededPortfolio;
+  onSelectRecommended: (portfolio: RecommededPortfolio) => void;
 }
 
-const RecommendedFilter = ({ data }: RecommendedFilterProps) => {
+const RecommendedFilter = ({
+  data,
+  onSelectRecommended,
+}: RecommendedFilterProps) => {
   const items = transformPortfolioToItems(data.portfolio);
   const selectedKeys = items.map((item) => item.key);
+  const handleClick = () => {
+    onSelectRecommended(data);
+  };
 
   return (
-    <S.MainPageRecommendedFilterWrapper>
+    <S.MainPageRecommendedFilterWrapper onClick={handleClick}>
       <S.PortfolioSnowflakeWrapper>
         <PortfolioSnowflake
           allItems={items}
