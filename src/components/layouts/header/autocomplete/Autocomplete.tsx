@@ -1,158 +1,79 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Stock } from "../../../../types/stockTypes";
-import { autocompleteAPI } from "../../../../apis/stock";
+import { useCallback, useEffect, useRef, useState } from "react";
+import * as S from "./Autocomplete.styled";
+import { autocompleteAPI, AutocompleteStock } from "../../../../apis/stock";
 import SamsungImg from "../../../../assets/images/samsung.png";
+import { useNavigate } from "react-router-dom";
 
-const AutocompleteContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 40px;
-  width: 100%;
-  height: 420px;
-  border-radius: 8px;
-  border: 1px solid #3c4049;
-  background: #1b212d;
-  z-index: 999;
+interface AutocompleteProps {
+  keyword: string;
+}
 
-  overflow-y: auto;
+const Autocomplete = ({ keyword }: AutocompleteProps) => {
+  const navigate = useNavigate();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<AutocompleteStock[]>([]);
 
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
+  const fetchData = useCallback(() => {
+    if (keyword.trim().length === 0) {
+      setData([]);
+      return;
+    }
 
-  &::-webkit-scrollbar-track {
-    background: #272e3b;
-    border-radius: 4px;
-  }
+    autocompleteAPI(keyword)
+      .then((data) => {
+        setData(Array.isArray(data) ? data : []);
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  }, [keyword]);
 
-  &::-webkit-scrollbar-thumb {
-    background: #8b8c90;
-    border-radius: 4px;
-  }
-`;
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-const AutocompleteItem = styled.div`
-  display: flex;
-  gap: 16px;
-  border-bottom: 1px solid #2c313c;
-  padding: 12px 28px;
-  cursor: pointer;
+  // AutocompleteContainer 바깥 클릭 시 목록 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setData([]);
+      }
+    };
 
-  &:hover {
-    background-color: #2d323f;
-  }
-`;
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-const AutocompleteImg = styled.img`
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-`;
+  // data가 비어있으면 아무것도 렌더링하지 않음
+  if (data.length === 0) return null;
 
-const AutocompleteWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-`;
-
-const AutocompleteName = styled.div`
-  color: #fff;
-  font-size: 14px;
-`;
-
-const AutocompleteTicker = styled.div`
-  color: #b8b9ba;
-  font-size: 14px;
-`;
-
-const Autocomplete = () => {
-  const [data, setData] = useState<Stock[]>([
-    {
-      stockId: 1,
-      ticker: "05252",
-      companyName: "삼성전자",
-    },
-    {
-      stockId: 2,
-      ticker: "05252",
-      companyName: "삼성전기",
-    },
-    {
-      stockId: 3,
-      ticker: "05252",
-      companyName: "삼성물산",
-    },
-    {
-      stockId: 1,
-      ticker: "05252",
-      companyName: "삼성전자",
-    },
-    {
-      stockId: 2,
-      ticker: "05252",
-      companyName: "삼성전기",
-    },
-    {
-      stockId: 3,
-      ticker: "05252",
-      companyName: "삼성물산",
-    },
-    {
-      stockId: 1,
-      ticker: "05252",
-      companyName: "삼성전자",
-    },
-    {
-      stockId: 2,
-      ticker: "05252",
-      companyName: "삼성전기",
-    },
-    {
-      stockId: 3,
-      ticker: "05252",
-      companyName: "삼성물산",
-    },
-    {
-      stockId: 1,
-      ticker: "05252",
-      companyName: "삼성전자",
-    },
-    {
-      stockId: 2,
-      ticker: "05252",
-      companyName: "삼성전기",
-    },
-    {
-      stockId: 3,
-      ticker: "05252",
-      companyName: "삼성물산",
-    },
-  ]);
-
-  //   useEffect(() => {
-  //     autocompleteAPI()
-  //       .then((data) => {
-  //         setData(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("API 호출 실패", error);
-  //       });
-  //   }, []);
+  const onClickStock = (id: number) => {
+    setData([]);
+    navigate(`/stock/${id}`);
+  };
 
   return (
-    <AutocompleteContainer>
+    <S.AutocompleteContainer ref={containerRef}>
       {data.map((stock) => (
-        <AutocompleteItem key={stock.stockId}>
-          <AutocompleteImg src={SamsungImg} />
-          <AutocompleteWrapper>
-            <AutocompleteName>{stock.companyName}</AutocompleteName>
-            <AutocompleteTicker>{stock.ticker}</AutocompleteTicker>
-          </AutocompleteWrapper>
-        </AutocompleteItem>
+        <S.AutocompleteItem
+          key={stock.id}
+          onClick={() => {
+            onClickStock(stock.id);
+          }}
+        >
+          <S.AutocompleteImg src={SamsungImg} />
+          <S.AutocompleteWrapper>
+            <S.AutocompleteName>{stock.companyName}</S.AutocompleteName>
+            <S.AutocompleteTicker>{stock.ticker}</S.AutocompleteTicker>
+          </S.AutocompleteWrapper>
+        </S.AutocompleteItem>
       ))}
-    </AutocompleteContainer>
+    </S.AutocompleteContainer>
   );
 };
 
