@@ -5,14 +5,17 @@ import ArrowDownIcon from "../../../assets/images/icons/arrowDown.png";
 import PersonIcon from "../../../assets/images/icons/person.png";
 import SearchIcon from "../../../assets/images/icons/search.png";
 import { useLocation, useNavigate } from "react-router-dom";
+import Autocomplete from "./autocomplete/Autocomplete";
 
 const Header: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     setUserMenuOpen(false);
+    setKeyword("");
   }, [location]);
 
   const handleUserClick = () => {
@@ -53,8 +56,13 @@ const Header: FC = () => {
           {/* 검색 */}
           <S.HeaderLi>
             <S.HeaderSearchWrapper>
-              <S.HeaderSearch placeholder="종목명 또는 종목코드를 입력하세요" />
+              <S.HeaderSearch
+                placeholder="종목명 또는 종목코드를 입력하세요"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+              />
               <S.HeaderSearchIcon src={SearchIcon} />
+              <Autocomplete keyword={keyword} />
             </S.HeaderSearchWrapper>
           </S.HeaderLi>
           {/* 유저 */}
