@@ -16,3 +16,29 @@ export const autocompleteAPI = async (
   const stocks = response.data.data;
   return Array.isArray(stocks) ? stocks : [];
 };
+
+//댓글 작성
+export interface CommentRequest {
+  content: string;
+}
+
+export const createCommentAPI = async (
+  stockId: number,
+  content: string
+): Promise<APIResponse<null>> => {
+  const response = await stockAPI.post<APIResponse<null>>(
+    `/${stockId}/comments`,
+    content,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'text/plain'
+      },
+      transformRequest: [(data) => {
+        return data;
+      }]
+    }
+  );
+  
+  return response.data;
+};
