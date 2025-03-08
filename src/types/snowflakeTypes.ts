@@ -78,3 +78,29 @@ export const labelMapping: Record<string, string> = {
   divYield: "배당수익률",
   foreignerRatio: "외국인 보유율",
 };
+
+// 새로운 snowflake 타입 - min/max 버전
+export interface Range {
+  min: number;
+  max: number;
+}
+
+export interface SnowflakeItems {
+  bsopPrti?: Range; // 영업이익
+  thtrNtin?: Range; // 당기순이익
+  roeVal?: Range; // ROE (자기자본이익률)
+  cptlNtinRate?: Range; // 총자본 순이익률
+  eps?: Range; // EPS (주당순이익)
+  per?: Range; // PER (주가수익비율)
+  grs?: Range; // 매출액 증가율
+  bsopPrfiInrt?: Range; // 영업이익 증가율
+  ntinInrt?: Range; // 순이익 증가율
+  lbltRate?: Range; // 부채 비율
+  crntRate?: Range; // 유동 비율
+  bps?: Range; // 주당순자산 (BPS)
+  saleAccount?: Range; // 매출액
+  marketCap?: Range; // 시가총액
+  sps?: Range; // 주당매출액 (SPS)
+  divYield?: Range; // 배당수익률
+  foreignerRatio?: Range; // 외국인 보유율
+}
