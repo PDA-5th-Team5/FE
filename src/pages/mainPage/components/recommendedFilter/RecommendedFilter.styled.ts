@@ -39,3 +39,8 @@ export const MainPageRecommendedFilterCnt = styled.div`
   color: #dbdcdd;
   font-size: 12px;
 `;
+
+export const PortfolioSnowflakeWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+`;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./MainPage.styled";
 import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
@@ -10,6 +10,8 @@ import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import StockResult from "../../components/stock/result/StockResult";
+import { PopularPortfolio, popularPortfolioAPI } from "../../apis/portfolio";
+import { error } from "console";
 
 //더미데이터
 const dummyStockResponse = {
@@ -106,7 +108,7 @@ const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("popular");
   const tabItems: TabItem[] = [
     { label: "인기있는 필터", value: "popular" },
-    { label: "유명 투자자 추천필터", value: "investor" },
+    { label: "유명 투자자 추천필터", value: "expert" },
   ];
 
   const handleTabChange = (value: string) => {
@@ -188,6 +190,10 @@ const MainPage: React.FC = () => {
   ];
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
+  const [recommendedPortfolios, setRecommendedPortfolios] = useState<
+    PopularPortfolio[]
+  >([]);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -199,6 +205,21 @@ const MainPage: React.FC = () => {
     setMarketFilter("전체");
     setSelectedSectorKeys([]);
   };
+
+  // [API] 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
+  const fetchRecommendedData = (activeTab: string) => {
+    popularPortfolioAPI(activeTab)
+      .then((data) => {
+        setRecommendedPortfolios(data);
+      })
+      .catch((err) => {
+        console.error("API 호출 실패:", err);
+      });
+  };
+
+  useEffect(() => {
+    fetchRecommendedData(activeTab);
+  }, [activeTab]);
 
   return (
     <S.MainPageContainer>
@@ -261,12 +282,11 @@ const MainPage: React.FC = () => {
 
           {/* 추천 필터 리스트 */}
           <S.MainPageRecommendedFilterList>
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
+            {recommendedPortfolios.map((item) => {
+              return (
+                <RecommendedFilter key={item.sharePortfolioId} data={item} />
+              );
+            })}
           </S.MainPageRecommendedFilterList>
         </S.MainPageTabContainer>
       </S.MainPageBox>

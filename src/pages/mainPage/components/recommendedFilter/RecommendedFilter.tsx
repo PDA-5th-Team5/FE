@@ -1,20 +1,35 @@
 import * as S from "./RecommendedFilter.styled";
-import ExampleImg from "../../../../assets/images/example.png";
 import ImportIcon from "../../../../assets/images/icons/import.png";
+import { PopularPortfolio } from "../../../../apis/portfolio";
+import PortfolioSnowflake from "../../../../components/snowflake/PortfolioSnowflake";
+import { transformPortfolioToItems } from "../../../../utils/snowflakeUtils";
 
-const RecommendedFilter: React.FC = () => {
+interface RecommendedFilterProps {
+  data: PopularPortfolio;
+}
+
+const RecommendedFilter = ({ data }: RecommendedFilterProps) => {
+  const items = transformPortfolioToItems(data.portfolio);
+  const selectedKeys = items.map((item) => item.key);
+
   return (
     <S.MainPageRecommendedFilterWrapper>
-      <S.MainPageRecommendedFilterImg src={ExampleImg} />
+      <S.PortfolioSnowflakeWrapper>
+        <PortfolioSnowflake
+          allItems={items}
+          selectedKeys={selectedKeys}
+          showLabels={false}
+        />
+      </S.PortfolioSnowflakeWrapper>
       <S.MainPageRecommendedFilterInfo>
         <S.MainPageRecommendedFilterTitle>
-          인기있는 필터링 Top10
+          {data.portfolio.title}
         </S.MainPageRecommendedFilterTitle>
 
         <S.MainPageRecommendedFilterCntWrapper>
           <S.MainPageRecommendedFilterCntImg src={ImportIcon} />
           <S.MainPageRecommendedFilterCnt>
-            12,000
+            {data.loadCount}
           </S.MainPageRecommendedFilterCnt>
         </S.MainPageRecommendedFilterCntWrapper>
       </S.MainPageRecommendedFilterInfo>
