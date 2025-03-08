@@ -1,5 +1,7 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
+import { signupAPI } from "../../apis/user";
 
 import styled from "styled-components";
 
@@ -114,7 +116,32 @@ const StyledButton = styled.button`
   }
 `;
 
-const SignUpPage = () => {
+// interface SignupProps {
+//   username: string;
+//   password: string;
+//   email: string;
+//   nickname: string;
+// }
+
+const SignupPage = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
+
+  // 회원가입 확인 핸들러
+  const signupSubmit = () => {
+    signupAPI(username, password, email, nickname)
+      .then((data) => {
+        // 회원가입 성공 200 시, 성공 토스트 메시지
+        // 회원가입 실패 409 시, 아이디 중복 토스트 메시지
+        // 회원가입 실패 500 시, 서버 에러 메시지
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
   return (
     <SignUpPageContainer>
       <SignUpPageBox>
@@ -127,7 +154,11 @@ const SignUpPage = () => {
         <FormWrapper>
           <FormField>
             <FormLabel>아이디</FormLabel>
-            <FormInput placeholder="소문자 + 숫자 조합으로 입력해주세요" />
+            <FormInput
+              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </FormField>
 
           <FormField>
@@ -135,17 +166,27 @@ const SignUpPage = () => {
             <FormInput
               type="password"
               placeholder="8자 이상, 소문자 + 숫자 조합으로 입력해주세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </FormField>
 
           <FormField>
             <FormLabel>이메일</FormLabel>
-            <FormInput placeholder="ex. abc@email.com" />
+            <FormInput
+              placeholder="ex. abc@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </FormField>
 
           <FormField>
             <FormLabel>닉네임</FormLabel>
-            <FormInput placeholder="10자 이내로 입력해주세요" />
+            <FormInput
+              placeholder="10자 이내로 입력해주세요"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+            />
           </FormField>
 
           <ButtonWrapper>
@@ -155,7 +196,7 @@ const SignUpPage = () => {
             </FooterWrapper>
 
             {/* 확인 버튼 */}
-            <StyledButton>확인</StyledButton>
+            <StyledButton onClick={signupSubmit}>확인</StyledButton>
           </ButtonWrapper>
         </FormWrapper>
       </SignUpPageBox>
@@ -163,4 +204,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default SignupPage;
