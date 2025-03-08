@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
 import { signupAPI } from "../../apis/user";
-
 import styled from "styled-components";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUpPageContainer = styled.div`
   display: flex;
@@ -116,13 +117,6 @@ const StyledButton = styled.button`
   }
 `;
 
-// interface SignupProps {
-//   username: string;
-//   password: string;
-//   email: string;
-//   nickname: string;
-// }
-
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -133,12 +127,19 @@ const SignupPage = () => {
   const signupSubmit = () => {
     signupAPI(username, password, email, nickname)
       .then((data) => {
-        // 회원가입 성공 200 시, 성공 토스트 메시지
-        // 회원가입 실패 409 시, 아이디 중복 토스트 메시지
-        // 회원가입 실패 500 시, 서버 에러 메시지
+        if (data.status === 200) {
+          toast.success("회원가입 성공!");
+        } else if (data.status === 409) {
+          toast.error("아이디가 중복됩니다.");
+        } else if (data.status === 500) {
+          toast.error("서버 에러가 발생했습니다.");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
       })
       .catch((error) => {
         console.error("API 호출 실패", error);
+        toast.error("회원가입 요청 중 오류가 발생했습니다.");
       });
   };
 
@@ -200,6 +201,14 @@ const SignupPage = () => {
           </ButtonWrapper>
         </FormWrapper>
       </SignUpPageBox>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </SignUpPageContainer>
   );
 };
