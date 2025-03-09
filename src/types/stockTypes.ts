@@ -1,4 +1,4 @@
-import { SnowflakeP, SnowflakeS } from "./snowflakeTypes";
+import { SnowflakeP, SnowflakeS, SnowflakeSElements } from "./snowflakeTypes";
 
 export interface Stock {
   stockId: number;
@@ -49,4 +49,19 @@ export interface Competitor {
     divYield: number;
     foreignerRatio: number;
   };
+}
+
+export interface FilterStock extends SnowflakeSElements {
+  stockId: number;
+  ticker: string;
+  marketType: "ALL" | "KOSPI" | "KOSDAQ";
+  companyName: string;
+  sector: string;
+  companyOverview: string;
+  snowflakeS: Partial<SnowflakeSElements>;
+  weekRateChange: number;
+  yearRateChange: number;
+  currentPrice: number;
+  changeRate: number;
+  fav: boolean;
 }

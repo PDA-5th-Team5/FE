@@ -9,22 +9,15 @@ import StockGrid from "../grid/StockGrid";
 import SortDropdown from "../../sortDropdown/SortDropdown";
 import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
 import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
-import { Stock } from "../../../types/stockTypes";
-
-export interface StockResultData {
-  stockCnt: number;
-  stockInfos: Stock[];
-  portfolioTitle?: string;
-  portfolioDescription?: string;
-}
+import { FilterStock } from "../../../types/stockTypes";
 
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
-  data: StockResultData;
+  data: FilterStock[];
 }
 
 const StockResult = ({ data }: StockResultProps) => {
-  const [stocks, setStocks] = useState<Stock[]>(data.stockInfos);
+  const [stocks, setStocks] = useState<FilterStock[]>(data);
   const [view, setView] = useState("list");
   const [sortKey, setSortKey] = useState("시가총액");
   const [sortDirection, setSortDirection] = useState("내림차순");
@@ -120,7 +113,7 @@ const StockResult = ({ data }: StockResultProps) => {
       {view === "list" ? (
         <>
           <StockList
-            stocks={stocks}
+            stocks={data}
             setStocks={setStocks}
             onToggleBookmark={handleToggleBookmark}
           />
@@ -128,7 +121,7 @@ const StockResult = ({ data }: StockResultProps) => {
       ) : (
         <>
           <StockGrid
-            stocks={stocks}
+            stocks={data}
             setStocks={setStocks}
             onToggleBookmark={handleToggleBookmark}
           />
