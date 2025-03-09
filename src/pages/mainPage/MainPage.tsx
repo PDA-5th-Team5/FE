@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./MainPage.styled";
 import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
@@ -10,6 +10,18 @@ import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import StockResult from "../../components/stock/result/StockResult";
+import {
+  RecommededPortfolio,
+  recommededPortfolioAPI,
+  saveMyPortfolioAPI,
+} from "../../apis/portfolio";
+import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
+import {
+  defaultFilterItems,
+  initialSelectedKeys,
+} from "./constants/defaultFilterItems";
+import { labelMapping } from "../../types/snowflakeTypes";
+import { useNavigate } from "react-router-dom";
 
 //더미데이터
 const dummyStockResponse = {
@@ -92,21 +104,13 @@ const dummyStockResponse = {
   },
 };
 
-// 초기 선택된 필터값
-const initialSelectedKeys = [
-  "시가총액",
-  "PER",
-  "부채비율",
-  "배당수익률",
-  "외국인 보유율",
-];
-
 const MainPage: React.FC = () => {
+  const navigate = useNavigate();
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
   const tabItems: TabItem[] = [
     { label: "인기있는 필터", value: "popular" },
-    { label: "유명 투자자 추천필터", value: "investor" },
+    { label: "유명 투자자 추천필터", value: "expert" },
   ];
 
   const handleTabChange = (value: string) => {
@@ -119,42 +123,23 @@ const MainPage: React.FC = () => {
   const closeSectorModal = () => setIsSectorModalOpen(false);
 
   // 저장 모달 관리
+  const [portfolioTitle, setPortfolioTitle] = useState("");
+  const [portfolioDesc, setPortfolioDesc] = useState("");
+
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const openSaveModal = () => setIsSaveModalOpen(true);
+  const openSaveModal = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      alert("로그인이 필요합니다");
+      navigate("/login");
+    } else {
+      setIsSaveModalOpen(true);
+    }
+  };
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
   // 1) 필터 항목
-  const [allItems, setAllItems] = useState([
-    { key: "시가총액", label: "시가총액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액", label: "매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "영업이익", label: "영업이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "당기순이익", label: "당기순이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "ROE", label: "ROE ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "EPS", label: "EPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "PER", label: "PER ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "BPS", label: "BPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액 증가율", label: "매출액 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "순이익 증가율", label: "순이익 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
-    {
-      key: "총자본 순이익률",
-      label: "총자본 순이익률 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-    {
-      key: "영업이익 증가율",
-      label: "영업이익 증가율 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-  ]);
+  const [allItems, setAllItems] = useState(defaultFilterItems);
 
   // 2) 선택된 항목 key 목록
   const [selectedKeys, setSelectedKeys] =
@@ -188,9 +173,14 @@ const MainPage: React.FC = () => {
   ];
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
+  const [recommendedPortfolios, setRecommendedPortfolios] = useState<
+    RecommededPortfolio[]
+  >([]);
+  // const [loading, setLoading] = useState<boolean>(true);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
+    setAllItems(defaultFilterItems);
     setSelectedKeys(initialSelectedKeys);
   };
 
@@ -198,6 +188,86 @@ const MainPage: React.FC = () => {
     handleReset();
     setMarketFilter("전체");
     setSelectedSectorKeys([]);
+  };
+
+  // [API] 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
+  const fetchRecommendedData = (activeTab: string) => {
+    recommededPortfolioAPI(activeTab)
+      .then((data) => {
+        setRecommendedPortfolios(data);
+      })
+      .catch((err) => {
+        console.error("API 호출 실패:", err);
+      });
+  };
+
+  useEffect(() => {
+    fetchRecommendedData(activeTab);
+  }, [activeTab]);
+
+  const handleSelectRecommended = (portfolio: RecommededPortfolio) => {
+    const items = transformPortfolioToItems(portfolio.portfolio);
+    setSelectedKeys(items.map((item) => item.label));
+
+    const merged = defaultFilterItems.map((def) => {
+      const found = items.find((it) => it.key === def.key);
+      if (found) {
+        return { ...def, D1Value: found.D1Value, D2Value: found.D2Value };
+      }
+      return def;
+    });
+
+    setAllItems(merged);
+    setSelectedKeys(items.map((item) => item.key));
+
+    if (portfolio.portfolio.market) {
+      setMarketFilter(portfolio.portfolio.market);
+    }
+
+    if (portfolio.portfolio.sector) {
+      setSelectedSectorKeys(portfolio.portfolio.sector);
+    }
+  };
+
+  const handleSavePortfolio = async () => {
+    try {
+      const reverseMapping = Object.entries(labelMapping).reduce(
+        (acc, [eng, kor]) => {
+          acc[kor] = eng;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      // 선택된 항목들의 range 정보를 객체로 생성
+      const selectedMetrics = selectedKeys.reduce(
+        (acc, key) => {
+          const found = allItems.find((item) => item.key === key);
+          if (found) {
+            const englishKey = reverseMapping[key] || key;
+            acc[englishKey] = { min: found.D2Value, max: found.D1Value };
+          }
+          return acc;
+        },
+        {} as Record<string, { min: number; max: number }>
+      );
+
+      const payload = {
+        category: "my",
+        title: portfolioTitle,
+        description: portfolioDesc,
+        market: marketFilter,
+        ...selectedMetrics,
+        sector: selectedSectorKeys,
+      };
+
+      const response = await saveMyPortfolioAPI(payload);
+      alert("저장 성공");
+      // TODO : 나의 포트폴리오 페이지로 연결
+      closeSaveModal();
+    } catch (error) {
+      alert("저장 실패");
+    }
   };
 
   return (
@@ -224,17 +294,25 @@ const MainPage: React.FC = () => {
           onClose={closeSaveModal}
           title="내 포트폴리오로 저장하기"
           confirmText="저장"
-          onCofirm={closeSaveModal}
+          onCofirm={handleSavePortfolio}
         >
           <S.SaveModal>
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 이름</S.SaveModalTitle>
-              <S.SaveModalInput placeholder="20자 이내로 작성해주세요" />
+              <S.SaveModalInput
+                placeholder="20자 이내로 작성해주세요"
+                value={portfolioTitle}
+                onChange={(e) => setPortfolioTitle(e.target.value)}
+              />
             </S.SaveModalContent>
 
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 설명</S.SaveModalTitle>
-              <S.SaveModalTextArea placeholder="50자 이내로 작성해주세요" />
+              <S.SaveModalTextArea
+                placeholder="50자 이내로 작성해주세요"
+                value={portfolioDesc}
+                onChange={(e) => setPortfolioDesc(e.target.value)}
+              />
             </S.SaveModalContent>
           </S.SaveModal>
         </Modal>
@@ -261,12 +339,15 @@ const MainPage: React.FC = () => {
 
           {/* 추천 필터 리스트 */}
           <S.MainPageRecommendedFilterList>
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
+            {recommendedPortfolios.map((item) => {
+              return (
+                <RecommendedFilter
+                  key={item.sharePortfolioId}
+                  data={item}
+                  onSelectRecommended={handleSelectRecommended}
+                />
+              );
+            })}
           </S.MainPageRecommendedFilterList>
         </S.MainPageTabContainer>
       </S.MainPageBox>
@@ -300,7 +381,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={allItems.map((item) => item.key)}
+                  options={defaultFilterItems.map((item) => item.key)}
                   selected={selectedKeys}
                   multiple={true}
                   onChange={(newSelected) => setSelectedKeys(newSelected)}
