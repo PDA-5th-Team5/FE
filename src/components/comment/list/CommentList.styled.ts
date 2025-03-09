@@ -85,3 +85,8 @@ export const MoreDropdownItem = styled.div`
     background: #f2f2f3;
   }
 `;
+export const NoComments = styled.div`
+  color: #8d9197;
+  padding: 20px 0;
+  text-align: center;
+`;

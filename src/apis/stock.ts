@@ -42,3 +42,52 @@ export const createCommentAPI = async (
   
   return response.data;
 };
+
+// 댓글 조회 API
+export interface Comment {
+  commentId: number;
+  nickname: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  stockId: number;
+  userId: string;
+}
+
+export interface CommentsResponse {
+  commentCnt: number;
+  comments: Comment[];
+}
+
+export const getCommentsAPI = async (
+  stockId: number,
+  page: number = 1,
+  size: number = 10
+): Promise<CommentsResponse> => {
+  const response = await stockAPI.get<APIResponse<CommentsResponse>>(
+    `/${stockId}/comments?page=${page}&size=${size}`
+  );
+  
+  // API 응답 형식에 맞게 데이터 변환
+  return {
+    commentCnt: response.data.data.commentCnt,
+    comments: response.data.data.comments
+  };
+};
+
+// 댓글 삭제 API
+export const deleteCommentAPI = async (
+  stockId: number,
+  commentId: number
+): Promise<APIResponse<null>> => {
+  const response = await stockAPI.delete<APIResponse<null>>(
+    `/${stockId}/comments/${commentId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }
+  );
+  
+  return response.data;
+};
