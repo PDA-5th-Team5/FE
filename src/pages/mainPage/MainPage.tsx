@@ -22,6 +22,7 @@ import {
 } from "./constants/defaultFilterItems";
 import { labelMapping } from "../../types/snowflakeTypes";
 import { useNavigate } from "react-router-dom";
+import { useSectors } from "./hooks/useSectors";
 
 //더미데이터
 const dummyStockResponse = {
@@ -149,28 +150,8 @@ const MainPage: React.FC = () => {
   const [marketFilter, setMarketFilter] = useState<string>("전체");
 
   // 4) 섹터 필터 항목
-  const sectors = [
-    "반도체",
-    "금융",
-    "헬스케어",
-    "자동차",
-    "IT",
-    "에너지",
-    "화학",
-    "바이오",
-    "통신",
-    "유통",
-    "부동산",
-    "소비재",
-    "제약",
-    "건설",
-    "농업",
-    "공업",
-    "전자",
-    "서비스",
-    "교육",
-    "문화",
-  ];
+  const { data: sectorsData } = useSectors();
+  const sectors = sectorsData?.data ?? [];
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<

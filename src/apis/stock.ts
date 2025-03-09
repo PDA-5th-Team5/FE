@@ -91,3 +91,9 @@ export const deleteCommentAPI = async (
   
   return response.data;
 };
+
+// 전체 섹터 조회 API 연결
+export const getSectorsAPI = async (): Promise<APIResponse<string[]>> => {
+  const response = await stockAPI.get<APIResponse<string[]>>("/sectors");
+  return response.data;
+};
