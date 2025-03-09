@@ -1,4 +1,6 @@
 import { APIResponse, stockAPI } from ".";
+import { SnowflakeItems } from "../types/snowflakeTypes";
+import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
 export interface AutocompleteStock {
@@ -89,5 +91,28 @@ export const deleteCommentAPI = async (
     }
   );
   
+  return response.data;
+};
+
+// 전체 섹터 조회 API 연결
+export const getSectorsAPI = async (): Promise<APIResponse<string[]>> => {
+  const response = await stockAPI.get<APIResponse<string[]>>("/sectors");
+  return response.data;
+};
+
+// 조건 검색 결과 조회
+export interface FilterStocksPayload {
+  marketType: "ALL" | "KOSPI" | "KOSDAQ";
+  sector?: string[];
+  filters: Partial<SnowflakeItems>;
+}
+
+export const getFilterStocksAPI = async (
+  payload: FilterStocksPayload
+): Promise<APIResponse<FilterStock[]>> => {
+  const response = await stockAPI.post<APIResponse<FilterStock[]>>(
+    "/filter",
+    payload
+  );
   return response.data;
 };

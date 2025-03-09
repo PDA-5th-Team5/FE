@@ -1,10 +1,16 @@
 import * as S from "./PortfolioPage.styled";
-import StockResult, {
-  StockResultData,
-} from "../../components/stock/result/StockResult";
+import StockResult from "../../components/stock/result/StockResult";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
+import { Stock } from "../../types/stockTypes";
+
+export interface StockResultData {
+  stockCnt: number;
+  stockInfos: Stock[];
+  portfolioTitle?: string;
+  portfolioDescription?: string;
+}
 
 // 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
 const dummyPortfolioResponse = {
@@ -217,7 +223,7 @@ const PortfolioPage = () => {
       </S.PortfolioContent>
 
       <S.PortfolioStock>
-        <StockResult data={stockResultData} />
+        {/* <StockResult data={stockResultData} /> */}
       </S.PortfolioStock>
     </S.PortfolioPageContainer>
   );

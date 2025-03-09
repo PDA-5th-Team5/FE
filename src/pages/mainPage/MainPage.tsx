@@ -22,90 +22,14 @@ import {
 } from "./constants/defaultFilterItems";
 import { labelMapping } from "../../types/snowflakeTypes";
 import { useNavigate } from "react-router-dom";
-
-//더미데이터
-const dummyStockResponse = {
-  status: 201,
-  message: "성공입니다.",
-  data: {
-    stockCnt: 4,
-    stockInfos: [
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 19,
-            thtrNtin: 19,
-            roeVal: 16,
-            cptlNtinRate: 7,
-            eps: 6,
-            per: 18,
-          },
-        },
-        stockId: 1,
-        ticker: "05252",
-        companyName: "삼성전자",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.2,
-        "1WeekFluctuationRate": 7.3,
-        "1YearFluctuationRate": 13.1,
-        marketCap: 4500,
-        per: 13.56,
-        debtRate: 30.49,
-        sector: "반도체",
-        isBookmark: false,
-        description:
-          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-      },
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 19,
-            thtrNtin: 3, // 당기순이익
-            roeVal: 16, // ROE
-          },
-        },
-        stockId: 2,
-        ticker: "013660",
-        companyName: "하이닉스",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.4,
-        "1WeekFluctuationRate": 5.1,
-        "1YearFluctuationRate": 10.0,
-        marketCap: 9000,
-        per: 17.56,
-        debtRate: 33.49,
-        sector: "반도체",
-        isBookmark: false, // 추가
-        description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-      },
-      {
-        snowflakeS: {
-          elements: {
-            thtrNtin: 3, // 당기순이익
-            roeVal: 10, // ROE
-          },
-        },
-        stockId: 3,
-        ticker: "013660",
-        companyName: "하이닉스",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.4,
-        "1WeekFluctuationRate": 5.1,
-        "1YearFluctuationRate": 10.0,
-        marketCap: 9000,
-        per: 17.56,
-        debtRate: 33.49,
-        sector: "반도체",
-        isBookmark: false, // 추가
-        description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-      },
-      // ...추가 주식 데이터
-    ],
-  },
-};
+import { useSectors } from "./hooks/useSectors";
+import { getFilterStocksAPI } from "../../apis/stock";
+import { FilterStock } from "../../types/stockTypes";
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
+
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
   const tabItems: TabItem[] = [
@@ -149,28 +73,8 @@ const MainPage: React.FC = () => {
   const [marketFilter, setMarketFilter] = useState<string>("전체");
 
   // 4) 섹터 필터 항목
-  const sectors = [
-    "반도체",
-    "금융",
-    "헬스케어",
-    "자동차",
-    "IT",
-    "에너지",
-    "화학",
-    "바이오",
-    "통신",
-    "유통",
-    "부동산",
-    "소비재",
-    "제약",
-    "건설",
-    "농업",
-    "공업",
-    "전자",
-    "서비스",
-    "교육",
-    "문화",
-  ];
+  const { data: sectorsData } = useSectors();
+  const sectors = sectorsData?.data ?? [];
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
@@ -231,6 +135,11 @@ const MainPage: React.FC = () => {
 
   const handleSavePortfolio = async () => {
     try {
+      if (!portfolioTitle.trim() || !portfolioDesc.trim()) {
+        alert("포트폴리오 제목과 설명은 필수 입력 사항입니다.");
+        return;
+      }
+
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
           acc[kor] = eng;
@@ -268,6 +177,57 @@ const MainPage: React.FC = () => {
     } catch (error) {
       alert("저장 실패");
     }
+  };
+
+  useEffect(() => {
+    handleFilterStocks();
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
+
+  // [API] 조건 검색 결과 조회
+  const handleFilterStocks = async () => {
+    try {
+      const reverseMapping = Object.entries(labelMapping).reduce(
+        (acc, [eng, kor]) => {
+          acc[kor] = eng;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      // 선택된 필터 항목의 range 정보를 가져와 filters 객체 구성
+      const filters = selectedKeys.reduce(
+        (acc, key) => {
+          const found = allItems.find((item) => item.key === key);
+          if (found) {
+            // reverseMapping을 사용하여 영어 키로 변환
+            const englishKey = reverseMapping[key] || key;
+            acc[englishKey] = { min: found.D2Value, max: found.D1Value };
+          }
+          return acc;
+        },
+        {} as Record<string, { min: number; max: number }>
+      );
+
+      const marketType: "ALL" | "KOSPI" | "KOSDAQ" =
+        marketFilter === "전체" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
+
+      // payload 구성
+      const payload = {
+        marketType,
+        ...(selectedSectorKeys.length > 0 && { sector: selectedSectorKeys }),
+        filters,
+      };
+
+      const response = await getFilterStocksAPI(payload);
+      setFilteredStocks(response.data);
+    } catch (error) {
+      console.error("필터 API 호출 실패:", error);
+    }
+  };
+
+  // 드래그 종료 시점에만 호출할 함수
+  const handleSnowflakeDragEnd = () => {
+    handleFilterStocks();
   };
 
   return (
@@ -363,6 +323,7 @@ const MainPage: React.FC = () => {
                 allItems={allItems}
                 setAllItems={setAllItems}
                 selectedKeys={selectedKeys}
+                onSnowflakeDragEnd={handleSnowflakeDragEnd}
               />
             </S.MainPageSnowflake>
           </S.MainPageSnowflakeWrapper>
@@ -440,7 +401,7 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
 
-      <StockResult data={dummyStockResponse.data} />
+      <StockResult data={filteredStocks} />
     </S.MainPageContainer>
   );
 };
