@@ -231,6 +231,11 @@ const MainPage: React.FC = () => {
 
   const handleSavePortfolio = async () => {
     try {
+      if (!portfolioTitle.trim() || !portfolioDesc.trim()) {
+        alert("포트폴리오 제목과 설명은 필수 입력 사항입니다.");
+        return;
+      }
+
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
           acc[kor] = eng;
