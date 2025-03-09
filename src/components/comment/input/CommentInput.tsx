@@ -45,7 +45,11 @@ const CommentButton = styled.div`
   justify-content: end;
 `;
 
-const CommentInput = () => {
+interface CommentInputProps {
+  onCommentSubmitted?: () => void;
+}
+
+const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams<{ id: string }>();
@@ -80,6 +84,10 @@ const CommentInput = () => {
 
       setContent("");
       alert("댓글이 저장되었습니다.");
+      // 댓글 저장 후 목록 갱신 호출
+      if (onCommentSubmitted) {
+        onCommentSubmitted();
+      }
     } catch (error) {
       console.error("댓글 저장 실패:", error);
       alert("댓글 저장에 실패했습니다. 다시 시도해주세요.");

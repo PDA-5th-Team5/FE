@@ -12,12 +12,7 @@ import {
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
-import {
-  commentsData,
-  dummyCompetitors,
-  dummyStockData,
-  stockLineGraph,
-} from "./dummy";
+import { dummyCompetitors, dummyStockData, stockLineGraph } from "./dummy";
 
 export interface StockDataType {
   status: number;
@@ -248,7 +243,7 @@ const StockPage = () => {
       </S.StockLineGraph>
 
       <S.StockComments>
-        <Comment commentsData={commentsData} />
+        <Comment />
       </S.StockComments>
     </S.StockPageContainer>
   );
