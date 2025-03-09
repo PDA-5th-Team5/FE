@@ -181,7 +181,7 @@ const MainPage: React.FC = () => {
 
   useEffect(() => {
     handleFilterStocks();
-  }, [selectedKeys, marketFilter, selectedSectorKeys, allItems]);
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
 
   // [API] 조건 검색 결과 조회
   const handleFilterStocks = async () => {
@@ -223,6 +223,11 @@ const MainPage: React.FC = () => {
     } catch (error) {
       console.error("필터 API 호출 실패:", error);
     }
+  };
+
+  // 드래그 종료 시점에만 호출할 함수
+  const handleSnowflakeDragEnd = () => {
+    handleFilterStocks();
   };
 
   return (
@@ -318,6 +323,7 @@ const MainPage: React.FC = () => {
                 allItems={allItems}
                 setAllItems={setAllItems}
                 selectedKeys={selectedKeys}
+                onSnowflakeDragEnd={handleSnowflakeDragEnd}
               />
             </S.MainPageSnowflake>
           </S.MainPageSnowflakeWrapper>
