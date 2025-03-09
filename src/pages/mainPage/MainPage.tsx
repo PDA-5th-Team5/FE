@@ -13,12 +13,15 @@ import StockResult from "../../components/stock/result/StockResult";
 import {
   RecommededPortfolio,
   recommededPortfolioAPI,
+  saveMyPortfolioAPI,
 } from "../../apis/portfolio";
 import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import {
   defaultFilterItems,
   initialSelectedKeys,
 } from "./constants/defaultFilterItems";
+import { labelMapping } from "../../types/snowflakeTypes";
+import { useNavigate } from "react-router-dom";
 
 //더미데이터
 const dummyStockResponse = {
@@ -102,6 +105,7 @@ const dummyStockResponse = {
 };
 
 const MainPage: React.FC = () => {
+  const navigate = useNavigate();
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
   const tabItems: TabItem[] = [
@@ -119,8 +123,19 @@ const MainPage: React.FC = () => {
   const closeSectorModal = () => setIsSectorModalOpen(false);
 
   // 저장 모달 관리
+  const [portfolioTitle, setPortfolioTitle] = useState("");
+  const [portfolioDesc, setPortfolioDesc] = useState("");
+
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const openSaveModal = () => setIsSaveModalOpen(true);
+  const openSaveModal = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      alert("로그인이 필요합니다");
+      navigate("/login");
+    } else {
+      setIsSaveModalOpen(true);
+    }
+  };
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
   // 1) 필터 항목
@@ -214,6 +229,47 @@ const MainPage: React.FC = () => {
     }
   };
 
+  const handleSavePortfolio = async () => {
+    try {
+      const reverseMapping = Object.entries(labelMapping).reduce(
+        (acc, [eng, kor]) => {
+          acc[kor] = eng;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      // 선택된 항목들의 range 정보를 객체로 생성
+      const selectedMetrics = selectedKeys.reduce(
+        (acc, key) => {
+          const found = allItems.find((item) => item.key === key);
+          if (found) {
+            const englishKey = reverseMapping[key] || key;
+            acc[englishKey] = { min: found.D2Value, max: found.D1Value };
+          }
+          return acc;
+        },
+        {} as Record<string, { min: number; max: number }>
+      );
+
+      const payload = {
+        category: "my",
+        title: portfolioTitle,
+        description: portfolioDesc,
+        market: marketFilter,
+        ...selectedMetrics,
+        sector: selectedSectorKeys,
+      };
+
+      const response = await saveMyPortfolioAPI(payload);
+      alert("저장 성공");
+      // TODO : 나의 포트폴리오 페이지로 연결
+      closeSaveModal();
+    } catch (error) {
+      alert("저장 실패");
+    }
+  };
+
   return (
     <S.MainPageContainer>
       {/* 섹터 모달 */}
@@ -238,17 +294,25 @@ const MainPage: React.FC = () => {
           onClose={closeSaveModal}
           title="내 포트폴리오로 저장하기"
           confirmText="저장"
-          onCofirm={closeSaveModal}
+          onCofirm={handleSavePortfolio}
         >
           <S.SaveModal>
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 이름</S.SaveModalTitle>
-              <S.SaveModalInput placeholder="20자 이내로 작성해주세요" />
+              <S.SaveModalInput
+                placeholder="20자 이내로 작성해주세요"
+                value={portfolioTitle}
+                onChange={(e) => setPortfolioTitle(e.target.value)}
+              />
             </S.SaveModalContent>
 
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 설명</S.SaveModalTitle>
-              <S.SaveModalTextArea placeholder="50자 이내로 작성해주세요" />
+              <S.SaveModalTextArea
+                placeholder="50자 이내로 작성해주세요"
+                value={portfolioDesc}
+                onChange={(e) => setPortfolioDesc(e.target.value)}
+              />
             </S.SaveModalContent>
           </S.SaveModal>
         </Modal>

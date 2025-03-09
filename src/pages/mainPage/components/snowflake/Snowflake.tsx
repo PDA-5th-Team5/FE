@@ -27,8 +27,6 @@ const Snowflake: React.FC<SnowflakeProps> = ({
     return allItems.filter((item) => selectedKeys.includes(item.key));
   }, [allItems, selectedKeys]);
 
-  console.log(filteredItems);
-
   // 4) 차트에 들어갈 data 객체를 useMemo로 캐싱
   const chartData = useMemo(() => {
     return {
