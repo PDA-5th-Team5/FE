@@ -7,6 +7,11 @@ export interface LoginUser {
   email: string;
 }
 
+export interface UpdateProfileRequest {
+  nickname: string;
+  email: string;
+}
+
 // 회원가입 (POST)
 export const signupAPI = async (
   username: string,
@@ -80,5 +85,17 @@ export const logoutAPI = async (): Promise<APIResponse<null>> => {
   const response = await userAPI.post<APIResponse<null>>("/logout");
 
   // 응답
+  return response.data;
+};
+
+// 프로필 업데이트 (POST)
+export const updateProfileAPI = async (
+  nickname: string,
+  email: string
+): Promise<APIResponse<null>> => {
+  const body: UpdateProfileRequest = { nickname, email };
+
+  const response = await userAPI.patch<APIResponse<null>>("/profile", body);
+
   return response.data;
 };

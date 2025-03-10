@@ -5,8 +5,12 @@ import StockGrid from "../../components/stock/grid/StockGrid";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
 import { Stock } from "../../types/stockTypes";
+import { updateProfileAPI } from "../../apis/user";
+import { toast, ToastContainer } from "react-toastify";
 
 const MyPage = () => {
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
   // 댓글 더미데이터
   const portfolioComments = {
@@ -149,8 +153,26 @@ const MyPage = () => {
   };
 
   const profileEdit = () => {
-    //TODO 프로필 수정 API
-    alert("프로필 변경");
+    updateProfileAPI(nickname, email)
+      .then((data) => {
+        if (data.status === 200) {
+          toast.success("프로필 수정 성공!");
+          localStorage.setItem("nickname", nickname);
+          localStorage.setItem("email", email);
+          setTimeout(() => {
+            window.location.reload();
+            // 또는 react-router-dom 사용 시: navigate(0);
+          }, 1500);
+        } else if (data.status === 400) {
+          toast.error("프로필 수정 실패! 다시 확인해 주세요.");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("API 호출 실패.");
+      });
   };
 
   // 나의 댓글 탭
@@ -223,14 +245,21 @@ const MyPage = () => {
             <S.SectionProfile>
               <S.SectionProfileItem>
                 <S.SectionProfileTitle>닉네임</S.SectionProfileTitle>
-                <S.SectionProfileInput placeholder="이유진" type="text" />
+                <S.SectionProfileInput
+                  placeholder={localStorage.getItem("nickname") || "이유진"}
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                />
               </S.SectionProfileItem>
 
               <S.SectionProfileItem>
                 <S.SectionProfileTitle>이메일</S.SectionProfileTitle>
                 <S.SectionProfileInput
-                  placeholder="abc@naver.com"
+                  placeholder={localStorage.getItem("email") || "abc@naver.com"}
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </S.SectionProfileItem>
               <S.ButtonWrapper>
@@ -284,6 +313,14 @@ const MyPage = () => {
           </>
         )}
       </S.MyPageContent>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </S.MyPageContainer>
   );
 };

@@ -143,6 +143,7 @@ const SignUpPage = () => {
         }
       })
       .catch((error) => {
+        console.error("API 호출 실패", error);
         toast.error("아이디와 비밀번호를 다시 확인해 주세요.");
       });
   };
