@@ -6,6 +6,8 @@ import PersonIcon from "../../../assets/images/icons/person.png";
 import SearchIcon from "../../../assets/images/icons/search.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import Autocomplete from "./autocomplete/Autocomplete";
+import { logoutAPI } from "../../../apis/user";
+import { toast, ToastContainer } from "react-toastify";
 
 const Header: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -28,8 +30,21 @@ const Header: FC = () => {
   };
 
   const handleLogout = () => {
-    // TODO: 로그아웃 로직
-    alert("로그아웃 클릭");
+    logoutAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          navigate("/login"); // 로그아웃 성공 시 로그인 페이지로 이동
+        } else if (data.status === 400) {
+          toast.error("로그아웃 실패!");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("로그아웃 요청 중 오류가 발생했습니다.");
+      });
+
     setUserMenuOpen(false);
   };
 
@@ -83,6 +98,14 @@ const Header: FC = () => {
           </S.HeaderLi>
         </S.HeaderUl>
       </S.HeaderWrapper>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </S.HeaderContainer>
   );
 };

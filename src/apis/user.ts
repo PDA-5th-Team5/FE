@@ -1,4 +1,4 @@
-import { APIResponse, userAPI } from ".";
+import { APIResponse, userAPI, stockAPI, portfolioAPI } from ".";
 
 // 로그인 응답
 export interface LoginUser {
@@ -52,6 +52,23 @@ export const loginAPI = async (
       },
     }
   );
+
+  // local storage와 각 헤더에 Access 토큰 설정
+  // 응답 헤더에서 'Authorization' 추출
+  const accessToken = response.headers["access"];
+  console.log(accessToken);
+
+  if (accessToken) {
+    // 토큰 저장 (예: localStorage 사용)
+    localStorage.setItem("accessToken", accessToken);
+    console.log(accessToken);
+
+    // 모든 axios 인스턴스의 기본 헤더에 토큰 설정
+    stockAPI.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+    portfolioAPI.defaults.headers.common["Authorization"] =
+      `Bearer ${accessToken}`;
+    userAPI.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  }
 
   // 응답
   return response.data;

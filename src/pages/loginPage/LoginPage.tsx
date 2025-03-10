@@ -131,7 +131,7 @@ const SignUpPage = () => {
         if (data.status === 200) {
           // toast.success("로그인 성공!");
           // 로컬스토리지에 저장
-          localStorage.setItem("username", data.data.userId);
+          localStorage.setItem("userId", data.data.userId);
           localStorage.setItem("nickname", data.data.nickname);
           localStorage.setItem("email", data.data.email);
           navigate("/"); // 로그인 성공 시 메인페이지로 이동
