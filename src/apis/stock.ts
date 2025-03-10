@@ -1,5 +1,5 @@
 import { APIResponse, stockAPI } from ".";
-import { SnowflakeItems, SnowflakeS, SnowflakeSElements } from "../types/snowflakeTypes";
+import { SnowflakeItems, SnowflakeS, SnowflakeSElements, SnowflakePElements} from "../types/snowflakeTypes";
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -264,7 +264,6 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
   }
 };
 
-
 //경쟁사 조회 API
 export interface Competitors {
   stockId: number;
@@ -293,3 +292,13 @@ export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsRes
 
 //아래처럼하면 복붙안하고 그냥 import 해서하면됨
 // <SnowflakeS>
+
+// 임계값 조회
+export const getThresholdsAPI = async (): Promise<
+  APIResponse<SnowflakePElements>
+> => {
+  const response =
+    await stockAPI.get<APIResponse<SnowflakePElements>>("/thresholds");
+
+  return response.data;
+};
