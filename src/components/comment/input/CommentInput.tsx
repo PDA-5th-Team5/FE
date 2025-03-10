@@ -56,7 +56,7 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
 
   // 하드코딩된 토큰
   const TOKEN =
-    "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6IjQ0MmQxZDJiLWJmNjEtNDFhOC1iNWRkLWE5YWVjMjk2YWEwNyIsInVzZXJuYW1lIjoiZG9ldW4iLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc0MTQyNDIwMSwiZXhwIjoxNzQzMjM4NjAxfQ.usL6NNlWHn9x8wGbmxqpCMFpwrOJNkA9hhJQYLgzV-A";
+    "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImZlZDU0MzBkLTUyM2QtNDJlNS1iNDUyLTc1MzFmNGNlYjI2ZCIsInVzZXJuYW1lIjoidGVzdDEyMzQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc0MTU4MzYwOCwiZXhwIjoxNzQzMzk4MDA4fQ.sWq9gLDFHFumtEkKNa2dCPV0HikaD9v5ixgjUtMqC80";
 
   const saveComment = async () => {
     if (!content.trim()) {
