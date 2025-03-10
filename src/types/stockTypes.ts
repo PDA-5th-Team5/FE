@@ -33,7 +33,6 @@ export interface StockDetail {
   pbr: number;
   bps: number;
   dividendYeild: number;
-  sectorAveragePer: number;
   isBookmark: boolean;
   snowflakeS?: SnowflakeS;
 }

@@ -12,7 +12,8 @@ import {
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
-import { dummyCompetitors, dummyStockData, stockLineGraph } from "./dummy";
+import { getStockInfo, StockInfoResponse } from "../../apis/stock";
+import { useParams } from "react-router-dom";
 
 export interface StockDataType {
   status: number;
@@ -22,15 +23,84 @@ export interface StockDataType {
     snowflakeS: SnowflakeSElements;
   };
 }
+const dummyCompetitors = [
+  {
+    companyName: "경쟁사1",
+    ticker: "000001",
+    snowflakeS: {
+      per: 15.2,
+      lbltRate: 30.5,
+      marketCap: 10.2,
+      dividendYield: 3.5,
+      foreignerRatio: 25.3,
+    },
+  },
+];
 
+const stockLineGraph = [
+  { date: "2023-01", value: 100 },
+  { date: "2023-02", value: 120 },
+];
 const StockPage = () => {
-  const [stockData, setStockData] = useState<StockDataType>(dummyStockData);
+  const { num } = useParams<{ num: string }>();
+  const stockId = num ? parseInt(num, 10) : 1;
+  console.log(num);
+
+  const [stockData, setStockData] = useState<StockDataType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStockInfo = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await getStockInfo(stockId);
+
+        // API 응답을 StockDataType 형식으로 변환
+        const transformedData: StockDataType = {
+          status: response.status,
+          message: response.message,
+          data: {
+            stockInfo: {
+              ...response.data.stockInfo,
+              marketCap: response.data.snowflakeS.marketCap, // 임시로 매핑
+              "1WeekProfitRate": response.data.stockInfo.weekRateChange * 100,
+              "1YearProfitRate": response.data.stockInfo.yearRateChange * 100,
+              dividendYeild: response.data.snowflakeS.dividendYield || 0,
+
+              isBookmark: response.data.stockInfo.fav,
+            },
+            snowflakeS: {
+              per: response.data.snowflakeS.per,
+              lbltRate: response.data.snowflakeS.lbltRate,
+              marketCap: response.data.snowflakeS.marketCap,
+              divYield: response.data.snowflakeS.dividendYield,
+              foreignerRatio: response.data.snowflakeS.foreignerRatio,
+            },
+          },
+        };
+
+        setStockData(transformedData);
+      } catch (error) {
+        console.error("주식 정보 로딩 실패:", error);
+        setError("주식 정보를 불러오는데 실패했습니다.");
+        // 에러 시 알림 (선택사항)
+        // toast.error("주식 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStockInfo();
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [stockId]);
 
-  const snowflakeItems: Item[] = stockData.data.snowflakeS
+  const snowflakeItems: Item[] = stockData?.data?.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
         key,
         label: labelMapping[key] ?? key,
@@ -40,26 +110,28 @@ const StockPage = () => {
     : [];
 
   // 각 주식의 스노우플레이크 요소의 키 목록
-  const snowflakeSelectedKeys: string[] = stockData.data.snowflakeS
+  const snowflakeSelectedKeys: string[] = stockData?.data?.snowflakeS
     ? Object.keys(stockData.data.snowflakeS)
     : [];
 
-  const handleToggleBookmark = (stockId: number, newState: boolean) => {
-    console.log(stockId);
+  // const handleToggleBookmark = (stockId: number, newState: boolean) => {
+  //   console.log(stockId);
 
-    setStockData((prevData) => ({
-      ...prevData,
-      data: {
-        ...prevData.data,
-        stockInfo: {
-          ...prevData.data.stockInfo,
-          isBookmark: newState,
-        },
-      },
-    }));
-    // TODO: 추가 로직 (예: API 호출 등)
-  };
-
+  //   setStockData((prevData) => ({
+  //     ...prevData,
+  //     data: {
+  //       ...prevData.data,
+  //       stockInfo: {
+  //         ...prevData.data.stockInfo,
+  //         isBookmark: newState,
+  //       },
+  //     },
+  //   }));
+  //   // TODO: 추가 로직 (예: API 호출 등)
+  // };
+  if (isLoading || !stockData) {
+    return <div>로딩 중...</div>;
+  }
   const competitorSnowflakeData = dummyCompetitors.map((competitor) => {
     const items: Item[] = Object.entries(competitor.snowflakeS).map(
       ([key, value]) => ({
@@ -96,11 +168,11 @@ const StockPage = () => {
             </S.StockInfo>
           </S.StockInfoLeft>
           <S.StockInfoRight>
-            <Bookmark
+            {/* <Bookmark
               stockId={stockData.data.stockInfo.stockId}
               isBookmarked={stockData.data.stockInfo.isBookmark}
               onToggleBookmark={handleToggleBookmark}
-            />
+            /> */}
           </S.StockInfoRight>
         </S.StockInfoTop>
         <S.StockInfoBottom>
@@ -108,7 +180,7 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>현재가</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.currentPrice}원
+              {stockData.data.stockInfo.currentPrice.toLocaleString()}원
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
@@ -152,7 +224,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>eps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.eps}원
+                {stockData.data.stockInfo.eps.toLocaleString()}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -168,7 +240,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>bps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.bps}원
+                {stockData.data.stockInfo.bps.toLocaleString()}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -181,12 +253,7 @@ const StockPage = () => {
             </S.StockOutlineItem>
             {/* ------- */}
             {/* 아이템 하나 */}
-            <S.StockOutlineItem>
-              <S.StockOutlineTitle>동일업종 PER</S.StockOutlineTitle>
-              <S.StockOutlineContent>
-                {stockData.data.stockInfo.sectorAveragePer}배
-              </S.StockOutlineContent>
-            </S.StockOutlineItem>
+
             {/* ------- */}
           </S.StockOutlineRight>
         </S.StockOutline>
@@ -237,10 +304,10 @@ const StockPage = () => {
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
-      <S.StockLineGraph>
+      {/* <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
         <LineGraph data={stockLineGraph} />
-      </S.StockLineGraph>
+      </S.StockLineGraph> */}
 
       <S.StockComments>
         <Comment />
