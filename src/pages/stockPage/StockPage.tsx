@@ -65,7 +65,9 @@ const StockPage = () => {
           data: {
             stockInfo: {
               ...response.data.stockInfo,
-              marketCap: response.data.snowflakeS.marketCap, // 임시로 매핑
+              marketCap: (
+                Number(response.data.stockInfo.marketCap) / 10000
+              ).toFixed(2),
               "1WeekProfitRate": response.data.stockInfo.weekRateChange * 100,
               "1YearProfitRate": response.data.stockInfo.yearRateChange * 100,
               dividendYeild: response.data.snowflakeS.dividendYield || 0,

@@ -24,7 +24,7 @@ export interface StockDetail {
   companyName: string;
   marketType: string;
   currentPrice: number;
-  marketCap: number;
+  marketCap: string;
   "1WeekProfitRate": number;
   "1YearProfitRate": number;
   companyOverview: string;
