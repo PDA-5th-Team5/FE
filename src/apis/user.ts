@@ -1,6 +1,6 @@
 import { APIResponse, userAPI } from ".";
 
-// 회원가입
+// 회원가입 (POST)
 export const signupAPI = async (
   username: string,
   password: string,
@@ -25,7 +25,7 @@ export const signupAPI = async (
   return response.data;
 };
 
-// 회원가입
+// 로그인 (POST)
 export const loginAPI = async (
   username: string,
   password: string
@@ -41,6 +41,15 @@ export const loginAPI = async (
       "Content-Type": "multipart/form-data",
     },
   });
+
+  // 응답
+  return response.data;
+};
+
+// 로그아웃 (POST)
+export const logoutAPI = async (): Promise<APIResponse<null>> => {
+  // 요청
+  const response = await userAPI.post<APIResponse<null>>("/logout");
 
   // 응답
   return response.data;

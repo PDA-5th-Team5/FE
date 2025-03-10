@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
 import { loginAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
-
 import styled from "styled-components";
 
 const LoginPageContainer = styled.div`
@@ -122,23 +122,23 @@ const StyledButton = styled.button`
 const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   // 회원가입 확인 핸들러
   const signupSubmit = () => {
     loginAPI(username, password)
       .then((data) => {
         if (data.status === 200) {
-          toast.success("로그인 성공!");
+          // toast.success("로그인 성공!");
+          navigate("/"); // 로그인 성공 시 메인페이지로 이동
         } else if (data.status === 400) {
-          // 이거 http status 응답 자체가 400으로와서 여기 아래까지는 안 들어옴 백에서 200으로 오도록 수정해야함
+          // 이거 http status 응답 자체가 400으로 와서 여기 아래까지는 안 들어옴. 백에서 200으로 오도록 수정해야 함.
           toast.error("로그인 실패! 아이디와 비밀번호를 다시 확인해 주세요.");
         } else {
           toast.error("알 수 없는 오류가 발생했습니다.");
         }
       })
       .catch((error) => {
-        // console.error("API 호출 실패", error);
-        // toast.error("로그인 요청 중 오류가 발생했습니다.");
         toast.error("아이디와 비밀번호를 다시 확인해 주세요.");
       });
   };
