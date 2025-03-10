@@ -180,7 +180,13 @@ const SignUpPage = () => {
           <ButtonWrapper>
             {/* 로그인 가기 버튼 */}
             <LoginWrapper>
-              <LoginLink>회원가입</LoginLink>
+              <LoginLink
+                onClick={() => {
+                  navigate("/signup");
+                }}
+              >
+                회원가입
+              </LoginLink>
             </LoginWrapper>
 
             {/* 확인 버튼 */}

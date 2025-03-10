@@ -5,6 +5,7 @@ import { signupAPI } from "../../apis/user";
 import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const SignUpPageContainer = styled.div`
   display: flex;
@@ -122,6 +123,7 @@ const SignupPage = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
+  const navigate = useNavigate();
 
   // 회원가입 확인 핸들러
   const signupSubmit = () => {
@@ -193,7 +195,13 @@ const SignupPage = () => {
           <ButtonWrapper>
             {/* 로그인 가기 버튼 */}
             <FooterWrapper>
-              <FooterLoginLink>로그인</FooterLoginLink>
+              <FooterLoginLink
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                로그인
+              </FooterLoginLink>
             </FooterWrapper>
 
             {/* 확인 버튼 */}
