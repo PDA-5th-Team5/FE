@@ -7,9 +7,25 @@ export interface LoginUser {
   email: string;
 }
 
+// 프로필 수정 요청 타입
 export interface UpdateProfileRequest {
   nickname: string;
   email: string;
+}
+
+// 댓글 데이터 관련 타입 정의
+export interface Comment {
+  connectId: number;
+  name: string;
+  commentId: number;
+  content: string;
+  date: string;
+}
+
+// 나의 댓글 응답 데이터 타입
+export interface MyCommentsResponseData {
+  commentsS: Comment[]; // 종목에 단 댓글
+  commentsP: Comment[]; // 공유 포트폴리오에 단 댓글
 }
 
 // 회원가입 (POST)
@@ -97,5 +113,14 @@ export const updateProfileAPI = async (
 
   const response = await userAPI.patch<APIResponse<null>>("/profile", body);
 
+  return response.data;
+};
+
+// 나의 댓글 API (GET)
+export const commentsAPI = async (): Promise<
+  APIResponse<MyCommentsResponseData>
+> => {
+  const response =
+    await userAPI.get<APIResponse<MyCommentsResponseData>>("/comments");
   return response.data;
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as S from "./MyPage.styled";
 import Button from "../../components/button/Button";
 import StockGrid from "../../components/stock/grid/StockGrid";
@@ -7,57 +7,59 @@ import { useNavigate } from "react-router-dom";
 import { Stock } from "../../types/stockTypes";
 import { updateProfileAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
+import { Comment } from "../../apis/user";
+import { commentsAPI } from "../../apis/user";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
   // 댓글 더미데이터
-  const portfolioComments = {
-    category: "portfolio",
-    commentsCnt: 8,
-    comments: [
-      {
-        connectId: 1,
-        name: "내 포트폴리오얌",
-        ticker: "005930",
-        commentId: 1,
-        content: "댓글내용",
-        date: "2024.02.18",
-      },
-      {
-        connectId: 2,
-        name: "포트폴리오명은 이거얌",
-        ticker: "005930",
-        commentId: 2,
-        content: "댓글내용2",
-        date: "2024.02.18",
-      },
-    ],
-  };
+  // const portfolioComments = {
+  //   category: "portfolio",
+  //   commentsCnt: 8,
+  //   comments: [
+  //     {
+  //       connectId: 1,
+  //       name: "내 포트폴리오얌",
+  //       ticker: "005930",
+  //       commentId: 1,
+  //       content: "댓글내용",
+  //       date: "2024.02.18",
+  //     },
+  //     {
+  //       connectId: 2,
+  //       name: "포트폴리오명은 이거얌",
+  //       ticker: "005930",
+  //       commentId: 2,
+  //       content: "댓글내용2",
+  //       date: "2024.02.18",
+  //     },
+  //   ],
+  // };
 
-  const stockComments = {
-    category: "stock",
-    commentsCnt: 12,
-    comments: [
-      {
-        connectId: 1,
-        name: "삼성전자",
-        ticker: "005930",
-        commentId: 1,
-        content: "댓글내용",
-        date: "2024.02.18",
-      },
-      {
-        connectId: 2,
-        name: "LG전자",
-        ticker: "005930",
-        commentId: 2,
-        content: "댓글내용2",
-        date: "2024.02.18",
-      },
-    ],
-  };
+  // const stockComments = {
+  //   category: "stock",
+  //   commentsCnt: 12,
+  //   comments: [
+  //     {
+  //       connectId: 1,
+  //       name: "삼성전자",
+  //       ticker: "005930",
+  //       commentId: 1,
+  //       content: "댓글내용",
+  //       date: "2024.02.18",
+  //     },
+  //     {
+  //       connectId: 2,
+  //       name: "LG전자",
+  //       ticker: "005930",
+  //       commentId: 2,
+  //       content: "댓글내용2",
+  //       date: "2024.02.18",
+  //     },
+  //   ],
+  // };
 
   //더미데이터
   const dummyStockResponse = {
@@ -144,9 +146,30 @@ const MyPage = () => {
     dummyStockResponse.data.stockInfos
   );
 
+  // 댓글 상태: 초기엔 빈 배열로 설정
+  const [stockComments, setStockComments] = useState<Comment[]>([]);
+  const [portfolioComments, setPortfolioComments] = useState<Comment[]>([]);
+
   const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
     "profile"
   );
+
+  // MyCommentsAPI 호출: 컴포넌트 마운트 시 댓글 데이터 가져오기
+  useEffect(() => {
+    commentsAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setStockComments(data.data.commentsS);
+          setPortfolioComments(data.data.commentsP);
+        } else {
+          toast.error("댓글 데이터를 불러오지 못했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("댓글 API 호출 에러", error);
+        toast.error("댓글 데이터를 불러오지 못했습니다.");
+      });
+  }, []);
 
   const handleTabClick = (tab: "profile" | "stocks" | "comments") => {
     setActiveTab(tab);
@@ -178,11 +201,8 @@ const MyPage = () => {
   // 나의 댓글 탭
   const [activeCommentTab, setActiveCommentTab] = useState("stock");
   const tabItems: TabItem[] = [
-    { label: `종목(${stockComments.commentsCnt})`, value: "stock" },
-    {
-      label: `포트폴리오(${portfolioComments.commentsCnt})`,
-      value: "portfolio",
-    },
+    { label: `종목(${stockComments.length})`, value: "stock" },
+    { label: `포트폴리오(${portfolioComments.length})`, value: "portfolio" },
   ];
 
   const handleCommentTabClick = (value: string) => {
@@ -198,9 +218,7 @@ const MyPage = () => {
   };
 
   const currentComments =
-    activeCommentTab === "stock"
-      ? stockComments.comments
-      : portfolioComments.comments;
+    activeCommentTab === "stock" ? stockComments : portfolioComments;
 
   // 북마크 토글 상태 업데이트 함수
   const handleToggleBookmark = (stockId: number, newState: boolean) => {
