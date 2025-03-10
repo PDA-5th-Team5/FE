@@ -1,4 +1,4 @@
-import { SnowflakeP, SnowflakeS } from "./snowflakeTypes";
+import { SnowflakeP, SnowflakeS, SnowflakeSElements } from "./snowflakeTypes";
 
 export interface Stock {
   stockId: number;
@@ -24,7 +24,7 @@ export interface StockDetail {
   companyName: string;
   marketType: string;
   currentPrice: number;
-  marketCap: number;
+  marketCap: string;
   "1WeekProfitRate": number;
   "1YearProfitRate": number;
   companyOverview: string;
@@ -33,8 +33,7 @@ export interface StockDetail {
   pbr: number;
   bps: number;
   dividendYeild: number;
-  sectorAveragePer: number;
-  isBookmark: boolean;
+  isBookmark?: boolean;
   snowflakeS?: SnowflakeS;
 }
 
@@ -46,7 +45,24 @@ export interface Competitor {
     per: number;
     lblt_rate: number;
     marketCap: number;
-    divYield: number;
+    dividendYield: number;
     foreignerRatio: number;
   };
+}
+
+export interface FilterStock extends SnowflakeSElements {
+  stockId: number;
+  ticker: string;
+  marketType: "ALL" | "KOSPI" | "KOSDAQ";
+  companyName: string;
+  sector: string;
+  companyOverview: string;
+  snowflakeS: Partial<SnowflakeSElements>;
+  marketCap?: number;
+  lbltRate?: number;
+  weekRateChange: number;
+  yearRateChange: number;
+  currentPrice: number;
+  changeRate: number;
+  fav: boolean;
 }

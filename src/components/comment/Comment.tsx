@@ -1,11 +1,9 @@
+// Comment.tsx
 import styled from "styled-components";
 import CommentInput from "./input/CommentInput";
 import CommentList from "./list/CommentList";
-import { CommentsData } from "../../types/commentTypes";
-
-interface CommentsProps {
-  commentsData: CommentsData;
-}
+import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 const CommentContainer = styled.div`
   display: flex;
@@ -14,11 +12,19 @@ const CommentContainer = styled.div`
   gap: 80px;
 `;
 
-const Comment = ({ commentsData }: CommentsProps) => {
+const Comment = () => {
+  const [refreshComments, setRefreshComments] = useState(false);
+  const { num } = useParams<{ num: string }>();
+
+  // 댓글 등록 후 목록 갱신을 위한 함수
+  const handleCommentSubmitted = () => {
+    setRefreshComments((prev) => !prev);
+  };
+
   return (
     <CommentContainer>
-      <CommentInput />
-      <CommentList commentsData={commentsData} />
+      <CommentInput onCommentSubmitted={handleCommentSubmitted} />
+      <CommentList key={refreshComments ? "refresh" : "initial"} />
     </CommentContainer>
   );
 };

@@ -1,7 +1,9 @@
+import { useState } from "react";
 import styled from "styled-components";
 import PersonIcon from "../../../assets/images/icons/person_gray.png";
 import Button from "../../button/Button";
-
+import { createCommentAPI } from "../../../apis/stock";
+import { useParams } from "react-router-dom";
 const CommentInputContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,9 +45,55 @@ const CommentButton = styled.div`
   justify-content: end;
 `;
 
-const CommentInput = () => {
-  const saveComment = () => {
-    alert("댓글 저장");
+interface CommentInputProps {
+  onCommentSubmitted?: () => void;
+}
+
+const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
+  const [content, setContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { num } = useParams<{ num: string }>();
+
+  // 하드코딩된 토큰
+  const TOKEN =
+    "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImZlZDU0MzBkLTUyM2QtNDJlNS1iNDUyLTc1MzFmNGNlYjI2ZCIsInVzZXJuYW1lIjoidGVzdDEyMzQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc0MTU4MzYwOCwiZXhwIjoxNzQzMzk4MDA4fQ.sWq9gLDFHFumtEkKNa2dCPV0HikaD9v5ixgjUtMqC80";
+
+  const saveComment = async () => {
+    if (!content.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      console.log("URL 파라미터 id:", num);
+      const stockId = num ? parseInt(num, 10) : 1;
+      if (isNaN(stockId)) {
+        console.error("ID 파싱 실패:", num);
+        throw new Error("주식 ID를 변환할 수 없습니다");
+      }
+
+      if (stockId === 0) {
+        throw new Error("유효하지 않은 주식 ID입니다");
+      }
+
+      // 토큰을 localStorage에 저장
+      localStorage.setItem("accessToken", TOKEN);
+
+      await createCommentAPI(stockId, content);
+
+      setContent("");
+      alert("댓글이 저장되었습니다.");
+      // 댓글 저장 후 목록 갱신 호출
+      if (onCommentSubmitted) {
+        onCommentSubmitted();
+      }
+    } catch (error) {
+      console.error("댓글 저장 실패:", error);
+      alert("댓글 저장에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,9 +103,17 @@ const CommentInput = () => {
         <CommentInputName>이유진</CommentInputName>
       </CommentInputHeader>
 
-      <CommentInputTextarea placeholder="포트폴리오에 대한 의견을 나누어 보세요." />
+      <CommentInputTextarea
+        placeholder="주식에 대한 의견을 나누어 보세요."
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
       <CommentButton>
-        <Button text="저장" onClick={saveComment} />
+        <Button
+          text={isLoading ? "저장 중..." : "저장"}
+          onClick={saveComment}
+          //   disabled={isLoading}
+        />
       </CommentButton>
     </CommentInputContainer>
   );

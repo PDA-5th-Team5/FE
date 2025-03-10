@@ -1,10 +1,16 @@
 import * as S from "./PortfolioPage.styled";
-import StockResult, {
-  StockResultData,
-} from "../../components/stock/result/StockResult";
+import StockResult from "../../components/stock/result/StockResult";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
+import { Stock } from "../../types/stockTypes";
+
+export interface StockResultData {
+  stockCnt: number;
+  stockInfos: Stock[];
+  portfolioTitle?: string;
+  portfolioDescription?: string;
+}
 
 // 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
 const dummyPortfolioResponse = {
@@ -21,7 +27,7 @@ const dummyPortfolioResponse = {
             bsopPrti: 19,
             thtrNtin: 3,
             roeVal: 16,
-            cptlNtinRate: 7,
+            pbr: 7,
             eps: 6,
             per: 18,
           },
@@ -48,7 +54,7 @@ const dummyPortfolioResponse = {
             bsopPrti: 8,
             thtrNtin: 3,
             roeVal: 20,
-            cptlNtinRate: 2,
+            pbr: 2,
           },
         },
         stockId: 2,
@@ -79,7 +85,7 @@ const portfolioSnowflakeData = {
         bsopPrti: [5, 19], // 영업이익
         thtrNtin: [1, 3], // 당기순이익
         roeVal: [10, 16], // ROE (자기자본이익률)
-        cptlNtinRate: [2, 7], // 총자본 순이익률
+        pbr: [2, 7], // 총자본 순이익률
         eps: [3, 6], // EPS
         per: [12, 18], // PER
       },
@@ -217,7 +223,7 @@ const PortfolioPage = () => {
       </S.PortfolioContent>
 
       <S.PortfolioStock>
-        <StockResult data={stockResultData} />
+        {/* <StockResult data={stockResultData} /> */}
       </S.PortfolioStock>
     </S.PortfolioPageContainer>
   );

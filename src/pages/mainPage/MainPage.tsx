@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./MainPage.styled";
 import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
@@ -10,103 +10,39 @@ import SectorSetting from "./components/sectorSetting/SectorSetting";
 import PageHeader from "../../components/pageHeader/PageHeader";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import StockResult from "../../components/stock/result/StockResult";
-
-//더미데이터
-const dummyStockResponse = {
-  status: 201,
-  message: "성공입니다.",
-  data: {
-    stockCnt: 4,
-    stockInfos: [
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 19,
-            thtrNtin: 19,
-            roeVal: 16,
-            cptlNtinRate: 7,
-            eps: 6,
-            per: 18,
-          },
-        },
-        stockId: 1,
-        ticker: "05252",
-        companyName: "삼성전자",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.2,
-        "1WeekFluctuationRate": 7.3,
-        "1YearFluctuationRate": 13.1,
-        marketCap: 4500,
-        per: 13.56,
-        debtRate: 30.49,
-        sector: "반도체",
-        isBookmark: false,
-        description:
-          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-      },
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 19,
-            thtrNtin: 3, // 당기순이익
-            roeVal: 16, // ROE
-          },
-        },
-        stockId: 2,
-        ticker: "013660",
-        companyName: "하이닉스",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.4,
-        "1WeekFluctuationRate": 5.1,
-        "1YearFluctuationRate": 10.0,
-        marketCap: 9000,
-        per: 17.56,
-        debtRate: 33.49,
-        sector: "반도체",
-        isBookmark: false, // 추가
-        description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-      },
-      {
-        snowflakeS: {
-          elements: {
-            thtrNtin: 3, // 당기순이익
-            roeVal: 10, // ROE
-          },
-        },
-        stockId: 3,
-        ticker: "013660",
-        companyName: "하이닉스",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.4,
-        "1WeekFluctuationRate": 5.1,
-        "1YearFluctuationRate": 10.0,
-        marketCap: 9000,
-        per: 17.56,
-        debtRate: 33.49,
-        sector: "반도체",
-        isBookmark: false, // 추가
-        description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-      },
-      // ...추가 주식 데이터
-    ],
-  },
-};
-
-// 초기 선택된 필터값
-const initialSelectedKeys = [
-  "시가총액",
-  "PER",
-  "부채비율",
-  "배당수익률",
-  "외국인 보유율",
-];
+import {
+  RecommededPortfolio,
+  recommededPortfolioAPI,
+  saveMyPortfolioAPI,
+} from "../../apis/portfolio";
+import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
+import {
+  defaultFilterItems,
+  initialSelectedKeys,
+} from "./constants/defaultFilterItems";
+import { labelMapping } from "../../types/snowflakeTypes";
+import { useNavigate } from "react-router-dom";
+import { useSectors } from "./hooks/useSectors";
+import { FilterStocksData, getFilterStocksAPI } from "../../apis/stock";
+import { FilterStock } from "../../types/stockTypes";
+import { useInView } from "react-intersection-observer";
 
 const MainPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  // 무한 스크롤을 위한
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ref, inView] = useInView();
+  const [isLast, setIsLast] = useState(false);
+  const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
+  const [filteredStocksCnt, setFilteredStocksCnt] = useState(0);
+
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
   const tabItems: TabItem[] = [
     { label: "인기있는 필터", value: "popular" },
-    { label: "유명 투자자 추천필터", value: "investor" },
+    { label: "유명 투자자 추천필터", value: "expert" },
   ];
 
   const handleTabChange = (value: string) => {
@@ -119,42 +55,23 @@ const MainPage: React.FC = () => {
   const closeSectorModal = () => setIsSectorModalOpen(false);
 
   // 저장 모달 관리
+  const [portfolioTitle, setPortfolioTitle] = useState("");
+  const [portfolioDesc, setPortfolioDesc] = useState("");
+
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const openSaveModal = () => setIsSaveModalOpen(true);
+  const openSaveModal = () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      alert("로그인이 필요합니다");
+      navigate("/login");
+    } else {
+      setIsSaveModalOpen(true);
+    }
+  };
   const closeSaveModal = () => setIsSaveModalOpen(false);
 
   // 1) 필터 항목
-  const [allItems, setAllItems] = useState([
-    { key: "시가총액", label: "시가총액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액", label: "매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "영업이익", label: "영업이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "당기순이익", label: "당기순이익 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "ROE", label: "ROE ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "EPS", label: "EPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "PER", label: "PER ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "BPS", label: "BPS ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "매출액 증가율", label: "매출액 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "순이익 증가율", label: "순이익 증가율 ⓘ", D1Value: 19, D2Value: 5 },
-
-    { key: "유동비율", label: "유동비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "부채비율", label: "부채비율 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "주당매출액", label: "주당매출액 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
-    { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
-    {
-      key: "총자본 순이익률",
-      label: "총자본 순이익률 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-    {
-      key: "영업이익 증가율",
-      label: "영업이익 증가율 ⓘ",
-      D1Value: 19,
-      D2Value: 5,
-    },
-  ]);
+  const [allItems, setAllItems] = useState(defaultFilterItems);
 
   // 2) 선택된 항목 key 목록
   const [selectedKeys, setSelectedKeys] =
@@ -164,33 +81,17 @@ const MainPage: React.FC = () => {
   const [marketFilter, setMarketFilter] = useState<string>("전체");
 
   // 4) 섹터 필터 항목
-  const sectors = [
-    "반도체",
-    "금융",
-    "헬스케어",
-    "자동차",
-    "IT",
-    "에너지",
-    "화학",
-    "바이오",
-    "통신",
-    "유통",
-    "부동산",
-    "소비재",
-    "제약",
-    "건설",
-    "농업",
-    "공업",
-    "전자",
-    "서비스",
-    "교육",
-    "문화",
-  ];
+  const { data: sectorsData } = useSectors();
+  const sectors = sectorsData?.data ?? [];
 
   const [selectedSectorKeys, setSelectedSectorKeys] = useState<string[]>([]);
+  const [recommendedPortfolios, setRecommendedPortfolios] = useState<
+    RecommededPortfolio[]
+  >([]);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
+    setAllItems(defaultFilterItems);
     setSelectedKeys(initialSelectedKeys);
   };
 
@@ -199,6 +100,170 @@ const MainPage: React.FC = () => {
     setMarketFilter("전체");
     setSelectedSectorKeys([]);
   };
+
+  // [API] 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
+  const fetchRecommendedData = (activeTab: string) => {
+    recommededPortfolioAPI(activeTab)
+      .then((data) => {
+        setRecommendedPortfolios(data);
+      })
+      .catch((err) => {
+        console.error("API 호출 실패:", err);
+      });
+  };
+
+  useEffect(() => {
+    fetchRecommendedData(activeTab);
+  }, [activeTab]);
+
+  const handleSelectRecommended = (portfolio: RecommededPortfolio) => {
+    const items = transformPortfolioToItems(portfolio.portfolio);
+    setSelectedKeys(items.map((item) => item.label));
+
+    const merged = defaultFilterItems.map((def) => {
+      const found = items.find((it) => it.key === def.key);
+      if (found) {
+        return { ...def, D1Value: found.D1Value, D2Value: found.D2Value };
+      }
+      return def;
+    });
+
+    setAllItems(merged);
+    setSelectedKeys(items.map((item) => item.key));
+
+    if (portfolio.portfolio.market) {
+      setMarketFilter(portfolio.portfolio.market);
+    }
+
+    if (portfolio.portfolio.sector) {
+      setSelectedSectorKeys(portfolio.portfolio.sector);
+    }
+  };
+
+  const handleSavePortfolio = async () => {
+    try {
+      if (!portfolioTitle.trim() || !portfolioDesc.trim()) {
+        alert("포트폴리오 제목과 설명은 필수 입력 사항입니다.");
+        return;
+      }
+
+      const reverseMapping = Object.entries(labelMapping).reduce(
+        (acc, [eng, kor]) => {
+          acc[kor] = eng;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      // 선택된 항목들의 range 정보를 객체로 생성
+      const selectedMetrics = selectedKeys.reduce(
+        (acc, key) => {
+          const found = allItems.find((item) => item.key === key);
+          if (found) {
+            const englishKey = reverseMapping[key] || key;
+            acc[englishKey] = { min: found.D2Value, max: found.D1Value };
+          }
+          return acc;
+        },
+        {} as Record<string, { min: number; max: number }>
+      );
+
+      const payload = {
+        category: "my",
+        title: portfolioTitle,
+        description: portfolioDesc,
+        market: marketFilter,
+        ...selectedMetrics,
+        sector: selectedSectorKeys,
+      };
+
+      const response = await saveMyPortfolioAPI(payload);
+      alert("저장 성공");
+      // TODO : 나의 포트폴리오 페이지로 연결
+      closeSaveModal();
+    } catch (error) {
+      alert("저장 실패");
+    }
+  };
+
+  // [API] 조건 검색 결과 조회
+  const handleFilterStocks = async (page: number) => {
+    try {
+      if (page === 0) {
+        setIsLoading(true);
+      }
+
+      const reverseMapping = Object.entries(labelMapping).reduce(
+        (acc, [eng, kor]) => {
+          acc[kor] = eng;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      // 선택된 필터 항목의 range 정보를 가져와 filters 객체 구성
+      const filters = selectedKeys.reduce(
+        (acc, key) => {
+          const found = allItems.find((item) => item.key === key);
+          if (found) {
+            // reverseMapping을 사용하여 영어 키로 변환
+            const englishKey = reverseMapping[key] || key;
+            acc[englishKey] = { min: found.D2Value, max: found.D1Value };
+          }
+          return acc;
+        },
+        {} as Record<string, { min: number; max: number }>
+      );
+
+      const marketType: "ALL" | "KOSPI" | "KOSDAQ" =
+        marketFilter === "전체" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
+
+      // payload 구성
+      const payload = {
+        marketType,
+        ...(selectedSectorKeys.length > 0 && { sector: selectedSectorKeys }),
+        filters,
+      };
+
+      const response = await getFilterStocksAPI({ payload, page });
+
+      if (page === 0) {
+        setFilteredStocks(response.data.stocks);
+        setFilteredStocksCnt(response.data.totalCount);
+      } else {
+        setFilteredStocks((prevData) => [...prevData, ...response.data.stocks]);
+      }
+
+      if (response.data.stocks.length === 0) {
+        setIsLast(true);
+      }
+    } catch (error) {
+      console.error("필터 API 호출 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 드래그 종료 시점에만 호출할 함수
+  const handleSnowflakeDragEnd = () => {
+    handleFilterStocks(0);
+  };
+
+  useEffect(() => {
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
+
+  useEffect(() => {
+    if (inView && !isLoading && !isLast) {
+      setTimeout(() => {
+        handleFilterStocks(page + 1);
+        setPage((prev) => prev + 1);
+      }, 10);
+    }
+  }, [inView]);
 
   return (
     <S.MainPageContainer>
@@ -224,17 +289,25 @@ const MainPage: React.FC = () => {
           onClose={closeSaveModal}
           title="내 포트폴리오로 저장하기"
           confirmText="저장"
-          onCofirm={closeSaveModal}
+          onCofirm={handleSavePortfolio}
         >
           <S.SaveModal>
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 이름</S.SaveModalTitle>
-              <S.SaveModalInput placeholder="20자 이내로 작성해주세요" />
+              <S.SaveModalInput
+                placeholder="20자 이내로 작성해주세요"
+                value={portfolioTitle}
+                onChange={(e) => setPortfolioTitle(e.target.value)}
+              />
             </S.SaveModalContent>
 
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 설명</S.SaveModalTitle>
-              <S.SaveModalTextArea placeholder="50자 이내로 작성해주세요" />
+              <S.SaveModalTextArea
+                placeholder="50자 이내로 작성해주세요"
+                value={portfolioDesc}
+                onChange={(e) => setPortfolioDesc(e.target.value)}
+              />
             </S.SaveModalContent>
           </S.SaveModal>
         </Modal>
@@ -261,12 +334,15 @@ const MainPage: React.FC = () => {
 
           {/* 추천 필터 리스트 */}
           <S.MainPageRecommendedFilterList>
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
-            <RecommendedFilter />
+            {recommendedPortfolios.map((item) => {
+              return (
+                <RecommendedFilter
+                  key={item.sharePortfolioId}
+                  data={item}
+                  onSelectRecommended={handleSelectRecommended}
+                />
+              );
+            })}
           </S.MainPageRecommendedFilterList>
         </S.MainPageTabContainer>
       </S.MainPageBox>
@@ -282,6 +358,7 @@ const MainPage: React.FC = () => {
                 allItems={allItems}
                 setAllItems={setAllItems}
                 selectedKeys={selectedKeys}
+                onSnowflakeDragEnd={handleSnowflakeDragEnd}
               />
             </S.MainPageSnowflake>
           </S.MainPageSnowflakeWrapper>
@@ -300,7 +377,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={allItems.map((item) => item.key)}
+                  options={defaultFilterItems.map((item) => item.key)}
                   selected={selectedKeys}
                   multiple={true}
                   onChange={(newSelected) => setSelectedKeys(newSelected)}
@@ -359,7 +436,12 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
 
-      <StockResult data={dummyStockResponse.data} />
+      <StockResult
+        data={filteredStocks}
+        filteredStocksCnt={filteredStocksCnt}
+        loading={isLoading}
+      />
+      <div ref={ref}></div>
     </S.MainPageContainer>
   );
 };

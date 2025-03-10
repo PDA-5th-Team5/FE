@@ -12,6 +12,11 @@ export const MainPageRecommendedFilterWrapper = styled.div`
   gap: 16px;
   padding: 14px 20px;
   box-sizing: border-box;
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(40, 50, 64);
+  }
 `;
 
 export const MainPageRecommendedFilterImg = styled.img`
@@ -38,4 +43,9 @@ export const MainPageRecommendedFilterCntImg = styled.img`
 export const MainPageRecommendedFilterCnt = styled.div`
   color: #dbdcdd;
   font-size: 12px;
+`;
+
+export const PortfolioSnowflakeWrapper = styled.div`
+  width: 36px;
+  height: 36px;
 `;

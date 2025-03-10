@@ -15,12 +15,14 @@ interface SnowflakeProps {
   allItems: Item[];
   setAllItems: React.Dispatch<React.SetStateAction<Item[]>>;
   selectedKeys: string[];
+  onSnowflakeDragEnd?: () => void;
 }
 
 const Snowflake: React.FC<SnowflakeProps> = ({
   allItems,
   setAllItems,
   selectedKeys,
+  onSnowflakeDragEnd,
 }) => {
   // 3) 필터링된 항목들
   const filteredItems = useMemo(() => {
@@ -146,21 +148,8 @@ const Snowflake: React.FC<SnowflakeProps> = ({
           ) => {
             handleDrag(datasetIndex, index, value);
           },
-          onDragEnd: (
-            event: any,
-            datasetIndex: number,
-            index: number,
-            value: number | null
-          ) => {
-            console.log("drag end", { event, datasetIndex, index, value });
-          },
-          onDragStart: (
-            event: any,
-            datasetIndex: number,
-            index: number,
-            value: number | null
-          ) => {
-            console.log("drag start", { event, datasetIndex, index, value });
+          onDragEnd: () => {
+            onSnowflakeDragEnd?.();
           },
         },
         legend: {

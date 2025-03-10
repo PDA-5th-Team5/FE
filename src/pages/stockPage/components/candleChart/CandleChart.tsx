@@ -21,7 +21,9 @@ import {
   MouseCoordinateY,
 } from "react-financial-charts";
 import { apiResponse } from "./api";
-
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getCandleAPI } from "../../../../apis/stock";
 interface CandleDataAPI {
   date: string;
   openPrice: number;
@@ -47,9 +49,16 @@ export interface CandleData {
 
 // API 데이터를 CandleData 형식으로 변환
 const transformData = (apiData: {
-  data: { candles: CandleDataAPI[] };
+  candleDTOList: Array<{
+    date: string;
+    openPrice: number;
+    highPrice: number;
+    lowPrice: number;
+    closePrice: number;
+    volume: number;
+  }>;
 }): CandleData[] => {
-  return apiData.data.candles.map((candle) => ({
+  return apiData.candleDTOList.map((candle) => ({
     date: candle.date,
     open: candle.openPrice,
     high: candle.highPrice,
@@ -58,10 +67,36 @@ const transformData = (apiData: {
     volume: candle.volume,
   }));
 };
-
 const CandleChart: React.FC = () => {
-  const transformedData = transformData(apiResponse);
+  const { num } = useParams<{ num: string }>();
+  const stockId = num ? parseInt(num, 10) : 1;
 
+  const [candleData, setCandleData] = useState<CandleData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  //const transformedData = transformData(apiResponse);
+  useEffect(() => {
+    const fetchCandleData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getCandleAPI(stockId);
+        console.log(response);
+        if (response.data) {
+          const transformedData = transformData(response.data);
+          setCandleData(transformedData);
+          console.log(stockId);
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error("캔들 차트 데이터 로딩 실패:", error);
+        setError("차트 데이터를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCandleData();
+  }, [stockId]);
   // ScaleProvider 설정
   const ScaleProvider =
     discontinuousTimeScaleProviderBuilder().inputDateAccessor(
@@ -88,12 +123,17 @@ const CandleChart: React.FC = () => {
       d.ema26 = c;
     })
     .accessor((d: CandleData) => d.ema26!);
-
+  const ema12Data = ema12(candleData || []);
+  const ema26Data = ema26(ema12Data);
   const elder = elderRay();
-  const calculatedData = elder(ema26(ema12(transformedData || [])));
+  //  const calculatedData = elder(ema26(ema12(transformedData || [])));
+  const calculatedData = elder(ema26Data);
   const filteredData = calculatedData.filter(
     (d: CandleData) => d.ema12 != null || d.ema26 != null
   );
+  // const filteredData = calculatedData.filter(
+  //   (d: CandleData) => d.ema12 != null || d.ema26 != null
+  // );
 
   const { data, xScale, xAccessor, displayXAccessor } =
     ScaleProvider(filteredData);
