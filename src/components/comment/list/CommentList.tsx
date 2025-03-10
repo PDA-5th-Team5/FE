@@ -30,8 +30,8 @@ const CommentList = () => {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const { id } = useParams<{ id: string }>();
-  const stockId = id ? parseInt(id, 10) : 1;
+  const { num } = useParams<{ num: string }>();
+  const stockId = num ? parseInt(num, 10) : 1;
   const [page, setPage] = useState(1);
   const size = 10;
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);

@@ -14,7 +14,7 @@ const CommentContainer = styled.div`
 
 const Comment = () => {
   const [refreshComments, setRefreshComments] = useState(false);
-  const { id } = useParams<{ id: string }>();
+  const { num } = useParams<{ num: string }>();
 
   // 댓글 등록 후 목록 갱신을 위한 함수
   const handleCommentSubmitted = () => {

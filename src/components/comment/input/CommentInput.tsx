@@ -52,7 +52,7 @@ interface CommentInputProps {
 const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { id } = useParams<{ id: string }>();
+  const { num } = useParams<{ num: string }>();
 
   // 하드코딩된 토큰
   const TOKEN =
@@ -66,10 +66,10 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
 
     try {
       setIsLoading(true);
-      console.log("URL 파라미터 id:", id);
-      const stockId = id ? parseInt(id, 10) : 1;
+      console.log("URL 파라미터 id:", num);
+      const stockId = num ? parseInt(num, 10) : 1;
       if (isNaN(stockId)) {
-        console.error("ID 파싱 실패:", id);
+        console.error("ID 파싱 실패:", num);
         throw new Error("주식 ID를 변환할 수 없습니다");
       }
 
