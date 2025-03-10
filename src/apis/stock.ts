@@ -1,5 +1,5 @@
 import { APIResponse, stockAPI } from ".";
-import { SnowflakeItems, SnowflakePElements } from "../types/snowflakeTypes";
+import { SnowflakeItems, SnowflakeS, SnowflakeSElements, SnowflakePElements} from "../types/snowflakeTypes";
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -76,6 +76,33 @@ export const getCommentsAPI = async (
     comments: response.data.data.comments
   };
 };
+
+//캔들차트 조회
+export interface Candle {
+  date: string;
+  openPrice: number;
+  highPrice: number;
+  lowPrice: number;
+  closePrice: number;
+  volume: number;
+}
+
+export interface CandleChartResponse {
+  candleDTOList : Candle[];
+}
+
+export const getCandleAPI = async (
+  stockId : number
+) : Promise<APIResponse<CandleChartResponse>> => {
+  const response = await stockAPI.get<APIResponse<CandleChartResponse>>(
+    `/${stockId}/candle`
+  );
+  return response.data;
+
+}
+
+
+
 
 // 댓글 삭제 API
 export const deleteCommentAPI = async (
@@ -236,6 +263,35 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
     throw error;
   }
 };
+
+//경쟁사 조회 API
+export interface Competitors {
+  stockId: number;
+  companyName: string;
+  ticker: string;
+  snowflakeS:SnowflakeSElements;
+}
+export interface CompetitorsResponse {
+  status: number;
+  message: string;
+  data: {
+    competitors: Competitors[];
+  };
+}
+export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsResponse> => {
+  try {
+    const response = await stockAPI.get<CompetitorsResponse>(
+      `/${stockId}/competitors`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('경쟁사 정보 조회 실패:', error);
+    throw error;
+  }
+};
+
+//아래처럼하면 복붙안하고 그냥 import 해서하면됨
+// <SnowflakeS>
 
 // 임계값 조회
 export const getThresholdsAPI = async (): Promise<
