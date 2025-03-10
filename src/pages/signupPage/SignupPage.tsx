@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
 import { signupAPI } from "../../apis/user";

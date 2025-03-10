@@ -1,5 +1,8 @@
+import { useState } from "react";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
+import { loginAPI } from "../../apis/user";
+import { toast, ToastContainer } from "react-toastify";
 
 import styled from "styled-components";
 
@@ -117,6 +120,29 @@ const StyledButton = styled.button`
 `;
 
 const SignUpPage = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  // 회원가입 확인 핸들러
+  const signupSubmit = () => {
+    loginAPI(username, password)
+      .then((data) => {
+        if (data.status === 200) {
+          toast.success("로그인 성공!");
+        } else if (data.status === 400) {
+          // 이거 http status 응답 자체가 400으로와서 여기 아래까지는 안 들어옴 백에서 200으로 오도록 수정해야함
+          toast.error("로그인 실패! 아이디와 비밀번호를 다시 확인해 주세요.");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        // console.error("API 호출 실패", error);
+        // toast.error("로그인 요청 중 오류가 발생했습니다.");
+        toast.error("아이디와 비밀번호를 다시 확인해 주세요.");
+      });
+  };
+
   return (
     <LoginPageContainer>
       <LoginPageBox>
@@ -129,7 +155,11 @@ const SignUpPage = () => {
         <FormWrapper>
           <FormField>
             <FormLabel>아이디</FormLabel>
-            <FormInput placeholder="소문자 + 숫자 조합으로 입력해주세요" />
+            <FormInput
+              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </FormField>
 
           <FormField>
@@ -137,6 +167,8 @@ const SignUpPage = () => {
             <FormInput
               type="password"
               placeholder="8자 이상, 소문자 + 숫자 조합으로 입력해주세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </FormField>
 
@@ -147,10 +179,18 @@ const SignUpPage = () => {
             </LoginWrapper>
 
             {/* 확인 버튼 */}
-            <StyledButton>확인</StyledButton>
+            <StyledButton onClick={signupSubmit}>확인</StyledButton>
           </ButtonWrapper>
         </FormWrapper>
       </LoginPageBox>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </LoginPageContainer>
   );
 };
