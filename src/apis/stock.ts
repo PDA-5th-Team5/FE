@@ -1,5 +1,5 @@
 import { APIResponse, stockAPI } from ".";
-import { SnowflakeItems } from "../types/snowflakeTypes";
+import { SnowflakeItems, SnowflakePElements } from "../types/snowflakeTypes";
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -235,4 +235,15 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
     console.error('관심종목 삭제 실패:', error);
     throw error;
   }
+};
+
+// 임계값 조회
+export const getThresholdsAPI = async (): Promise<
+  APIResponse<SnowflakePElements>
+> => {
+  const response =
+    await stockAPI.get<APIResponse<SnowflakePElements>>("/thresholds");
+  console.log(response.data);
+
+  return response.data;
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as S from "./MainPage.styled";
 import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
@@ -23,9 +23,10 @@ import {
 import { labelMapping } from "../../types/snowflakeTypes";
 import { useNavigate } from "react-router-dom";
 import { useSectors } from "./hooks/useSectors";
-import { FilterStocksData, getFilterStocksAPI } from "../../apis/stock";
+import { getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
 import { useInView } from "react-intersection-observer";
+import { useThresholds } from "./hooks/useThresholds";
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
@@ -88,6 +89,12 @@ const MainPage: React.FC = () => {
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
     RecommededPortfolio[]
   >([]);
+
+  // 5) 임계값
+  const { data: thresholdsData } = useThresholds();
+  const thresholds = (thresholdsData?.data ?? {}) as Record<string, number[]>;
+  console.log("thresholds", thresholds);
+  console.log("allItems", allItems);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -265,6 +272,49 @@ const MainPage: React.FC = () => {
     }
   }, [inView]);
 
+  // 3) 현재 선택된 지표만 필터링
+  const filteredItems = useMemo(
+    () => allItems.filter((item) => selectedKeys.includes(item.key)),
+    [allItems, selectedKeys]
+  );
+
+  const reverseMapping = Object.entries(labelMapping).reduce(
+    (acc, [eng, kor]) => {
+      acc[kor] = eng;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  // 4) 임계값(배열)과 D1/D2 인덱스를 매핑해서 범위 텍스트로 변환
+  const thresholdRanges = useMemo(() => {
+    console.log("filteredItems", filteredItems);
+
+    return filteredItems.map((item) => {
+      const engKey = reverseMapping[item.key] || item.key;
+      const thresholdArr = thresholds[engKey];
+      const maxIndex = item.D1Value;
+      const minIndex = item.D2Value;
+      let minText = "";
+      let maxText = "";
+
+      if (thresholdArr) {
+        if (minIndex >= 0 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex].toString();
+        }
+        if (maxIndex >= 0 && maxIndex < thresholdArr.length) {
+          maxText = thresholdArr[maxIndex].toString();
+        }
+      }
+
+      return {
+        label: item.key,
+        minText,
+        maxText,
+      };
+    });
+  }, [filteredItems, thresholds]);
+
   return (
     <S.MainPageContainer>
       {/* 섹터 모달 */}
@@ -434,6 +484,11 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>시가총액 500억 ~ 1000억</S.MainPageConversion>
         <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
+        {thresholdRanges.map(({ label, minText, maxText }) => (
+          <S.MainPageConversion key={label}>
+            <span>{label}</span> {minText} ~ {maxText}
+          </S.MainPageConversion>
+        ))}
       </S.MainPageConversionWrapper>
 
       <StockResult

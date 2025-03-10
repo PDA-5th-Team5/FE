@@ -156,7 +156,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
           display: false,
         },
         tooltip: {
-          enabled: false, // 툴팁 숨기기
+          enabled: true, // 툴팁 숨기기
         },
       },
     };
