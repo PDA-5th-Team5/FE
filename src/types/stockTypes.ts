@@ -46,7 +46,7 @@ export interface Competitor {
     per: number;
     lblt_rate: number;
     marketCap: number;
-    divYield: number;
+    dividendYield: number;
     foreignerRatio: number;
   };
 }

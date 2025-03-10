@@ -34,7 +34,7 @@ const SharePortfolioPage = () => {
             bsopPrti: [5, 19],
             thtrNtin: [1, 9],
             roeVal: [10, 16],
-            cptlNtinRate: [1, 19],
+            pbr: [1, 19],
             eps: [2, 3],
             per: [2, 3],
             ntinInrt: [2, 19],
