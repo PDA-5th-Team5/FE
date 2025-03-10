@@ -121,22 +121,24 @@ const StockResult = ({ data, filteredStocksCnt }: StockResultProps) => {
         </S.StockResultTool>
       </S.StockResultHeader>
 
-      {view === "list" ? (
-        <>
-          <StockList
-            stocks={data}
-            setStocks={setStocks}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        </>
+      {stocks.length === 0 ? (
+        <S.NoResultContainer>
+          검색 결과가 없습니다
+        </S.NoResultContainer>
       ) : (
-        <>
-          <StockGrid
-            stocks={data}
+        view === "list" ? (
+          <StockList
+            stocks={stocks}
             setStocks={setStocks}
             onToggleBookmark={handleToggleBookmark}
           />
-        </>
+        ) : (
+          <StockGrid
+            stocks={stocks}
+            setStocks={setStocks}
+            onToggleBookmark={handleToggleBookmark}
+          />
+        )
       )}
     </S.StockResultContainer>
   );
