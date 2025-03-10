@@ -17,6 +17,7 @@ import {
   StockInfoResponse,
   addToWatchlist,
   removeFromWatchlist,
+  getCompetitorsAPI,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
 
@@ -28,19 +29,6 @@ export interface StockDataType {
     snowflakeS: SnowflakeSElements;
   };
 }
-const dummyCompetitors = [
-  {
-    companyName: "경쟁사1",
-    ticker: "000001",
-    snowflakeS: {
-      per: 15.2,
-      lbltRate: 30.5,
-      marketCap: 10.2,
-      dividendYield: 3.5,
-      foreignerRatio: 25.3,
-    },
-  },
-];
 
 const stockLineGraph = [
   { date: "2023-01", value: 100 },
@@ -54,7 +42,9 @@ const StockPage = () => {
   const [stockData, setStockData] = useState<StockDataType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [competitors, setCompetitors] = useState<Competitor[]>([]);
+  const [competitorsLoading, setCompetitorsLoading] = useState(true);
+  const [competitorsError, setCompetitorsError] = useState<string | null>(null);
   useEffect(() => {
     const fetchStockInfo = async () => {
       try {
@@ -106,6 +96,34 @@ const StockPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [stockId]);
+  useEffect(() => {
+    const fetchCompetitors = async () => {
+      try {
+        setCompetitorsLoading(true);
+        setCompetitorsError(null);
+
+        const response = await getCompetitorsAPI(stockId);
+        console.log(response.data);
+        if (response.status === 200) {
+          setCompetitors(response.data.competitors);
+        } else {
+          setCompetitorsError(
+            response.message || "경쟁사 정보를 불러오는데 실패했습니다."
+          );
+        }
+      } catch (error) {
+        console.error("경쟁사 정보 로딩 실패:", error);
+        setCompetitorsError("경쟁사 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setCompetitorsLoading(false);
+      }
+    };
+
+    // 주식 정보가 로드된 후 경쟁사 정보를 가져옴
+    if (!isLoading && stockData) {
+      fetchCompetitors();
+    }
+  }, [stockId, isLoading, stockData]);
 
   const snowflakeItems: Item[] = stockData?.data?.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
@@ -158,13 +176,13 @@ const StockPage = () => {
   if (isLoading || !stockData) {
     return <div>로딩 중...</div>;
   }
-  const competitorSnowflakeData = dummyCompetitors.map((competitor) => {
+  const competitorSnowflakeData = competitors.map((competitor) => {
     const items: Item[] = Object.entries(competitor.snowflakeS).map(
       ([key, value]) => ({
         key,
         label: labelMapping[key] ?? key,
-        D1Value: value,
-        D2Value: value,
+        D1Value: value as number,
+        D2Value: value as number,
       })
     );
     return { competitor, items };
