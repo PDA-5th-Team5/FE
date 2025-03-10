@@ -25,9 +25,16 @@ import { useNavigate } from "react-router-dom";
 import { useSectors } from "./hooks/useSectors";
 import { getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
+import { useInView } from "react-intersection-observer";
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+
+  // 무한 스크롤을 위한
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ref, inView] = useInView();
+  const [isLast, setIsLast] = useState(false);
   const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
 
   // 추천 필터
@@ -179,12 +186,8 @@ const MainPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    handleFilterStocks();
-  }, [selectedKeys, marketFilter, selectedSectorKeys]);
-
   // [API] 조건 검색 결과 조회
-  const handleFilterStocks = async () => {
+  const handleFilterStocks = async (page: number) => {
     try {
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
@@ -218,8 +221,16 @@ const MainPage: React.FC = () => {
         filters,
       };
 
-      const response = await getFilterStocksAPI(payload);
-      setFilteredStocks(response.data);
+      const response = await getFilterStocksAPI({ payload, page });
+      if (page === 0) {
+        setFilteredStocks(response.data);
+      } else {
+        setFilteredStocks((prevData) => [...prevData, ...response.data]);
+      }
+
+      if (response.data.length === 0) {
+        setIsLast(true);
+      }
     } catch (error) {
       console.error("필터 API 호출 실패:", error);
     }
@@ -227,8 +238,24 @@ const MainPage: React.FC = () => {
 
   // 드래그 종료 시점에만 호출할 함수
   const handleSnowflakeDragEnd = () => {
-    handleFilterStocks();
+    handleFilterStocks(0);
   };
+
+  useEffect(() => {
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
+
+  useEffect(() => {
+    if (inView && !isLoading && !isLast) {
+      setTimeout(() => {
+        handleFilterStocks(page + 1);
+        setPage((prev) => prev + 1);
+      }, 10);
+    }
+  }, [inView]);
 
   return (
     <S.MainPageContainer>
@@ -402,6 +429,7 @@ const MainPage: React.FC = () => {
       </S.MainPageConversionWrapper>
 
       <StockResult data={filteredStocks} />
+      <div ref={ref}></div>
     </S.MainPageContainer>
   );
 };

@@ -1,10 +1,10 @@
 import { useMutation } from "react-query";
-import { getFilterStocksAPI, FilterStocksPayload } from "../../../apis/stock";
+import { getFilterStocksAPI, FilterStocksProps } from "../../../apis/stock";
 import { APIResponse } from "../../../apis";
 import { FilterStock } from "../../../types/stockTypes";
 
 export const useFilterStocks = () => {
-  return useMutation<APIResponse<FilterStock[]>, Error, FilterStocksPayload>(
-    (payload: FilterStocksPayload) => getFilterStocksAPI(payload)
+  return useMutation<APIResponse<FilterStock[]>, Error, FilterStocksProps>(
+    (props: FilterStocksProps) => getFilterStocksAPI(props)
   );
 };
