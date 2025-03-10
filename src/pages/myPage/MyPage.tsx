@@ -68,7 +68,7 @@ const MyPage = () => {
               bsopPrti: 19,
               thtrNtin: 19,
               roeVal: 16,
-              cptlNtinRate: 7,
+              pbr: 7,
               eps: 6,
               per: 18,
             },

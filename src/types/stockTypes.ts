@@ -45,7 +45,7 @@ export interface Competitor {
     per: number;
     lblt_rate: number;
     marketCap: number;
-    divYield: number;
+    dividendYield: number;
     foreignerRatio: number;
   };
 }
@@ -58,6 +58,8 @@ export interface FilterStock extends SnowflakeSElements {
   sector: string;
   companyOverview: string;
   snowflakeS: Partial<SnowflakeSElements>;
+  marketCap?: number;
+  lbltRate?: number;
   weekRateChange: number;
   yearRateChange: number;
   currentPrice: number;

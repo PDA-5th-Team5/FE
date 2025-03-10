@@ -129,19 +129,31 @@ export const getSectorsAPI = async (): Promise<APIResponse<string[]>> => {
 };
 
 // 조건 검색 결과 조회
+export interface FilterStocksProps {
+  payload: FilterStocksPayload;
+  page: number;
+}
+
 export interface FilterStocksPayload {
   marketType: "ALL" | "KOSPI" | "KOSDAQ";
   sector?: string[];
   filters: Partial<SnowflakeItems>;
 }
 
-export const getFilterStocksAPI = async (
-  payload: FilterStocksPayload
-): Promise<APIResponse<FilterStock[]>> => {
-  const response = await stockAPI.post<APIResponse<FilterStock[]>>(
-    "/filter",
+export interface FilterStocksData {
+  stocks: FilterStock[];
+  totalCount: number;
+}
+
+export const getFilterStocksAPI = async ({
+  payload,
+  page,
+}: FilterStocksProps): Promise<APIResponse<FilterStocksData>> => {
+  const response = await stockAPI.post<APIResponse<FilterStocksData>>(
+    `/filter?page=${page}`,
     payload
   );
+
   return response.data;
 };
 

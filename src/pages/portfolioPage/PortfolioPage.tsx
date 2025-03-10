@@ -27,7 +27,7 @@ const dummyPortfolioResponse = {
             bsopPrti: 19,
             thtrNtin: 3,
             roeVal: 16,
-            cptlNtinRate: 7,
+            pbr: 7,
             eps: 6,
             per: 18,
           },
@@ -54,7 +54,7 @@ const dummyPortfolioResponse = {
             bsopPrti: 8,
             thtrNtin: 3,
             roeVal: 20,
-            cptlNtinRate: 2,
+            pbr: 2,
           },
         },
         stockId: 2,
@@ -85,7 +85,7 @@ const portfolioSnowflakeData = {
         bsopPrti: [5, 19], // 영업이익
         thtrNtin: [1, 3], // 당기순이익
         roeVal: [10, 16], // ROE (자기자본이익률)
-        cptlNtinRate: [2, 7], // 총자본 순이익률
+        pbr: [2, 7], // 총자본 순이익률
         eps: [3, 6], // EPS
         per: [12, 18], // PER
       },

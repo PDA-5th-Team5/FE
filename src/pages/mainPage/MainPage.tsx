@@ -23,12 +23,20 @@ import {
 import { labelMapping } from "../../types/snowflakeTypes";
 import { useNavigate } from "react-router-dom";
 import { useSectors } from "./hooks/useSectors";
-import { getFilterStocksAPI } from "../../apis/stock";
+import { FilterStocksData, getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
+import { useInView } from "react-intersection-observer";
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+
+  // 무한 스크롤을 위한
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ref, inView] = useInView();
+  const [isLast, setIsLast] = useState(false);
   const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
+  const [filteredStocksCnt, setFilteredStocksCnt] = useState(0);
 
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
@@ -80,7 +88,6 @@ const MainPage: React.FC = () => {
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
     RecommededPortfolio[]
   >([]);
-  // const [loading, setLoading] = useState<boolean>(true);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -179,13 +186,13 @@ const MainPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    handleFilterStocks();
-  }, [selectedKeys, marketFilter, selectedSectorKeys]);
-
   // [API] 조건 검색 결과 조회
-  const handleFilterStocks = async () => {
+  const handleFilterStocks = async (page: number) => {
     try {
+      if (page === 0) {
+        setIsLoading(true);
+      }
+
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
           acc[kor] = eng;
@@ -218,17 +225,45 @@ const MainPage: React.FC = () => {
         filters,
       };
 
-      const response = await getFilterStocksAPI(payload);
-      setFilteredStocks(response.data);
+      const response = await getFilterStocksAPI({ payload, page });
+
+      if (page === 0) {
+        setFilteredStocks(response.data.stocks);
+        setFilteredStocksCnt(response.data.totalCount);
+      } else {
+        setFilteredStocks((prevData) => [...prevData, ...response.data.stocks]);
+      }
+
+      if (response.data.stocks.length === 0) {
+        setIsLast(true);
+      }
     } catch (error) {
       console.error("필터 API 호출 실패:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // 드래그 종료 시점에만 호출할 함수
   const handleSnowflakeDragEnd = () => {
-    handleFilterStocks();
+    handleFilterStocks(0);
   };
+
+  useEffect(() => {
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
+
+  useEffect(() => {
+    if (inView && !isLoading && !isLast) {
+      setTimeout(() => {
+        handleFilterStocks(page + 1);
+        setPage((prev) => prev + 1);
+      }, 10);
+    }
+  }, [inView]);
 
   return (
     <S.MainPageContainer>
@@ -401,7 +436,12 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
 
-      <StockResult data={filteredStocks} />
+      <StockResult
+        data={filteredStocks}
+        filteredStocksCnt={filteredStocksCnt}
+        loading={isLoading}
+      />
+      <div ref={ref}></div>
     </S.MainPageContainer>
   );
 };
