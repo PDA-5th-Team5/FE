@@ -94,6 +94,34 @@ export const deleteCommentAPI = async (
   return response.data;
 };
 
+//댓글 수정
+export interface CommentRequest {
+  content: string;
+}
+
+export const editCommentAPI = async (
+  stockId: number,
+  commentId : number,
+  content: string
+): Promise<APIResponse<null>> => {
+  const response = await stockAPI.patch<APIResponse<null>>(
+    `/${stockId}/comments/${commentId}`,
+    content,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'text/plain'
+      },
+      transformRequest: [(data) => {
+        return data;
+      }]
+    }
+  );
+  
+  return response.data;
+};
+
+
 // 전체 섹터 조회 API 연결
 export const getSectorsAPI = async (): Promise<APIResponse<string[]>> => {
   const response = await stockAPI.get<APIResponse<string[]>>("/sectors");
@@ -114,5 +142,43 @@ export const getFilterStocksAPI = async (
     "/filter",
     payload
   );
+  return response.data;
+};
+
+
+//개별종목정보조회
+export interface StockInfoResponse {
+  stockInfo: {
+    stockId: number;
+    ticker: string;
+    companyName: string;
+    marketType: string;
+    currentPrice: number;
+    changeRate: number;
+    weekRateChange: number;
+    yearRateChange: number;
+    sector: string;
+    companyOverview: string;
+    fav: boolean;
+    eps: number;
+    bps: number;
+    pbr: number;
+  };
+  snowflakeS: {
+    per: number;
+    lbltRate: number;
+    marketCap: number;
+    dividendYield: number;
+    foreignerRatio: number;
+  };
+}
+// 개별종목정보조회 API 함수
+export const getStockInfo = async (
+  stockId: number
+): Promise<APIResponse<StockInfoResponse>> => {
+  const response = await stockAPI.get<APIResponse<StockInfoResponse>>(
+    `/${stockId}`
+  );
+  
   return response.data;
 };

@@ -3,7 +3,11 @@ import * as S from "./CommentList.styled";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MoreIcon from "../../../assets/images/icons/more.png";
-import { getCommentsAPI, deleteCommentAPI } from "../../../apis/stock";
+import {
+  getCommentsAPI,
+  deleteCommentAPI,
+  editCommentAPI,
+} from "../../../apis/stock";
 
 interface Comment {
   commentId: number;
@@ -30,6 +34,8 @@ const CommentList = () => {
   const stockId = id ? parseInt(id, 10) : 1;
   const [page, setPage] = useState(1);
   const size = 10;
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
 
   // 하드코딩된 사용자 ID - 나중에 실제 로그인한 사용자 ID로 대체
   const currentUserId = "442d1d2b-bf61-41a8-b5dd-a9aec296aa07";
@@ -54,12 +60,33 @@ const CommentList = () => {
     setOpenDropdownId((prev) => (prev === commentId ? null : commentId));
   };
 
-  const handleEdit = (commentId: number) => {
-    alert(`수정 : ${commentId}`);
-    // TODO: 수정 로직
+  const handleEdit = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId);
+    setEditContent(currentContent);
     setOpenDropdownId(null);
   };
 
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+  const handleSaveEdit = async (commentId: number) => {
+    if (!editContent.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await editCommentAPI(stockId, commentId, editContent);
+      alert("댓글이 수정되었습니다.");
+      setEditingCommentId(null);
+      setEditContent("");
+      fetchComments(); // 댓글 목록 새로고침
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
   const handleDelete = async (commentId: number) => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
       try {
@@ -109,13 +136,30 @@ const CommentList = () => {
                 )}
               </S.CommentHeaderRight>
             </S.CommentHeader>
-            <S.CommentContent>{comment.content}</S.CommentContent>
+            {editingCommentId === comment.commentId ? (
+              <S.EditCommentContainer>
+                <S.CommentInputTextarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                />
+                <S.EditButtonContainer>
+                  <S.EditButton
+                    onClick={() => handleSaveEdit(comment.commentId)}
+                  >
+                    저장
+                  </S.EditButton>
+                  <S.EditButton onClick={handleCancelEdit}>취소</S.EditButton>
+                </S.EditButtonContainer>
+              </S.EditCommentContainer>
+            ) : (
+              <S.CommentContent>{comment.content}</S.CommentContent>
+            )}
 
             {/* 드롭다운 */}
             {openDropdownId === comment.commentId && (
               <S.MoreDropdown>
                 <S.MoreDropdownItem
-                  onClick={() => handleEdit(comment.commentId)}
+                  onClick={() => handleEdit(comment.commentId, comment.content)}
                 >
                   수정
                 </S.MoreDropdownItem>
