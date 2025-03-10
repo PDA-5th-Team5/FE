@@ -82,11 +82,9 @@ const StockList = ({ stocks, onToggleBookmark }: StockProps) => {
               <S.ChangeTd $isPositive={stock.yearRateChange >= 0}>
                 {stock.yearRateChange}%
               </S.ChangeTd>
-              {/* marketCap으로 바꾸기 */}
+              <td>{stock.marketCap}</td>
               <td>{stock.per}</td>
-              <td>{stock.per}</td>
-              {/* debtRate 로 바꾸기 */}
-              <td>{stock.per}%</td>
+              <td>{stock.lbltRate}%</td>
               <td>{stock.sector}</td>
               <td onClick={(e) => e.stopPropagation}>
                 <S.BookmarkWrapper>

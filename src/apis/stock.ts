@@ -112,13 +112,19 @@ export interface FilterStocksPayload {
   filters: Partial<SnowflakeItems>;
 }
 
+export interface FilterStocksData {
+  stocks: FilterStock[];
+  totalCount: number;
+}
+
 export const getFilterStocksAPI = async ({
   payload,
   page,
-}: FilterStocksProps): Promise<APIResponse<FilterStock[]>> => {
-  const response = await stockAPI.post<APIResponse<FilterStock[]>>(
+}: FilterStocksProps): Promise<APIResponse<FilterStocksData>> => {
+  const response = await stockAPI.post<APIResponse<FilterStocksData>>(
     `/filter?page=${page}`,
     payload
   );
+
   return response.data;
 };

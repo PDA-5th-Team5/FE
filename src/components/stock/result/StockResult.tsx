@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./StockResult.styled";
 import ListOnIcon from "../../../assets/images/icons/view/list_on.png";
 import ListOffIcon from "../../../assets/images/icons/view/list_off.png";
@@ -14,9 +14,20 @@ import { FilterStock } from "../../../types/stockTypes";
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
   data: FilterStock[];
+  filteredStocksCnt: number;
 }
 
-const StockResult = ({ data }: StockResultProps) => {
+const StockResult = ({ data, filteredStocksCnt }: StockResultProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (data) {
+      setStocks(data);
+      setIsLoading(false);
+    }
+  }, [data]);
+
+
   const [stocks, setStocks] = useState<FilterStock[]>(data);
   const [view, setView] = useState("list");
   const [sortKey, setSortKey] = useState("시가총액");
@@ -49,7 +60,7 @@ const StockResult = ({ data }: StockResultProps) => {
   return (
     <S.StockResultContainer>
       <S.StockResultHeader>
-        <S.StockResultTitle>검색 결과 1,234개</S.StockResultTitle>
+        <S.StockResultTitle>검색 결과 {filteredStocksCnt}개</S.StockResultTitle>
         <S.StockResultTool>
           <S.StockResultSortWrapper>
             <SortDropdown

@@ -23,7 +23,7 @@ import {
 import { labelMapping } from "../../types/snowflakeTypes";
 import { useNavigate } from "react-router-dom";
 import { useSectors } from "./hooks/useSectors";
-import { getFilterStocksAPI } from "../../apis/stock";
+import { FilterStocksData, getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
 import { useInView } from "react-intersection-observer";
 
@@ -36,6 +36,7 @@ const MainPage: React.FC = () => {
   const [ref, inView] = useInView();
   const [isLast, setIsLast] = useState(false);
   const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
+  const [filteredStocksCnt, setFilteredStocksCnt] = useState(0);
 
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
@@ -222,13 +223,16 @@ const MainPage: React.FC = () => {
       };
 
       const response = await getFilterStocksAPI({ payload, page });
+      console.log("response", response);
+
       if (page === 0) {
-        setFilteredStocks(response.data);
+        setFilteredStocks(response.data.stocks);
+        setFilteredStocksCnt(response.data.totalCount);
       } else {
-        setFilteredStocks((prevData) => [...prevData, ...response.data]);
+        setFilteredStocks((prevData) => [...prevData, ...response.data.stocks]);
       }
 
-      if (response.data.length === 0) {
+      if (response.data.stocks.length === 0) {
         setIsLast(true);
       }
     } catch (error) {
@@ -428,7 +432,10 @@ const MainPage: React.FC = () => {
         <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
       </S.MainPageConversionWrapper>
 
-      <StockResult data={filteredStocks} />
+      <StockResult
+        data={filteredStocks}
+        filteredStocksCnt={filteredStocksCnt}
+      />
       <div ref={ref}></div>
     </S.MainPageContainer>
   );
