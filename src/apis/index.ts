@@ -14,6 +14,7 @@ export const stockAPI = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 export const portfolioAPI = axios.create({
@@ -21,6 +22,7 @@ export const portfolioAPI = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 export const userAPI = axios.create({
@@ -28,6 +30,7 @@ export const userAPI = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // JWT 토큰 만료 관련 인터셉터
