@@ -77,6 +77,33 @@ export const getCommentsAPI = async (
   };
 };
 
+//캔들차트 조회
+export interface Candle {
+  date: string;
+  openPrice: number;
+  highPrice: number;
+  lowPrice: number;
+  closePrice: number;
+  volume: number;
+}
+
+export interface CandleChartResponse {
+  candleDTOList : Candle[];
+}
+
+export const getCandleAPI = async (
+  stockId : number
+) : Promise<APIResponse<CandleChartResponse>> => {
+  const response = await stockAPI.get<APIResponse<CandleChartResponse>>(
+    `/${stockId}/candle`
+  );
+  return response.data;
+
+}
+
+
+
+
 // 댓글 삭제 API
 export const deleteCommentAPI = async (
   stockId: number,
@@ -224,3 +251,6 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
     throw error;
   }
 };
+
+
+
