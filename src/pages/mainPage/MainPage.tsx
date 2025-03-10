@@ -88,7 +88,6 @@ const MainPage: React.FC = () => {
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
     RecommededPortfolio[]
   >([]);
-  // const [loading, setLoading] = useState<boolean>(true);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -190,6 +189,10 @@ const MainPage: React.FC = () => {
   // [API] 조건 검색 결과 조회
   const handleFilterStocks = async (page: number) => {
     try {
+      if (page === 0) {
+        setIsLoading(true);
+      }
+
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
           acc[kor] = eng;
@@ -223,7 +226,6 @@ const MainPage: React.FC = () => {
       };
 
       const response = await getFilterStocksAPI({ payload, page });
-      console.log("response", response);
 
       if (page === 0) {
         setFilteredStocks(response.data.stocks);
@@ -237,6 +239,8 @@ const MainPage: React.FC = () => {
       }
     } catch (error) {
       console.error("필터 API 호출 실패:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -435,6 +439,7 @@ const MainPage: React.FC = () => {
       <StockResult
         data={filteredStocks}
         filteredStocksCnt={filteredStocksCnt}
+        loading={isLoading}
       />
       <div ref={ref}></div>
     </S.MainPageContainer>

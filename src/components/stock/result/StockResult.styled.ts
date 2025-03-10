@@ -71,3 +71,8 @@ export const NoResultContainer = styled.div`
   color: #8b8d91;
   font-size: 14px;
 `;
+
+export const LoadingResultContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;

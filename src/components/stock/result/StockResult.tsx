@@ -10,24 +10,20 @@ import SortDropdown from "../../sortDropdown/SortDropdown";
 import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
 import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
 import { FilterStock } from "../../../types/stockTypes";
+import { PulseLoader } from "react-spinners";
 
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
   data: FilterStock[];
   filteredStocksCnt: number;
+  loading: boolean;
 }
 
-const StockResult = ({ data, filteredStocksCnt }: StockResultProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (data) {
-      setStocks(data);
-      setIsLoading(false);
-    }
-  }, [data]);
-
-
+const StockResult = ({
+  data,
+  filteredStocksCnt,
+  loading,
+}: StockResultProps) => {
   const [stocks, setStocks] = useState<FilterStock[]>(data);
   const [view, setView] = useState("list");
   const [sortKey, setSortKey] = useState("시가총액");
@@ -56,6 +52,18 @@ const StockResult = ({ data, filteredStocksCnt }: StockResultProps) => {
       )
     );
   };
+
+  useEffect(() => {
+    setStocks(data);
+  }, [data]);
+
+  if (loading) {
+    return (
+      <S.LoadingResultContainer>
+        <PulseLoader size={10} color="#2595E0" />
+      </S.LoadingResultContainer>
+    );
+  }
 
   return (
     <S.StockResultContainer>
@@ -122,23 +130,19 @@ const StockResult = ({ data, filteredStocksCnt }: StockResultProps) => {
       </S.StockResultHeader>
 
       {stocks.length === 0 ? (
-        <S.NoResultContainer>
-          검색 결과가 없습니다
-        </S.NoResultContainer>
+        <S.NoResultContainer>검색 결과가 없습니다</S.NoResultContainer>
+      ) : view === "list" ? (
+        <StockList
+          stocks={stocks}
+          setStocks={setStocks}
+          onToggleBookmark={handleToggleBookmark}
+        />
       ) : (
-        view === "list" ? (
-          <StockList
-            stocks={stocks}
-            setStocks={setStocks}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        ) : (
-          <StockGrid
-            stocks={stocks}
-            setStocks={setStocks}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        )
+        <StockGrid
+          stocks={stocks}
+          setStocks={setStocks}
+          onToggleBookmark={handleToggleBookmark}
+        />
       )}
     </S.StockResultContainer>
   );
