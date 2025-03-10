@@ -151,6 +151,7 @@ export interface StockInfoResponse {
   stockInfo: {
     stockId: number;
     ticker: string;
+    marketCap: string;
     companyName: string;
     marketType: string;
     currentPrice: number;
