@@ -12,11 +12,16 @@ import {
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
-import { getStockInfo, StockInfoResponse } from "../../apis/stock";
+import {
+  getStockInfo,
+  StockInfoResponse,
+  addToWatchlist,
+  removeFromWatchlist,
+} from "../../apis/stock";
 import { useParams } from "react-router-dom";
 
 export interface StockDataType {
-  status: number;
+  status?: number;
   message: string;
   data: {
     stockInfo: StockDetail;
@@ -96,7 +101,7 @@ const StockPage = () => {
     };
 
     fetchStockInfo();
-  }, []);
+  }, [stockId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -115,22 +120,41 @@ const StockPage = () => {
   const snowflakeSelectedKeys: string[] = stockData?.data?.snowflakeS
     ? Object.keys(stockData.data.snowflakeS)
     : [];
+  const handleToggleBookmark = async (stockId: number, newState: boolean) => {
+    try {
+      // newState가 true면 추가, false면 삭제
+      const response = newState
+        ? await addToWatchlist(stockId)
+        : await removeFromWatchlist(stockId);
 
-  // const handleToggleBookmark = (stockId: number, newState: boolean) => {
-  //   console.log(stockId);
-
-  //   setStockData((prevData) => ({
-  //     ...prevData,
-  //     data: {
-  //       ...prevData.data,
-  //       stockInfo: {
-  //         ...prevData.data.stockInfo,
-  //         isBookmark: newState,
-  //       },
-  //     },
-  //   }));
-  //   // TODO: 추가 로직 (예: API 호출 등)
-  // };
+      // API 호출이 성공하면 상태 업데이트
+      if (response.status === 200) {
+        setStockData((prevData) => {
+          if (!prevData) return null;
+          return {
+            ...prevData,
+            data: {
+              ...prevData.data,
+              stockInfo: {
+                ...prevData.data.stockInfo,
+                isBookmark: newState,
+              },
+            },
+          };
+        });
+      } else {
+        // 실패 시 에러 처리
+        console.error(
+          `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
+          response.message
+        );
+        // 필요하다면 여기에 알림 추가 (예: toast 메시지)
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error);
+      // 필요하다면 여기에 알림 추가
+    }
+  };
   if (isLoading || !stockData) {
     return <div>로딩 중...</div>;
   }
@@ -170,11 +194,11 @@ const StockPage = () => {
             </S.StockInfo>
           </S.StockInfoLeft>
           <S.StockInfoRight>
-            {/* <Bookmark
+            <Bookmark
               stockId={stockData.data.stockInfo.stockId}
               isBookmarked={stockData.data.stockInfo.isBookmark}
               onToggleBookmark={handleToggleBookmark}
-            /> */}
+            />
           </S.StockInfoRight>
         </S.StockInfoTop>
         <S.StockInfoBottom>

@@ -177,9 +177,50 @@ export interface StockInfoResponse {
 export const getStockInfo = async (
   stockId: number
 ): Promise<APIResponse<StockInfoResponse>> => {
+  //하드코딩 된 token 추후 변경
+  const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
+  const config = testToken 
+    ? { headers: { Authorization: `Bearer ${testToken}` } } 
+    : {};
   const response = await stockAPI.get<APIResponse<StockInfoResponse>>(
-    `/${stockId}`
+    `/${stockId}`,config
   );
   
   return response.data;
+};
+
+
+// 북마크 추가 API 함수
+export const addToWatchlist = async (stockId: number): Promise<any> => {
+  try {
+    //하드코딩 된 token 추후 변경
+    const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
+    const response = await stockAPI.post(`/${stockId}/watchlist`, null,{
+      headers: {
+         Authorization: `Bearer ${testToken}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('관심종목 추가 실패:', error);
+    throw error;
+  }
+};
+
+// 북마크 삭제 API 함수
+export const removeFromWatchlist = async (stockId: number): Promise<any> => {
+  try {
+    //하드코딩 된 token 추후 변경
+    const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
+
+    const response = await stockAPI.delete(`/${stockId}/watchlist`,{
+      headers: {
+        Authorization: `Bearer ${testToken}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('관심종목 삭제 실패:', error);
+    throw error;
+  }
 };
