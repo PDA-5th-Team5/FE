@@ -243,7 +243,6 @@ export const getThresholdsAPI = async (): Promise<
 > => {
   const response =
     await stockAPI.get<APIResponse<SnowflakePElements>>("/thresholds");
-  console.log(response.data);
 
   return response.data;
 };

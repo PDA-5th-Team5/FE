@@ -93,8 +93,6 @@ const MainPage: React.FC = () => {
   // 5) 임계값
   const { data: thresholdsData } = useThresholds();
   const thresholds = (thresholdsData?.data ?? {}) as Record<string, number[]>;
-  console.log("thresholds", thresholds);
-  console.log("allItems", allItems);
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -288,8 +286,6 @@ const MainPage: React.FC = () => {
 
   // 4) 임계값(배열)과 D1/D2 인덱스를 매핑해서 범위 텍스트로 변환
   const thresholdRanges = useMemo(() => {
-    console.log("filteredItems", filteredItems);
-
     return filteredItems.map((item) => {
       const engKey = reverseMapping[item.key] || item.key;
       const thresholdArr = thresholds[engKey];
