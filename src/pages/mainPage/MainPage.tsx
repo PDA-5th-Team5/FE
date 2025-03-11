@@ -477,9 +477,6 @@ const MainPage: React.FC = () => {
       </S.MainPageBox>
 
       <S.MainPageConversionWrapper>
-        <S.MainPageConversion>시가총액 500억 ~ 1000억</S.MainPageConversion>
-        <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
-        <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
         {thresholdRanges.map(({ label, minText, maxText }) => (
           <S.MainPageConversion key={label}>
             <span>{label}</span> {minText} ~ {maxText}
