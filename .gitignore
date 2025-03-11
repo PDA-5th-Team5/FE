@@ -31,3 +31,6 @@ dist-ssr
 
 # misc
 .env
+
+# stock image
+public/stocks/
