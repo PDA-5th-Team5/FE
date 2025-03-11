@@ -295,13 +295,17 @@ const MainPage: React.FC = () => {
       let maxText = "";
 
       if (thresholdArr) {
-        if (minIndex >= 0 && minIndex < thresholdArr.length) {
-          minText = thresholdArr[minIndex].toString();
+        if (minIndex === 0) {
+          minText = "-∞";
+        } else if (minIndex > 0 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex - 1].toString();
         }
-        if (maxIndex >= 0 && maxIndex < thresholdArr.length) {
-          maxText = thresholdArr[maxIndex].toString();
+        if (maxIndex >= 1 && maxIndex <= thresholdArr.length) {
+          maxText = thresholdArr[maxIndex - 1].toString();
         }
       }
+
+      console.log("이게 진짜 : maxText", maxText);
 
       return {
         label: item.key,
@@ -477,9 +481,6 @@ const MainPage: React.FC = () => {
       </S.MainPageBox>
 
       <S.MainPageConversionWrapper>
-        <S.MainPageConversion>시가총액 500억 ~ 1000억</S.MainPageConversion>
-        <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
-        <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
         {thresholdRanges.map(({ label, minText, maxText }) => (
           <S.MainPageConversion key={label}>
             <span>{label}</span> {minText} ~ {maxText}
