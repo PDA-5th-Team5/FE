@@ -66,7 +66,13 @@ const Autocomplete = ({ keyword }: AutocompleteProps) => {
             onClickStock(stock.id);
           }}
         >
-          <S.AutocompleteImg src={SamsungImg} />
+          <S.AutocompleteImg
+            src={`/stocks/${stock.ticker}.png`}
+            alt={`Stock Logo ${stock.ticker}`}
+            onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+              e.currentTarget.src = "/stocks/default.png";
+            }}
+          />
           <S.AutocompleteWrapper>
             <S.AutocompleteName>{stock.companyName}</S.AutocompleteName>
             <S.AutocompleteTicker>{stock.ticker}</S.AutocompleteTicker>
