@@ -45,6 +45,7 @@ const Header: FC = () => {
           keys.forEach((key) => {
             localStorage.removeItem(key);
           });
+          sessionStorage.removeItem("isLoggedIn");
           navigate("/login"); // 로그아웃 성공 시 로그인 페이지로 이동
         } else if (data.status === 400) {
           toast.error("로그아웃 실패!");

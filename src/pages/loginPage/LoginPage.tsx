@@ -124,8 +124,8 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // 회원가입 확인 핸들러
-  const signupSubmit = () => {
+  // 로그인 확인 핸들러
+  const loginSubmit = () => {
     loginAPI(username, password)
       .then((data) => {
         if (data.status === 200) {
@@ -134,6 +134,7 @@ const SignUpPage = () => {
           localStorage.setItem("userId", data.data.userId);
           localStorage.setItem("nickname", data.data.nickname);
           localStorage.setItem("email", data.data.email);
+          sessionStorage.setItem("isLoggedIn", "true");
           navigate("/"); // 로그인 성공 시 메인페이지로 이동
         } else if (data.status === 400) {
           // 이거 http status 응답 자체가 400으로 와서 여기 아래까지는 안 들어옴. 백에서 200으로 오도록 수정해야 함.
@@ -190,7 +191,7 @@ const SignUpPage = () => {
             </LoginWrapper>
 
             {/* 확인 버튼 */}
-            <StyledButton onClick={signupSubmit}>확인</StyledButton>
+            <StyledButton onClick={loginSubmit}>확인</StyledButton>
           </ButtonWrapper>
         </FormWrapper>
       </LoginPageBox>
