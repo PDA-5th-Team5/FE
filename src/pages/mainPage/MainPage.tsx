@@ -295,13 +295,17 @@ const MainPage: React.FC = () => {
       let maxText = "";
 
       if (thresholdArr) {
-        if (minIndex >= 0 && minIndex < thresholdArr.length) {
-          minText = thresholdArr[minIndex].toString();
+        if (minIndex === 0) {
+          minText = "-∞";
+        } else if (minIndex > 0 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex - 1].toString();
         }
-        if (maxIndex >= 0 && maxIndex < thresholdArr.length) {
-          maxText = thresholdArr[maxIndex].toString();
+        if (maxIndex >= 1 && maxIndex <= thresholdArr.length) {
+          maxText = thresholdArr[maxIndex - 1].toString();
         }
       }
+
+      console.log("이게 진짜 : maxText", maxText);
 
       return {
         label: item.key,
