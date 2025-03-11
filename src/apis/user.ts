@@ -1,4 +1,5 @@
 import { APIResponse, userAPI, stockAPI, portfolioAPI } from ".";
+import { FilterStock } from "../types/stockTypes";
 
 const refreshToken = localStorage.getItem("refreshToken");
 
@@ -28,6 +29,12 @@ export interface Comment {
 export interface MyCommentsResponseData {
   commentsS: Comment[]; // 종목에 단 댓글
   commentsP: Comment[]; // 공유 포트폴리오에 단 댓글
+}
+
+// 나의 종목 응답 데이터 타입
+export interface MyStocksResponseData {
+  stockCnt: number;
+  stockInfos: FilterStock[];
 }
 
 // 회원가입 (POST)
@@ -139,5 +146,14 @@ export const commentsAPI = async (): Promise<
 > => {
   const response =
     await userAPI.get<APIResponse<MyCommentsResponseData>>("/comments");
+  return response.data;
+};
+
+// 나의 종목 API (GET)
+export const stocksAPI = async (): Promise<
+  APIResponse<MyStocksResponseData>
+> => {
+  const response =
+    await userAPI.get<APIResponse<MyStocksResponseData>>("/stocks");
   return response.data;
 };

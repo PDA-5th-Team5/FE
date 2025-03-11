@@ -4,16 +4,37 @@ import Button from "../../components/button/Button";
 import StockGrid from "../../components/stock/grid/StockGrid";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
-import { Stock } from "../../types/stockTypes";
+import { FilterStock } from "../../types/stockTypes";
 import { updateProfileAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
-import { commentsAPI } from "../../apis/user";
+import { commentsAPI, stocksAPI } from "../../apis/user";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
+  const [stocks, setStocks] = useState<FilterStock[]>([]);
+  const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    stocksAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setStocks(data.data.stockInfos);
+          setStocksCnt(data.data.stockCnt);
+        } else if (data.status === 400) {
+          toast.error("나의 종목 불러오기 실패!");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
+      });
+  }, []);
+
   // 댓글 더미데이터
   // const portfolioComments = {
   //   category: "portfolio",
@@ -141,10 +162,6 @@ const MyPage = () => {
       ],
     },
   };
-
-  const [stocks, setStocks] = useState<Stock[]>(
-    dummyStockResponse.data.stockInfos
-  );
 
   // 댓글 상태: 초기엔 빈 배열로 설정
   const [stockComments, setStockComments] = useState<Comment[]>([]);
@@ -291,7 +308,7 @@ const MyPage = () => {
           <>
             <S.SectionTitleWrapper>
               <S.SectionTitle>관심 종목</S.SectionTitle>
-              <S.SectionCnt>12개</S.SectionCnt>
+              <S.SectionCnt>{stocksCnt}</S.SectionCnt>
             </S.SectionTitleWrapper>
             <S.SectionGrid>
               <StockGrid

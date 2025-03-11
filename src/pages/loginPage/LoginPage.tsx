@@ -135,7 +135,7 @@ const SignUpPage = () => {
           localStorage.setItem("nickname", data.data.nickname);
           localStorage.setItem("email", data.data.email);
           sessionStorage.setItem("isLoggedIn", "true");
-          navigate("/"); // 로그인 성공 시 메인페이지로 이동
+          window.location.href = "/"; // 메인 페이지로 이동
         } else if (data.status === 400) {
           // 이거 http status 응답 자체가 400으로 와서 여기 아래까지는 안 들어옴. 백에서 200으로 오도록 수정해야 함.
           toast.error("로그인 실패! 아이디와 비밀번호를 다시 확인해 주세요.");
