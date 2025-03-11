@@ -12,6 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 const Header: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,6 +21,14 @@ const Header: FC = () => {
     setKeyword("");
   }, [location]);
 
+  useEffect(() => {
+    if (sessionStorage.getItem("isLoggedIn") === "true") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
+
   const handleUserClick = () => {
     setUserMenuOpen((prev) => !prev);
   };
@@ -27,6 +36,10 @@ const Header: FC = () => {
   const handleMyPage = () => {
     setUserMenuOpen(false);
     navigate("/mypage");
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
   };
 
   const handleLogout = () => {
@@ -94,21 +107,27 @@ const Header: FC = () => {
             </S.HeaderSearchWrapper>
           </S.HeaderLi>
           {/* 유저 */}
-          <S.HeaderLi onClick={handleUserClick}>
-            <S.HeaderLoginIcon src={PersonIcon} $isOpen={false} />
-            <S.HeaderLoginIcon src={ArrowDownIcon} $isOpen={userMenuOpen} />
+          {!isLoggedIn ? (
+            <S.HeaderLi onClick={handleLogin}>
+              <S.loginSignupButton>Log In / Sign Up</S.loginSignupButton>
+            </S.HeaderLi>
+          ) : (
+            <S.HeaderLi onClick={handleUserClick}>
+              <S.HeaderLoginIcon src={PersonIcon} $isOpen={false} />
+              <S.HeaderLoginIcon src={ArrowDownIcon} $isOpen={userMenuOpen} />
 
-            {userMenuOpen && (
-              <S.UserDropdownMenu>
-                <S.UserDropdownItem onClick={handleMyPage}>
-                  마이페이지
-                </S.UserDropdownItem>
-                <S.UserDropdownItem onClick={handleLogout}>
-                  로그아웃
-                </S.UserDropdownItem>
-              </S.UserDropdownMenu>
-            )}
-          </S.HeaderLi>
+              {userMenuOpen && (
+                <S.UserDropdownMenu>
+                  <S.UserDropdownItem onClick={handleMyPage}>
+                    마이페이지
+                  </S.UserDropdownItem>
+                  <S.UserDropdownItem onClick={handleLogout}>
+                    로그아웃
+                  </S.UserDropdownItem>
+                </S.UserDropdownMenu>
+              )}
+            </S.HeaderLi>
+          )}
         </S.HeaderUl>
       </S.HeaderWrapper>
       <ToastContainer
