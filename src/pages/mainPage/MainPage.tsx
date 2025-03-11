@@ -346,19 +346,20 @@ const MainPage: React.FC = () => {
   }
 
   const handleConfirmAll = () => {
-    // min < max 검증
+    // 1. 최소값과 최대값 검증
     for (const label in editStates) {
       const { tempMin, tempMax } = editStates[label];
       if (tempMin.trim() !== "" && tempMax.trim() !== "") {
         const numericMin = parseFloat(tempMin);
         const numericMax = parseFloat(tempMax);
         if (numericMin >= numericMax) {
-          alert(`${label} 항목 : 최소값은 최대값보다 작아야 합니다. `);
+          alert(`${label} 항목 : 최소값은 최대값보다 작아야 합니다.`);
           return;
         }
       }
     }
 
+    // 2. thresholdRanges 업데이트 (화면에 표시되는 텍스트 업데이트)
     Object.keys(editStates).forEach((label) => {
       const { tempMin, tempMax } = editStates[label];
       const engKey = reverseMapping[label] || label;
@@ -396,6 +397,45 @@ const MainPage: React.FC = () => {
         )
       );
     });
+
+    // 3. allItems 업데이트하여 Snowflake 그래프에 반영
+    setAllItems((prevItems) =>
+      prevItems.map((item) => {
+        const label = item.key;
+        const editState = editStates[label];
+        if (editState) {
+          const engKey = reverseMapping[label] || label;
+          const thresholdArr = thresholds[engKey];
+          if (!thresholdArr) return item;
+
+          let newD2Value = item.D2Value; // 기본값 유지
+          let newD1Value = item.D1Value; // 기본값 유지
+
+          // 최소값 업데이트
+          if (editState.tempMin.trim() !== "") {
+            const numericMin = parseFloat(editState.tempMin);
+            const closestMinValue = findClosestMin(thresholdArr, numericMin);
+            // "-∞" 인 경우는 0으로 처리
+            if (closestMinValue === "-∞") {
+              newD2Value = 0;
+            } else {
+              const index = thresholdArr.indexOf(closestMinValue);
+              if (index !== -1) newD2Value = index + 1;
+            }
+          }
+          // 최대값 업데이트
+          if (editState.tempMax.trim() !== "") {
+            const numericMax = parseFloat(editState.tempMax);
+            const closestMaxValue = findClosestMax(thresholdArr, numericMax);
+            const index = thresholdArr.lastIndexOf(closestMaxValue);
+            if (index !== -1) newD1Value = index + 1;
+          }
+          return { ...item, D2Value: newD2Value, D1Value: newD1Value };
+        }
+        return item;
+      })
+    );
+
     setIsEditingAll(false);
     setEditStates({});
   };
