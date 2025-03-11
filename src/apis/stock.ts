@@ -1,5 +1,5 @@
 import { APIResponse, stockAPI } from ".";
-import { SnowflakeItems } from "../types/snowflakeTypes";
+import { SnowflakeItems, SnowflakeS, SnowflakeSElements } from "../types/snowflakeTypes";
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -265,4 +265,57 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
 };
 
 
+//경쟁사 조회 API
+export interface Competitors {
+  stockId: number;
+  companyName: string;
+  ticker: string;
+  snowflakeS:SnowflakeSElements;
+}
+export interface CompetitorsResponse {
+  status: number;
+  message: string;
+  data: {
+    competitors: Competitors[];
+  };
+}
+export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsResponse> => {
+  try {
+    const response = await stockAPI.get<CompetitorsResponse>(
+      `/${stockId}/competitors`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('경쟁사 정보 조회 실패:', error);
+    throw error;
+  }
+};
 
+// 라인그래프조회
+export interface LineGraphResponse {
+  status: number;
+  message: string;
+  data: {
+    lineGraph: Array<{
+      market?: string;
+      companyName?: string;
+      price?: { [date: string]: number };
+      closePrice?: { [date: string]: number };
+    }>;
+  };
+}
+
+
+export const getLineGraphAPI = async (stockId : number) : Promise<LineGraphResponse> => {
+  try {
+    const response = await stockAPI.post<LineGraphResponse>(
+      `/graph`,
+        {stockId}
+      
+    );
+    return response.data;
+  } catch (error){
+    console.error('라인그래프 조회 실패', error)
+    throw error;
+  }
+}

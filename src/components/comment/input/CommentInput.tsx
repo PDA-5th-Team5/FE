@@ -66,7 +66,7 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
 
     try {
       setIsLoading(true);
-      console.log("URL 파라미터 id:", num);
+      // console.log("URL 파라미터 id:", num);
       const stockId = num ? parseInt(num, 10) : 1;
       if (isNaN(stockId)) {
         console.error("ID 파싱 실패:", num);

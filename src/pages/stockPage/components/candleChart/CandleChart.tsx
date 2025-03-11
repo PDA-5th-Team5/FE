@@ -80,12 +80,12 @@ const CandleChart: React.FC = () => {
       try {
         setIsLoading(true);
         const response = await getCandleAPI(stockId);
-        console.log(response);
+        // console.log(response);
         if (response.data) {
           const transformedData = transformData(response.data);
           setCandleData(transformedData);
-          console.log(stockId);
-          console.log(response.data);
+          // console.log(stockId);
+          // console.log(response.data);
         }
       } catch (error) {
         console.error("캔들 차트 데이터 로딩 실패:", error);
