@@ -54,10 +54,6 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { num } = useParams<{ num: string }>();
 
-  // 하드코딩된 토큰
-  const TOKEN =
-    "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImZlZDU0MzBkLTUyM2QtNDJlNS1iNDUyLTc1MzFmNGNlYjI2ZCIsInVzZXJuYW1lIjoidGVzdDEyMzQiLCJyb2xlIjoiUk9MRV9BRE1JTiIsImlhdCI6MTc0MTU4MzYwOCwiZXhwIjoxNzQzMzk4MDA4fQ.sWq9gLDFHFumtEkKNa2dCPV0HikaD9v5ixgjUtMqC80";
-
   const saveComment = async () => {
     if (!content.trim()) {
       alert("댓글 내용을 입력해주세요.");
@@ -76,9 +72,6 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
       if (stockId === 0) {
         throw new Error("유효하지 않은 주식 ID입니다");
       }
-
-      // 토큰을 localStorage에 저장
-      localStorage.setItem("accessToken", TOKEN);
 
       await createCommentAPI(stockId, content);
 

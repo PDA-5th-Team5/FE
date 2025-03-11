@@ -36,9 +36,7 @@ const CommentList = () => {
   const size = 10;
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
-
-  // 하드코딩된 사용자 ID - 나중에 실제 로그인한 사용자 ID로 대체
-  const currentUserId = "442d1d2b-bf61-41a8-b5dd-a9aec296aa07";
+  const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
     fetchComments();

@@ -219,10 +219,9 @@ export interface StockInfoResponse {
 export const getStockInfo = async (
   stockId: number
 ): Promise<APIResponse<StockInfoResponse>> => {
-  //하드코딩 된 token 추후 변경
-  const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
-  const config = testToken 
-    ? { headers: { Authorization: `Bearer ${testToken}` } } 
+  const token = localStorage.getItem('accessToken');
+  const config = token 
+    ? { headers: { Authorization: `Bearer ${token}` } } 
     : {};
   const response = await stockAPI.get<APIResponse<StockInfoResponse>>(
     `/${stockId}`,config
@@ -235,11 +234,10 @@ export const getStockInfo = async (
 // 북마크 추가 API 함수
 export const addToWatchlist = async (stockId: number): Promise<any> => {
   try {
-    //하드코딩 된 token 추후 변경
-    const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
+    const token = localStorage.getItem('accessToken');
     const response = await stockAPI.post(`/${stockId}/watchlist`, null,{
       headers: {
-         Authorization: `Bearer ${testToken}`
+         Authorization: `Bearer ${token}`
       }
     });
     return response.data;
@@ -252,12 +250,11 @@ export const addToWatchlist = async (stockId: number): Promise<any> => {
 // 북마크 삭제 API 함수
 export const removeFromWatchlist = async (stockId: number): Promise<any> => {
   try {
-    //하드코딩 된 token 추후 변경
-    const testToken = "eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6ImFjY2VzcyIsInVzZXJJZCI6ImM1NTkxZDQ4LWMwMGYtNDdjOC1hNmFiLTAxNmU0MjlhMjVlOSIsInVzZXJuYW1lIjoi64-E7J2AIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3NDE1ODM5NzIsImV4cCI6MTc0MzM5ODM3Mn0.FILZqWUWa8w-PO1fgTs20bbmz_yRi0Yv-knVYQ1nnUs";
+    const token = localStorage.getItem('accessToken');
 
     const response = await stockAPI.delete(`/${stockId}/watchlist`,{
       headers: {
-        Authorization: `Bearer ${testToken}`
+        Authorization: `Bearer ${token}`
       }
     });
     return response.data;
