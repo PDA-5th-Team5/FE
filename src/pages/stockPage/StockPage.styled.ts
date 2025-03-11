@@ -31,6 +31,7 @@ export const StockInfoLeft = styled.div`
 export const StockInfoImg = styled.img`
   width: 120px;
   height: 120px;
+  border-radius: 20px;
 `;
 
 export const StockInfo = styled.div`

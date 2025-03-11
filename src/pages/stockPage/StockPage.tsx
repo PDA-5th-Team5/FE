@@ -26,6 +26,8 @@ import {
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
 
+const IMAGE_BASE = "../../assets/images/stocks/";
+
 export interface StockDataType {
   status?: number;
   message: string;
@@ -224,7 +226,13 @@ const StockPage = () => {
       <S.StockInfoContainer>
         <S.StockInfoTop>
           <S.StockInfoLeft>
-            <S.StockInfoImg src={SamsungImg} />
+            <S.StockInfoImg
+              src={`/stocks/${stockData.data.stockInfo.ticker}.png`}
+              alt={`Stock Logo ${stockData.data.stockInfo.ticker}`}
+              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                e.currentTarget.src = "/stocks/default.png";
+              }}
+            />
             <S.StockInfo>
               <S.StockInfoSector>
                 {stockData.data.stockInfo.sector}
