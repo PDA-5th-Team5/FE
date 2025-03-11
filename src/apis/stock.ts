@@ -1,5 +1,7 @@
 import { APIResponse, stockAPI } from ".";
-import { SnowflakeItems, SnowflakeS, SnowflakeSElements } from "../types/snowflakeTypes";
+
+import { SnowflakeItems, SnowflakeS, SnowflakeSElements, SnowflakePElements} from "../types/snowflakeTypes";
+
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -12,8 +14,9 @@ export interface AutocompleteStock {
 export const autocompleteAPI = async (
   keyword: string
 ): Promise<AutocompleteStock[]> => {
-  const response = await stockAPI.get<APIResponse<AutocompleteStock[]>>(
-    `/search?keyword=${keyword}`
+  const response = await stockAPI.post<APIResponse<AutocompleteStock[]>>(
+    `/search`,
+    { keyword }
   );
   const stocks = response.data.data;
   return Array.isArray(stocks) ? stocks : [];
@@ -264,7 +267,6 @@ export const removeFromWatchlist = async (stockId: number): Promise<any> => {
   }
 };
 
-
 //경쟁사 조회 API
 export interface Competitors {
   stockId: number;
@@ -291,5 +293,44 @@ export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsRes
   }
 };
 
-//아래처럼하면 복붙안하고 그냥 import 해서하면됨
-// <SnowflakeS>
+
+
+// 라인그래프조회
+export interface LineGraphResponse {
+  status: number;
+  message: string;
+  data: {
+    lineGraph: Array<{
+      market?: string;
+      companyName?: string;
+      price?: { [date: string]: number };
+      closePrice?: { [date: string]: number };
+    }>;
+  };
+}
+
+
+export const getLineGraphAPI = async (stockId : number) : Promise<LineGraphResponse> => {
+  try {
+    const response = await stockAPI.post<LineGraphResponse>(
+      `/graph`,
+        {stockId}
+      
+    );
+    return response.data;
+  } catch (error){
+    console.error('라인그래프 조회 실패', error)
+    throw error;
+  }
+}
+
+// 임계값 조회
+export const getThresholdsAPI = async (): Promise<
+  APIResponse<SnowflakePElements>
+> => {
+  const response =
+    await stockAPI.get<APIResponse<SnowflakePElements>>("/thresholds");
+
+  return response.data;
+};
+

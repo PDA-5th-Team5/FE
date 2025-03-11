@@ -30,13 +30,15 @@ interface LineGraphItem {
   closePrice?: { [date: string]: number };
   avgClosePrice?: { [date: string]: number };
 }
+// export interface LineGraphDataPoint {
+//   date: string;
+//   value: number;
+// }
 
 interface LineGraphData {
   status: number;
   message: string;
-  data: {
-    lineGraph: LineGraphItem[];
-  };
+  data: LineGraphItem[];
 }
 
 interface LineGraphProps {

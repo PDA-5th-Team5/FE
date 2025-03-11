@@ -42,3 +42,54 @@ export const saveMyPortfolioAPI = async (payload: SaveMyPortfolio) => {
   });
   return response.data;
 };
+
+//공유포폴리스트조회
+export interface RangeValue {
+  min: number;
+  max: number;
+}
+export interface SharePortfolioItem {
+  sharePortfolioId: number;
+  loadCount: number;
+  createdAt: string;
+  portfolio: {
+    id: string;
+    title: string;
+    description?: string;
+    category: string;
+    portfolioId: number;
+    market?: string;
+    sector?: string[];
+    
+    marketCap?: RangeValue;
+    per?: RangeValue;
+    eps?: RangeValue;
+    bps?: RangeValue;
+    pbr?: RangeValue;
+    dividendYield?: RangeValue;
+    foreignerRatio?: RangeValue;
+    sps?: RangeValue;
+    saleAccount?: RangeValue;
+    crntRate?: RangeValue;
+    lbltRate?: RangeValue;
+    ntinInrt?: RangeValue;
+    bsopPrfiInrt?: RangeValue;
+    grs?: RangeValue;
+    roeVal?: RangeValue;
+    bsopPrti?: RangeValue;
+    thtrNtin?: RangeValue;
+  };
+}
+
+export interface APIResponse<T> {
+  status: number;
+  message: string;
+  data: T;
+}
+
+export const sharePortfolioListAPI = async(sortBy: string = "loadCount"): Promise<SharePortfolioItem[]> => {
+  const response = await portfolioAPI.get<APIResponse<SharePortfolioItem[]>>(
+    `/share/board?page=0&sortBy=${sortBy}`
+  );
+  return response.data.data;
+}

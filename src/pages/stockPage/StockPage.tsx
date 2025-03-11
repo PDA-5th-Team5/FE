@@ -3,9 +3,12 @@ import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
+//port { stockLineGraph } from "./dummy";
+
 import LineGraph from "../../components/lineGraph/LineGraph";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
+//import { stockLineGraph } from "../stockPage/dummy";
 import {
   Item,
   labelMapping,
@@ -18,6 +21,8 @@ import {
   addToWatchlist,
   removeFromWatchlist,
   getCompetitorsAPI,
+  getLineGraphAPI,
+  LineGraphResponse,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
 
@@ -30,16 +35,22 @@ export interface StockDataType {
   };
 }
 
-const stockLineGraph = [
-  { date: "2023-01", value: 100 },
-  { date: "2023-02", value: 120 },
-];
+// const stockLineGraph = [
+//   { date: "2023-01", value: 100 },
+//   { date: "2023-02", value: 120 },
+// ];
 const StockPage = () => {
   const { num } = useParams<{ num: string }>();
   const stockId = num ? parseInt(num, 10) : 1;
-  console.log(num);
+  // console.log(num);
 
   const [stockData, setStockData] = useState<StockDataType | null>(null);
+  const [lineGraphData, setLineGraphData] = useState<LineGraphResponse | null>(
+    null
+  );
+  const [lineGraphLoading, setLineGraphLoading] = useState(true);
+  const [lineGraphError, setLineGraphError] = useState<string | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
@@ -94,6 +105,26 @@ const StockPage = () => {
   }, [stockId]);
 
   useEffect(() => {
+    const fetchLineGraphData = async () => {
+      try {
+        setLineGraphLoading(true);
+        setLineGraphError(null);
+
+        const response = await getLineGraphAPI(stockId);
+        console.log("여기확인", response.data);
+
+        setLineGraphData(response);
+      } catch (error) {
+        console.error("라인그래프 데이터 로딩 실패:", error);
+        setLineGraphError("라인그래프 데이터를 불러오는데 실패했습니다.");
+      } finally {
+        setLineGraphLoading(false);
+      }
+    };
+    fetchLineGraphData();
+  }, [stockId]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [stockId]);
   useEffect(() => {
@@ -103,7 +134,7 @@ const StockPage = () => {
         setCompetitorsError(null);
 
         const response = await getCompetitorsAPI(stockId);
-        console.log(response.data);
+
         if (response.status === 200) {
           setCompetitors(response.data.competitors);
         } else {
@@ -348,10 +379,16 @@ const StockPage = () => {
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
-      {/* <S.StockLineGraph>
+      <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
-        <LineGraph data={stockLineGraph} />
-      </S.StockLineGraph> */}
+        {lineGraphLoading ? (
+          <div>라인그래프 로딩 중...</div>
+        ) : lineGraphError ? (
+          <div>라인그래프 로드 실패: {lineGraphError}</div>
+        ) : (
+          <LineGraph data={lineGraphData} />
+        )}
+      </S.StockLineGraph>
 
       <S.StockComments>
         <Comment />
