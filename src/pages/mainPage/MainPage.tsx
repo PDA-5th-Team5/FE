@@ -27,9 +27,21 @@ import { getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
 import { useInView } from "react-intersection-observer";
 import { useThresholds } from "./hooks/useThresholds";
+import Button from "../../components/button/Button";
+
+type ThresholdRange = {
+  label: string;
+  minText: string;
+  maxText: string;
+};
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  // 직접 편집 기능
+  const [isEditingAll, setIsEditingAll] = useState(false);
+  const [editStates, setEditStates] = useState<
+    Record<string, { tempMin: string; tempMax: string }>
+  >({});
 
   // 무한 스크롤을 위한
   const [page, setPage] = useState(0);
@@ -285,8 +297,9 @@ const MainPage: React.FC = () => {
   );
 
   // 4) 임계값(배열)과 D1/D2 인덱스를 매핑해서 범위 텍스트로 변환
-  const thresholdRanges = useMemo(() => {
-    return filteredItems.map((item) => {
+  const [thresholdRanges, setThresholdRanges] = useState<ThresholdRange[]>([]);
+  useEffect(() => {
+    const newRanges = filteredItems.map((item) => {
       const engKey = reverseMapping[item.key] || item.key;
       const thresholdArr = thresholds[engKey];
       const maxIndex = item.D1Value;
@@ -304,16 +317,128 @@ const MainPage: React.FC = () => {
           maxText = thresholdArr[maxIndex - 1].toString();
         }
       }
-
-      console.log("이게 진짜 : maxText", maxText);
-
       return {
         label: item.key,
         minText,
         maxText,
       };
     });
+
+    setThresholdRanges(newRanges);
   }, [filteredItems, thresholds]);
+
+  // 사용자 입력값에 대해서 가장 가까운 min값 계산
+  function findClosestMin(thresholdArr: number[], userValue: number) {
+    const filtered = thresholdArr.filter((v) => v <= userValue);
+    if (filtered.length === 0) return "-∞";
+    return Math.max(...filtered);
+  }
+
+  // 사용자 입력값에 대해서 가장 가까운 max값 계산
+  function findClosestMax(thresholdArr: number[], userValue: number) {
+    const maxThreshold = Math.max(...thresholdArr);
+    if (userValue >= maxThreshold) {
+      return maxThreshold;
+    }
+    const filtered = thresholdArr.filter((v) => v >= userValue);
+    if (filtered.length === 0) return maxThreshold;
+    return Math.min(...filtered);
+  }
+
+  const handleConfirmAll = () => {
+    // 1. 최소값과 최대값 검증
+    for (const label in editStates) {
+      const { tempMin, tempMax } = editStates[label];
+      if (tempMin.trim() !== "" && tempMax.trim() !== "") {
+        const numericMin = parseFloat(tempMin);
+        const numericMax = parseFloat(tempMax);
+        if (numericMin >= numericMax) {
+          alert(`${label} 항목 : 최소값은 최대값보다 작아야 합니다.`);
+          return;
+        }
+      }
+    }
+
+    // 2. thresholdRanges 업데이트 (화면에 표시되는 텍스트 업데이트)
+    Object.keys(editStates).forEach((label) => {
+      const { tempMin, tempMax } = editStates[label];
+      const engKey = reverseMapping[label] || label;
+      const thresholdArr = thresholds[engKey];
+      if (!thresholdArr) return;
+
+      const current = thresholdRanges.find((item) => item.label === label);
+
+      let newMinText, newMaxText;
+      if (tempMin.trim() === "") {
+        newMinText = current ? current.minText : "-∞";
+      } else {
+        const numericMin = parseFloat(tempMin);
+        newMinText = findClosestMin(thresholdArr, numericMin);
+      }
+
+      if (tempMax.trim() === "") {
+        newMaxText = current
+          ? current.maxText
+          : Math.max(...thresholdArr).toString();
+      } else {
+        const numericMax = parseFloat(tempMax);
+        newMaxText = findClosestMax(thresholdArr, numericMax);
+      }
+
+      setThresholdRanges((prev) =>
+        prev.map((item) =>
+          item.label === label
+            ? {
+                ...item,
+                minText: newMinText.toString(),
+                maxText: newMaxText.toString(),
+              }
+            : item
+        )
+      );
+    });
+
+    // 3. allItems 업데이트하여 Snowflake 그래프에 반영
+    setAllItems((prevItems) =>
+      prevItems.map((item) => {
+        const label = item.key;
+        const editState = editStates[label];
+        if (editState) {
+          const engKey = reverseMapping[label] || label;
+          const thresholdArr = thresholds[engKey];
+          if (!thresholdArr) return item;
+
+          let newD2Value = item.D2Value; // 기본값 유지
+          let newD1Value = item.D1Value; // 기본값 유지
+
+          // 최소값 업데이트
+          if (editState.tempMin.trim() !== "") {
+            const numericMin = parseFloat(editState.tempMin);
+            const closestMinValue = findClosestMin(thresholdArr, numericMin);
+            // "-∞" 인 경우는 0으로 처리
+            if (closestMinValue === "-∞") {
+              newD2Value = 0;
+            } else {
+              const index = thresholdArr.indexOf(closestMinValue);
+              if (index !== -1) newD2Value = index + 1;
+            }
+          }
+          // 최대값 업데이트
+          if (editState.tempMax.trim() !== "") {
+            const numericMax = parseFloat(editState.tempMax);
+            const closestMaxValue = findClosestMax(thresholdArr, numericMax);
+            const index = thresholdArr.lastIndexOf(closestMaxValue);
+            if (index !== -1) newD1Value = index + 1;
+          }
+          return { ...item, D2Value: newD2Value, D1Value: newD1Value };
+        }
+        return item;
+      })
+    );
+
+    setIsEditingAll(false);
+    setEditStates({});
+  };
 
   return (
     <S.MainPageContainer>
@@ -480,14 +605,76 @@ const MainPage: React.FC = () => {
         </S.MainPageFilterContainer>
       </S.MainPageBox>
 
-      <S.MainPageConversionWrapper>
-        {thresholdRanges.map(({ label, minText, maxText }) => (
-          <S.MainPageConversion key={label}>
-            <span>{label}</span> {minText} ~ {maxText}
-          </S.MainPageConversion>
-        ))}
-      </S.MainPageConversionWrapper>
+      <S.MainPageConversionContainer>
+        {!isEditingAll ? (
+          <S.SnowflakeEditBtn
+            onClick={() => {
+              const initialStates = thresholdRanges.reduce(
+                (acc, item) => {
+                  acc[item.label] = {
+                    tempMin: item.minText,
+                    tempMax: item.maxText,
+                  };
+                  return acc;
+                },
+                {} as Record<string, { tempMin: string; tempMax: string }>
+              );
+              setEditStates(initialStates);
+              setIsEditingAll(true);
+            }}
+          >
+            직접입력
+          </S.SnowflakeEditBtn>
+        ) : (
+          <S.ButtonWrapper>
+            <Button text="확인" onClick={handleConfirmAll} />
+          </S.ButtonWrapper>
+        )}
+        <S.MainPageConversionWrapper>
+          {thresholdRanges.map(({ label, minText, maxText }) => (
+            <S.MainPageConversion key={label}>
+              <span>{label} </span>
+              {isEditingAll ? (
+                <>
+                  <S.SnowflakeEditInput
+                    type="number"
+                    value={editStates[label]?.tempMin || ""}
+                    onChange={(e) =>
+                      setEditStates((prev) => ({
+                        ...prev,
+                        [label]: {
+                          tempMin: e.target.value,
+                          tempMax: prev[label]?.tempMax || "",
+                        },
+                      }))
+                    }
+                  />
 
+                  {"~"}
+
+                  <S.SnowflakeEditInput
+                    type="number"
+                    value={editStates[label]?.tempMax || ""}
+                    onChange={(e) =>
+                      setEditStates((prev) => ({
+                        ...prev,
+                        [label]: {
+                          tempMin: prev[label]?.tempMin || "",
+                          tempMax: e.target.value,
+                        },
+                      }))
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  {minText} ~ {maxText}
+                </>
+              )}
+            </S.MainPageConversion>
+          ))}
+        </S.MainPageConversionWrapper>
+      </S.MainPageConversionContainer>
       <StockResult
         data={filteredStocks}
         filteredStocksCnt={filteredStocksCnt}

@@ -70,7 +70,8 @@ const StockResult = ({
       <S.StockResultHeader>
         <S.StockResultTitle>검색 결과 {filteredStocksCnt}개</S.StockResultTitle>
         <S.StockResultTool>
-          <S.StockResultSortWrapper>
+          {/* 정렬부분 */}
+          {/* <S.StockResultSortWrapper>
             <SortDropdown
               options={[
                 "시가총액",
@@ -94,7 +95,7 @@ const StockResult = ({
               isOpen={openDropdown === "sortDirection"}
               onToggle={() => toggleDropdown("sortDirection")}
             />
-          </S.StockResultSortWrapper>
+          </S.StockResultSortWrapper> */}
           <S.StockResultViewWrapper>
             {view === "list" ? (
               <>

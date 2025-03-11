@@ -238,3 +238,33 @@ export const SaveModalTextArea = styled.textarea`
   resize: none;
   font-family: "Pretendard";
 `;
+
+// snowflake 직접 입력
+export const MainPageConversionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const SnowflakeEditBtn = styled.div`
+  color: #babbbd;
+  font-size: 16px;
+  text-decoration-line: underline;
+  cursor: pointer;
+`;
+
+export const SnowflakeEditInput = styled.input`
+  max-width: 60px;
+  color: #babbbd;
+  font-size: 16px;
+  outline: none;
+  background-color: #272e3b;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  margin: 0px 4px;
+`;
+
+export const ButtonWrapper = styled.div`
+  width: 100%;
+`;
