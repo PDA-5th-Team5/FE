@@ -12,8 +12,9 @@ export interface AutocompleteStock {
 export const autocompleteAPI = async (
   keyword: string
 ): Promise<AutocompleteStock[]> => {
-  const response = await stockAPI.get<APIResponse<AutocompleteStock[]>>(
-    `/search?keyword=${keyword}`
+  const response = await stockAPI.post<APIResponse<AutocompleteStock[]>>(
+    `/search`,
+    { keyword }
   );
   const stocks = response.data.data;
   return Array.isArray(stocks) ? stocks : [];
