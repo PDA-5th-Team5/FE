@@ -4,6 +4,7 @@ import CommentInput from "./input/CommentInput";
 import CommentList from "./list/CommentList";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { CommentsResponse } from "../../apis/stock";
 
 const CommentContainer = styled.div`
   display: flex;
@@ -12,7 +13,27 @@ const CommentContainer = styled.div`
   gap: 80px;
 `;
 
-const Comment = () => {
+interface CommentProps {
+  data: CommentsResponse;
+  handleDelete: (commentId: number) => Promise<void>;
+  handleSaveEdit: (commentId: number) => Promise<void>;
+  handleEdit: (commentId: number, currentContent: string) => void;
+  handleCancelEdit: () => void;
+  editingCommentId: number | null;
+  editContent: string;
+  setEditContent: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Comment = ({
+  data,
+  handleDelete,
+  handleSaveEdit,
+  handleEdit,
+  handleCancelEdit,
+  editingCommentId,
+  editContent,
+  setEditContent,
+}: CommentProps) => {
   const [refreshComments, setRefreshComments] = useState(false);
   const { num } = useParams<{ num: string }>();
 
@@ -24,7 +45,17 @@ const Comment = () => {
   return (
     <CommentContainer>
       <CommentInput onCommentSubmitted={handleCommentSubmitted} />
-      <CommentList key={refreshComments ? "refresh" : "initial"} />
+      <CommentList
+        key={refreshComments ? "refresh" : "initial"}
+        data={data}
+        handleDelete={handleDelete}
+        handleSaveEdit={handleSaveEdit}
+        handleEdit={handleEdit}
+        handleCancelEdit={handleCancelEdit}
+        editingCommentId={editingCommentId}
+        editContent={editContent}
+        setEditContent={setEditContent}
+      />
     </CommentContainer>
   );
 };

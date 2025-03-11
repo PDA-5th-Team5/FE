@@ -23,6 +23,10 @@ import {
   getCompetitorsAPI,
   getLineGraphAPI,
   LineGraphResponse,
+  getCommentsAPI,
+  CommentsResponse,
+  deleteCommentAPI,
+  editCommentAPI,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
 
@@ -56,6 +60,82 @@ const StockPage = () => {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [competitorsLoading, setCompetitorsLoading] = useState(true);
   const [competitorsError, setCompetitorsError] = useState<string | null>(null);
+
+  const [commentsData, setCommentsData] = useState<CommentsResponse | null>(
+    null
+  );
+  const [page, setPage] = useState(1);
+  const size = 10;
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+
+  //1. 댓글 조회
+  useEffect(() => {
+    fetchComments();
+  }, [stockId, page]);
+
+  const fetchComments = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getCommentsAPI(stockId, page, size);
+      setCommentsData(data);
+    } catch (error) {
+      console.error("댓글 로딩 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  //2. 댓글 삭제
+  const handleDelete = async (commentId: number) => {
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
+      try {
+        await deleteCommentAPI(stockId, commentId);
+        alert("댓글이 삭제되었습니다.");
+        fetchComments();
+      } catch (error) {
+        console.error("댓글 삭제 실패:", error);
+        alert("댓글 삭제에 실패했습니다.");
+      }
+      setOpenDropdownId(null);
+    }
+  };
+
+  //3. 댓글 수정
+  const handleEdit = (commentId: number, currentContent: string) => {
+    console.log("adddd");
+
+    setEditingCommentId(commentId);
+    setEditContent(currentContent);
+    setOpenDropdownId(null);
+  };
+
+  const handleCancelEdit = () => {
+    console.log("수정");
+
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+  const handleSaveEdit = async (commentId: number) => {
+    console.log("ad");
+
+    if (!editContent.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await editCommentAPI(stockId, commentId, editContent);
+      alert("댓글이 수정되었습니다.");
+      setEditingCommentId(null);
+      setEditContent("");
+      fetchComments(); // 댓글 목록 새로고침
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
   useEffect(() => {
     const fetchStockInfo = async () => {
       try {
@@ -391,7 +471,16 @@ const StockPage = () => {
       </S.StockLineGraph>
 
       <S.StockComments>
-        <Comment />
+        <Comment
+          data={commentsData}
+          handleDelete={handleDelete}
+          handleSaveEdit={handleSaveEdit}
+          handleEdit={handleEdit}
+          handleCancelEdit={handleCancelEdit}
+          editingCommentId={editingCommentId}
+          editContent={editContent}
+          setEditContent={setEditContent}
+        />
       </S.StockComments>
     </S.StockPageContainer>
   );
