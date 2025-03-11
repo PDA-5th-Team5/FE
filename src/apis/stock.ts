@@ -1,5 +1,7 @@
 import { APIResponse, stockAPI } from ".";
+
 import { SnowflakeItems, SnowflakeS, SnowflakeSElements, SnowflakePElements} from "../types/snowflakeTypes";
+
 import { FilterStock } from "../types/stockTypes";
 
 // 1) 개별 종목 검색 (자동완성)
@@ -291,8 +293,36 @@ export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsRes
   }
 };
 
-//아래처럼하면 복붙안하고 그냥 import 해서하면됨
-// <SnowflakeS>
+
+
+// 라인그래프조회
+export interface LineGraphResponse {
+  status: number;
+  message: string;
+  data: {
+    lineGraph: Array<{
+      market?: string;
+      companyName?: string;
+      price?: { [date: string]: number };
+      closePrice?: { [date: string]: number };
+    }>;
+  };
+}
+
+
+export const getLineGraphAPI = async (stockId : number) : Promise<LineGraphResponse> => {
+  try {
+    const response = await stockAPI.post<LineGraphResponse>(
+      `/graph`,
+        {stockId}
+      
+    );
+    return response.data;
+  } catch (error){
+    console.error('라인그래프 조회 실패', error)
+    throw error;
+  }
+}
 
 // 임계값 조회
 export const getThresholdsAPI = async (): Promise<
@@ -303,3 +333,4 @@ export const getThresholdsAPI = async (): Promise<
 
   return response.data;
 };
+
