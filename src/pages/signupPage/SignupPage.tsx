@@ -130,7 +130,8 @@ const SignupPage = () => {
     signupAPI(username, password, email, nickname)
       .then((data) => {
         if (data.status === 200) {
-          toast.success("회원가입 성공!");
+          alert("회원가입 성공!");
+          navigate("/login");
         } else if (data.status === 409) {
           toast.error("아이디가 중복됩니다.");
         } else if (data.status === 500) {

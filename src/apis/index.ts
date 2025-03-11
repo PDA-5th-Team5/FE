@@ -97,6 +97,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosInstance } from "axios";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
+let accessToken = localStorage.getItem("accessToken");
+const refreshToken = localStorage.getItem("refreshToken");
 
 export interface APIResponse<T> {
   status: number;
@@ -108,6 +110,7 @@ export const stockAPI = axios.create({
   baseURL: `${baseURL}/stock/api/stocks`,
   headers: {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -116,6 +119,7 @@ export const portfolioAPI = axios.create({
   baseURL: `${baseURL}/portfolio/api/portfolio`,
   headers: {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -124,6 +128,7 @@ export const userAPI = axios.create({
   baseURL: `${baseURL}/user`,
   headers: {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -136,7 +141,11 @@ export const userAPI = axios.create({
 */
 
 const reissueToken = async (): Promise<string> => {
-  const response = await userAPI.post<APIResponse<null>>("/reissue");
+  const response = await userAPI.post<APIResponse<null>>("/reissue", null, {
+    headers: {
+      refresh: refreshToken,
+    },
+  });
   const accessToken = response.headers["access"];
   return accessToken;
 };
@@ -157,25 +166,17 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
 
   // ===== 응답 인터셉터 (Response Interceptor) =====
   apiInstance.interceptors.response.use(
-    (response) => {
-      console.log("Response Interceptor - Success:", response);
-      return response;
-    },
-    async (error: AxiosError) => {
-      console.log("Response Interceptor - Error:", error);
-      console.log("에러: ", error.response);
-
-      // 401 & "Access 토큰 만료"인 경우 토큰 재발급
+    async (response) => {
       if (
-        error.response &&
-        error.response.status === 400
-        // error.response.status === 401 &&
-        // (error.response.data as any)?.message === "Access 토큰 만료"
+        response.data &&
+        response.data.status === 401 &&
+        response.data.message === "Access 토큰 만료"
       ) {
         try {
           console.log("Trying to reissue token...");
           const newAccessToken = await reissueToken();
           localStorage.setItem("accessToken", newAccessToken);
+          accessToken = newAccessToken;
 
           stockAPI.defaults.headers.common["Authorization"] =
             `Bearer ${newAccessToken}`;
@@ -184,12 +185,7 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
           userAPI.defaults.headers.common["Authorization"] =
             `Bearer ${newAccessToken}`;
 
-          if (!error.config) {
-            console.log("Error config is undefined. Cannot retry request.");
-            return Promise.reject(error);
-          }
-
-          const originalRequest = error.config as AxiosRequestConfig;
+          const originalRequest = response.config as AxiosRequestConfig;
           originalRequest.headers = {
             ...originalRequest.headers,
             Authorization: `Bearer ${newAccessToken}`,
@@ -202,10 +198,90 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
           return Promise.reject(refreshError);
         }
       }
+      console.log("Response Interceptor - Success:", response);
+      return response;
+    },
+    (error: AxiosError) => {
+      console.log("Response Interceptor - Error:", error);
       return Promise.reject(error);
     }
   );
 };
+
+// const reissueToken = async (): Promise<string> => {
+//   const response = await userAPI.post<APIResponse<null>>("/reissue", null, {
+//     headers: {
+//       refresh: refreshToken,
+//     },
+//   });
+//   const accessToken = response.headers["access"];
+//   return accessToken;
+// };
+
+// // 모든 axios 인스턴스에 인터셉터를 추가하는 함수
+// const attachInterceptor = (apiInstance: AxiosInstance) => {
+//   // ===== 요청 인터셉터 (Request Interceptor) =====
+//   apiInstance.interceptors.request.use(
+//     (config) => {
+//       console.log("Request Interceptor - Success:", config);
+//       return config;
+//     },
+//     (error) => {
+//       console.log("Request Interceptor - Error:", error);
+//       return Promise.reject(error);
+//     }
+//   );
+
+//   // ===== 응답 인터셉터 (Response Interceptor) =====
+//   apiInstance.interceptors.response.use(
+//     (response) => {
+//       console.log("Response Interceptor - Success:", response);
+//       return response;
+//     },
+//     async (error: AxiosError) => {
+//       console.log("Response Interceptor - Error:", error);
+//       console.log("에러: ", error.response);
+
+//       // 401 & "Access 토큰 만료"인 경우 토큰 재발급
+//       if (
+//         error.response &&
+//         // error.response.status === 400
+//         error.response.status === 401
+//       ) {
+//         try {
+//           console.log("Trying to reissue token...");
+//           const newAccessToken = await reissueToken();
+//           localStorage.setItem("accessToken", newAccessToken);
+
+//           stockAPI.defaults.headers.common["Authorization"] =
+//             `Bearer ${newAccessToken}`;
+//           portfolioAPI.defaults.headers.common["Authorization"] =
+//             `Bearer ${newAccessToken}`;
+//           userAPI.defaults.headers.common["Authorization"] =
+//             `Bearer ${newAccessToken}`;
+
+//           if (!error.config) {
+//             console.log("Error config is undefined. Cannot retry request.");
+//             return Promise.reject(error);
+//           }
+
+//           const originalRequest = error.config as AxiosRequestConfig;
+//           originalRequest.headers = {
+//             ...originalRequest.headers,
+//             Authorization: `Bearer ${newAccessToken}`,
+//           };
+
+//           console.log("Retrying original request with new access token...");
+//           return apiInstance.request(originalRequest);
+//         } catch (refreshError) {
+//           console.log("Token reissue failed:", refreshError);
+//           return Promise.reject(refreshError);
+//         }
+//       }
+//       return Promise.reject(error);
+//     }
+//   );
+// };
 
 // 각 axios 인스턴스에 인터셉터 등록
 attachInterceptor(stockAPI);

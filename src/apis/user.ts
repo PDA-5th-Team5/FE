@@ -1,5 +1,7 @@
 import { APIResponse, userAPI, stockAPI, portfolioAPI } from ".";
 
+const refreshToken = localStorage.getItem("refreshToken");
+
 // 로그인 응답
 export interface LoginUser {
   userId: string;
@@ -77,12 +79,20 @@ export const loginAPI = async (
   // local storage와 각 헤더에 Access 토큰 설정
   // 응답 헤더에서 'Authorization' 추출
   const accessToken = response.headers["access"];
-  console.log(accessToken);
+  const refreshToken = response.headers["refresh"];
+  //   console.log(accessToken);
+  //   console.log(refreshToken);
 
   if (accessToken) {
     // 토큰 저장 (예: localStorage 사용)
     localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
+    // console.log(accessToken);
     console.log(accessToken);
+    console.log(refreshToken);
+
+    document.cookie = `refresh=${refreshToken}; path=/;`;
+    // document.cookie = `refresh=${refreshToken}; path=/; SameSite=None`;
 
     // 모든 axios 인스턴스의 기본 헤더에 토큰 설정
     stockAPI.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
@@ -98,8 +108,15 @@ export const loginAPI = async (
 // 로그아웃 (POST)
 export const logoutAPI = async (): Promise<APIResponse<null>> => {
   // 요청
-  const response = await userAPI.post<APIResponse<null>>("/logout");
-
+  const response = await userAPI.post<APIResponse<null>>(
+    "/logout",
+    null, // 본문(body) 데이터가 없을 경우 null
+    {
+      headers: {
+        refresh: refreshToken,
+      },
+    }
+  );
   // 응답
   return response.data;
 };

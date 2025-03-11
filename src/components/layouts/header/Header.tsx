@@ -33,6 +33,18 @@ const Header: FC = () => {
     logoutAPI()
       .then((data) => {
         if (data.status === 200) {
+          // 로컬 스토리지에서 삭제
+          const keys = [
+            "accessToken",
+            "email",
+            "nickname",
+            "refreshToken",
+            "userId",
+            "username",
+          ];
+          keys.forEach((key) => {
+            localStorage.removeItem(key);
+          });
           navigate("/login"); // 로그아웃 성공 시 로그인 페이지로 이동
         } else if (data.status === 400) {
           toast.error("로그아웃 실패!");
