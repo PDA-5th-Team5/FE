@@ -134,7 +134,7 @@ const StockPage = () => {
         setCompetitorsError(null);
 
         const response = await getCompetitorsAPI(stockId);
-        // console.log(response.data);
+
         if (response.status === 200) {
           setCompetitors(response.data.competitors);
         } else {

@@ -177,6 +177,7 @@ export const MainPageConversionWrapper = styled.div`
   display: flex;
   gap: 12px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 `;
 
 export const MainPageConversion = styled.div`
@@ -186,6 +187,10 @@ export const MainPageConversion = styled.div`
   background: #373d47;
   color: #d7d8da;
   font-size: 14px;
+
+  span {
+    font-weight: 700;
+  }
 `;
 
 // 저장 모달 내용
