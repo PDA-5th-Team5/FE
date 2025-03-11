@@ -98,3 +98,22 @@ export const UserDropdownItem = styled.div`
     background: #2595e0;
   }
 `;
+
+export const loginSignupButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 124px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #2595e0;
+  color: #fff;
+  font-family: "Pretendard";
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: #1e7ec0;
+  }
+`;
