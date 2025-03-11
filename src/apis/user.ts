@@ -140,7 +140,7 @@ export const updateProfileAPI = async (
   return response.data;
 };
 
-// 나의 댓글 API (GET)
+// 나의 댓글 조회 API (GET)
 export const commentsAPI = async (): Promise<
   APIResponse<MyCommentsResponseData>
 > => {
@@ -149,7 +149,7 @@ export const commentsAPI = async (): Promise<
   return response.data;
 };
 
-// 나의 종목 API (GET)
+// 나의 종목 조회 API (GET)
 export const stocksAPI = async (): Promise<
   APIResponse<MyStocksResponseData>
 > => {
