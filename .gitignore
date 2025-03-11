@@ -33,4 +33,4 @@ dist-ssr
 .env
 
 # stock image
-stocks/
+public/stocks/
