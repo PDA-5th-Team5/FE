@@ -3,11 +3,6 @@ import * as S from "./CommentList.styled";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MoreIcon from "../../../assets/images/icons/more.png";
-import {
-  getCommentsAPI,
-  deleteCommentAPI,
-  editCommentAPI,
-} from "../../../apis/stock";
 
 interface Comment {
   commentId: number;
@@ -24,79 +19,36 @@ interface CommentsResponse {
   comments: Comment[];
 }
 
-const CommentList = () => {
-  const [commentsData, setCommentsData] = useState<CommentsResponse | null>(
-    null
-  );
+interface CommentsProps {
+  data: CommentsResponse;
+  handleDelete: (commentId: number) => Promise<void>;
+  handleSaveEdit: (commentId: number) => Promise<void>;
+  handleEdit: (commentId: number, currentContent: string) => void;
+  handleCancelEdit: () => void;
+  editingCommentId: number | null;
+  editContent: string;
+  setEditContent: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const CommentList = ({
+  data,
+  handleDelete,
+  handleSaveEdit,
+  handleEdit,
+  handleCancelEdit,
+  editingCommentId,
+  editContent,
+  setEditContent,
+}: CommentsProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const { num } = useParams<{ num: string }>();
   const stockId = num ? parseInt(num, 10) : 1;
-  const [page, setPage] = useState(1);
-  const size = 10;
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-  const [editContent, setEditContent] = useState("");
   const currentUserId = localStorage.getItem("userId");
-
-  useEffect(() => {
-    fetchComments();
-  }, [stockId, page]);
-
-  const fetchComments = async () => {
-    try {
-      setIsLoading(true);
-      const data = await getCommentsAPI(stockId, page, size);
-      setCommentsData(data);
-    } catch (error) {
-      console.error("댓글 로딩 실패:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  console.log("댓글", data);
 
   const handleToggleDropdown = (commentId: number) => {
     setOpenDropdownId((prev) => (prev === commentId ? null : commentId));
-  };
-
-  const handleEdit = (commentId: number, currentContent: string) => {
-    setEditingCommentId(commentId);
-    setEditContent(currentContent);
-    setOpenDropdownId(null);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingCommentId(null);
-    setEditContent("");
-  };
-  const handleSaveEdit = async (commentId: number) => {
-    if (!editContent.trim()) {
-      alert("댓글 내용을 입력해주세요.");
-      return;
-    }
-
-    try {
-      await editCommentAPI(stockId, commentId, editContent);
-      alert("댓글이 수정되었습니다.");
-      setEditingCommentId(null);
-      setEditContent("");
-      fetchComments(); // 댓글 목록 새로고침
-    } catch (error) {
-      console.error("댓글 수정 실패:", error);
-      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
-    }
-  };
-  const handleDelete = async (commentId: number) => {
-    if (window.confirm("댓글을 삭제하시겠습니까?")) {
-      try {
-        await deleteCommentAPI(stockId, commentId);
-        alert("댓글이 삭제되었습니다.");
-        fetchComments();
-      } catch (error) {
-        console.error("댓글 삭제 실패:", error);
-        alert("댓글 삭제에 실패했습니다.");
-      }
-      setOpenDropdownId(null);
-    }
   };
 
   // 날짜 포맷 함수
@@ -105,22 +57,22 @@ const CommentList = () => {
     return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  if (isLoading) {
-    return <div>댓글을 불러오는 중...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>댓글을 불러오는 중...</div>;
+  // }
 
-  if (!commentsData) {
+  if (!data) {
     return <div>댓글을 불러올 수 없습니다.</div>;
   }
 
   return (
     <S.CommentListContainer>
-      <S.CommentListHeader>댓글 {commentsData.commentCnt}</S.CommentListHeader>
+      <S.CommentListHeader>댓글 {data.commentCnt}</S.CommentListHeader>
 
-      {commentsData.comments.length === 0 ? (
+      {data.comments.length === 0 ? (
         <S.NoComments>아직 댓글이 없습니다.</S.NoComments>
       ) : (
-        commentsData.comments.map((comment) => (
+        data.comments.map((comment) => (
           <S.Comment key={comment.commentId}>
             <S.CommentHeader>
               <S.CommentName>{comment.nickname}</S.CommentName>
