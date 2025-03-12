@@ -9,6 +9,7 @@ import { updateProfileAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
+import Toggle from "./components/Toggle";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
@@ -25,6 +26,12 @@ const MyPage = () => {
   ];
   const handleTelegramTabClick = (value: string) => {
     setActiveTelegramTab(value);
+  };
+  // 텔레그램 토글
+  const [telegramToggle, setTelegramToggle] = useState(false);
+
+  const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTelegramToggle(e.target.checked);
   };
 
   useEffect(() => {
@@ -330,7 +337,19 @@ const MyPage = () => {
                 onChange={handleTelegramTabClick}
               />
 
-              <S.CommentList></S.CommentList>
+              <S.CommentList>
+                <S.TelegramItem>
+                  <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
+                  <S.TelegramToggleWrapper>
+                    <S.TelegramToggleText>
+                      텔레그램으로 알림 받기
+                    </S.TelegramToggleText>
+                    <S.TelegramToggle>
+                      <Toggle />
+                    </S.TelegramToggle>
+                  </S.TelegramToggleWrapper>
+                </S.TelegramItem>
+              </S.CommentList>
             </S.SectionComment>
           </>
         )}

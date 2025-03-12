@@ -1,3 +1,4 @@
+import Toggle from "react-toggle";
 import styled from "styled-components";
 
 export const MyPageContainer = styled.div`
@@ -149,3 +150,30 @@ export const CommentContent = styled.div`
   font-size: 14px;
   line-height: 30px;
 `;
+
+// 텔레그램 알림
+export const TelegramItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #404040;
+  padding: 12px;
+`;
+
+export const TelegramTitle = styled.div`
+  color: #fff;
+  font-size: 16px;
+`;
+
+export const TelegramToggleWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`;
+
+export const TelegramToggleText = styled.div`
+  color: #8b8d91;
+  font-size: 16px;
+`;
+
+export const TelegramToggle = styled.div``;
