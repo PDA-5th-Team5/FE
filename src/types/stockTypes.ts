@@ -24,7 +24,7 @@ export interface StockDetail {
   companyName: string;
   marketType: string;
   currentPrice: number;
-  marketCap: number;
+  marketCap: string;
   "1WeekProfitRate": number;
   "1YearProfitRate": number;
   companyOverview: string;
@@ -33,8 +33,7 @@ export interface StockDetail {
   pbr: number;
   bps: number;
   dividendYeild: number;
-  sectorAveragePer: number;
-  isBookmark: boolean;
+  isBookmark?: boolean;
   snowflakeS?: SnowflakeS;
 }
 
@@ -46,7 +45,7 @@ export interface Competitor {
     per: number;
     lblt_rate: number;
     marketCap: number;
-    divYield: number;
+    dividendYield: number;
     foreignerRatio: number;
   };
 }
@@ -59,6 +58,8 @@ export interface FilterStock extends SnowflakeSElements {
   sector: string;
   companyOverview: string;
   snowflakeS: Partial<SnowflakeSElements>;
+  marketCap?: number;
+  lbltRate?: number;
   weekRateChange: number;
   yearRateChange: number;
   currentPrice: number;

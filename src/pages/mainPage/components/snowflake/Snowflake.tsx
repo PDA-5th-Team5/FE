@@ -36,7 +36,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
       datasets: [
         {
           data: filteredItems.map((item) => item.D2Value),
-          label: "D2",
+          label: "최소",
           borderColor: "#FEFE08",
           borderWidth: 4,
           pointBackgroundColor: "#FBFF439C",
@@ -48,7 +48,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
         },
         {
           data: filteredItems.map((item) => item.D1Value),
-          label: "D1",
+          label: "최대",
           borderColor: "#FEFE08",
           borderWidth: 4,
           backgroundColor: "#FBFF439C",
@@ -156,7 +156,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
           display: false,
         },
         tooltip: {
-          enabled: false, // 툴팁 숨기기
+          enabled: true, // 툴팁 숨기기
         },
       },
     };

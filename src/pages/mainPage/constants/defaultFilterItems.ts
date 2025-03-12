@@ -15,8 +15,8 @@ export const defaultFilterItems = [
   { key: "배당수익률", label: "배당수익률 ⓘ", D1Value: 19, D2Value: 5 },
   { key: "외국인 보유율", label: "외국인 보유율 ⓘ", D1Value: 19, D2Value: 5 },
   {
-    key: "총자본 순이익률",
-    label: "총자본 순이익률 ⓘ",
+    key: "PBR",
+    label: "PBR ⓘ",
     D1Value: 19,
     D2Value: 5,
   },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as S from "./MainPage.styled";
 import PlusIcon from "../../assets/images/icons/plus.png";
 import Snowflake from "./components/snowflake/Snowflake";
@@ -25,10 +25,31 @@ import { useNavigate } from "react-router-dom";
 import { useSectors } from "./hooks/useSectors";
 import { getFilterStocksAPI } from "../../apis/stock";
 import { FilterStock } from "../../types/stockTypes";
+import { useInView } from "react-intersection-observer";
+import { useThresholds } from "./hooks/useThresholds";
+import Button from "../../components/button/Button";
+
+type ThresholdRange = {
+  label: string;
+  minText: string;
+  maxText: string;
+};
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  // 직접 편집 기능
+  const [isEditingAll, setIsEditingAll] = useState(false);
+  const [editStates, setEditStates] = useState<
+    Record<string, { tempMin: string; tempMax: string }>
+  >({});
+
+  // 무한 스크롤을 위한
+  const [page, setPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [ref, inView] = useInView();
+  const [isLast, setIsLast] = useState(false);
   const [filteredStocks, setFilteredStocks] = useState<FilterStock[]>([]);
+  const [filteredStocksCnt, setFilteredStocksCnt] = useState(0);
 
   // 추천 필터
   const [activeTab, setActiveTab] = useState("popular");
@@ -80,7 +101,10 @@ const MainPage: React.FC = () => {
   const [recommendedPortfolios, setRecommendedPortfolios] = useState<
     RecommededPortfolio[]
   >([]);
-  // const [loading, setLoading] = useState<boolean>(true);
+
+  // 5) 임계값
+  const { data: thresholdsData } = useThresholds();
+  const thresholds = (thresholdsData?.data ?? {}) as Record<string, number[]>;
 
   // 필터 항목 리셋 함수
   const handleReset = () => {
@@ -179,13 +203,13 @@ const MainPage: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    handleFilterStocks();
-  }, [selectedKeys, marketFilter, selectedSectorKeys]);
-
   // [API] 조건 검색 결과 조회
-  const handleFilterStocks = async () => {
+  const handleFilterStocks = async (page: number) => {
     try {
+      if (page === 0) {
+        setIsLoading(true);
+      }
+
       const reverseMapping = Object.entries(labelMapping).reduce(
         (acc, [eng, kor]) => {
           acc[kor] = eng;
@@ -218,16 +242,210 @@ const MainPage: React.FC = () => {
         filters,
       };
 
-      const response = await getFilterStocksAPI(payload);
-      setFilteredStocks(response.data);
+      const response = await getFilterStocksAPI({ payload, page });
+
+      if (page === 0) {
+        setFilteredStocks(response.data.stocks);
+        setFilteredStocksCnt(response.data.totalCount);
+      } else {
+        setFilteredStocks((prevData) => [...prevData, ...response.data.stocks]);
+      }
+
+      if (response.data.stocks.length === 0) {
+        setIsLast(true);
+      }
     } catch (error) {
       console.error("필터 API 호출 실패:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // 드래그 종료 시점에만 호출할 함수
   const handleSnowflakeDragEnd = () => {
-    handleFilterStocks();
+    handleFilterStocks(0);
+  };
+
+  useEffect(() => {
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
+  }, [selectedKeys, marketFilter, selectedSectorKeys]);
+
+  useEffect(() => {
+    if (inView && !isLoading && !isLast) {
+      setTimeout(() => {
+        handleFilterStocks(page + 1);
+        setPage((prev) => prev + 1);
+      }, 10);
+    }
+  }, [inView]);
+
+  // 3) 현재 선택된 지표만 필터링
+  const filteredItems = useMemo(
+    () => allItems.filter((item) => selectedKeys.includes(item.key)),
+    [allItems, selectedKeys]
+  );
+
+  const reverseMapping = Object.entries(labelMapping).reduce(
+    (acc, [eng, kor]) => {
+      acc[kor] = eng;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  // 4) 임계값(배열)과 D1/D2 인덱스를 매핑해서 범위 텍스트로 변환
+  const [thresholdRanges, setThresholdRanges] = useState<ThresholdRange[]>([]);
+  useEffect(() => {
+    const newRanges = filteredItems.map((item) => {
+      const engKey = reverseMapping[item.key] || item.key;
+      const thresholdArr = thresholds[engKey];
+      const maxIndex = item.D1Value;
+      const minIndex = item.D2Value;
+      let minText = "";
+      let maxText = "";
+
+      if (thresholdArr) {
+        if (minIndex === 0) {
+          minText = "-∞";
+        } else if (minIndex > 0 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex - 1].toString();
+        }
+        if (maxIndex >= 1 && maxIndex <= thresholdArr.length) {
+          maxText = thresholdArr[maxIndex - 1].toString();
+        }
+      }
+      return { label: item.key, minText, maxText };
+    });
+
+    // API 무한 요청 막기
+    setThresholdRanges((prevRanges) => {
+      if (JSON.stringify(prevRanges) === JSON.stringify(newRanges)) {
+        return prevRanges;
+      }
+      return newRanges;
+    });
+  }, [filteredItems, thresholds]);
+
+  // 사용자 입력값에 대해서 가장 가까운 min값 계산
+  function findClosestMin(thresholdArr: number[], userValue: number) {
+    const filtered = thresholdArr.filter((v) => v <= userValue);
+    if (filtered.length === 0) return "-∞";
+    return Math.max(...filtered);
+  }
+
+  // 사용자 입력값에 대해서 가장 가까운 max값 계산
+  function findClosestMax(thresholdArr: number[], userValue: number) {
+    const maxThreshold = Math.max(...thresholdArr);
+    if (userValue >= maxThreshold) {
+      return maxThreshold;
+    }
+    const filtered = thresholdArr.filter((v) => v >= userValue);
+    if (filtered.length === 0) return maxThreshold;
+    return Math.min(...filtered);
+  }
+
+  const handleConfirmAll = () => {
+    // 1. 최소값과 최대값 검증
+    for (const label in editStates) {
+      const { tempMin, tempMax } = editStates[label];
+      if (tempMin.trim() !== "" && tempMax.trim() !== "") {
+        const numericMin = parseFloat(tempMin);
+        const numericMax = parseFloat(tempMax);
+        if (numericMin >= numericMax) {
+          alert(`${label} 항목 : 최소값은 최대값보다 작아야 합니다.`);
+          return;
+        }
+      }
+    }
+
+    // 2. thresholdRanges 업데이트 (화면에 표시되는 텍스트 업데이트)
+    Object.keys(editStates).forEach((label) => {
+      const { tempMin, tempMax } = editStates[label];
+      const engKey = reverseMapping[label] || label;
+      const thresholdArr = thresholds[engKey];
+      if (!thresholdArr) return;
+
+      const current = thresholdRanges.find((item) => item.label === label);
+
+      let newMinText, newMaxText;
+      if (tempMin.trim() === "") {
+        newMinText = current ? current.minText : "-∞";
+      } else {
+        const numericMin = parseFloat(tempMin);
+        newMinText = findClosestMin(thresholdArr, numericMin);
+      }
+
+      if (tempMax.trim() === "") {
+        newMaxText = current
+          ? current.maxText
+          : Math.max(...thresholdArr).toString();
+      } else {
+        const numericMax = parseFloat(tempMax);
+        newMaxText = findClosestMax(thresholdArr, numericMax);
+      }
+
+      setThresholdRanges((prev) =>
+        prev.map((item) =>
+          item.label === label
+            ? {
+                ...item,
+                minText: newMinText.toString(),
+                maxText: newMaxText.toString(),
+              }
+            : item
+        )
+      );
+    });
+
+    // 3. allItems 업데이트하여 Snowflake 그래프에 반영
+    setAllItems((prevItems) =>
+      prevItems.map((item) => {
+        const label = item.key;
+        const editState = editStates[label];
+        if (editState) {
+          const engKey = reverseMapping[label] || label;
+          const thresholdArr = thresholds[engKey];
+          if (!thresholdArr) return item;
+
+          let newD2Value = item.D2Value; // 기본값 유지
+          let newD1Value = item.D1Value; // 기본값 유지
+
+          // 최소값 업데이트
+          if (editState.tempMin.trim() !== "") {
+            const numericMin = parseFloat(editState.tempMin);
+            const closestMinValue = findClosestMin(thresholdArr, numericMin);
+            // "-∞" 인 경우는 0으로 처리
+            if (closestMinValue === "-∞") {
+              newD2Value = 0;
+            } else {
+              const index = thresholdArr.indexOf(closestMinValue);
+              if (index !== -1) newD2Value = index + 1;
+            }
+          }
+          // 최대값 업데이트
+          if (editState.tempMax.trim() !== "") {
+            const numericMax = parseFloat(editState.tempMax);
+            const closestMaxValue = findClosestMax(thresholdArr, numericMax);
+            const index = thresholdArr.lastIndexOf(closestMaxValue);
+            if (index !== -1) newD1Value = index + 1;
+          }
+          return { ...item, D2Value: newD2Value, D1Value: newD1Value };
+        }
+        return item;
+      })
+    );
+
+    setIsEditingAll(false);
+    setEditStates({});
+
+    // API 재요청
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
   };
 
   return (
@@ -395,13 +613,82 @@ const MainPage: React.FC = () => {
         </S.MainPageFilterContainer>
       </S.MainPageBox>
 
-      <S.MainPageConversionWrapper>
-        <S.MainPageConversion>시가총액 500억 ~ 1000억</S.MainPageConversion>
-        <S.MainPageConversion>PER 5 ~ 11</S.MainPageConversion>
-        <S.MainPageConversion>또 뭐있냐</S.MainPageConversion>
-      </S.MainPageConversionWrapper>
+      <S.MainPageConversionContainer>
+        {!isEditingAll ? (
+          <S.SnowflakeEditBtn
+            onClick={() => {
+              const initialStates = thresholdRanges.reduce(
+                (acc, item) => {
+                  acc[item.label] = {
+                    tempMin: item.minText,
+                    tempMax: item.maxText,
+                  };
+                  return acc;
+                },
+                {} as Record<string, { tempMin: string; tempMax: string }>
+              );
+              setEditStates(initialStates);
+              setIsEditingAll(true);
+            }}
+          >
+            직접입력
+          </S.SnowflakeEditBtn>
+        ) : (
+          <S.ButtonWrapper>
+            <Button text="확인" onClick={handleConfirmAll} />
+          </S.ButtonWrapper>
+        )}
+        <S.MainPageConversionWrapper>
+          {thresholdRanges.map(({ label, minText, maxText }) => (
+            <S.MainPageConversion key={label}>
+              <span>{label} </span>
+              {isEditingAll ? (
+                <>
+                  <S.SnowflakeEditInput
+                    type="number"
+                    value={editStates[label]?.tempMin || ""}
+                    onChange={(e) =>
+                      setEditStates((prev) => ({
+                        ...prev,
+                        [label]: {
+                          tempMin: e.target.value,
+                          tempMax: prev[label]?.tempMax || "",
+                        },
+                      }))
+                    }
+                  />
 
-      <StockResult data={filteredStocks} />
+                  {"~"}
+
+                  <S.SnowflakeEditInput
+                    type="number"
+                    value={editStates[label]?.tempMax || ""}
+                    onChange={(e) =>
+                      setEditStates((prev) => ({
+                        ...prev,
+                        [label]: {
+                          tempMin: prev[label]?.tempMin || "",
+                          tempMax: e.target.value,
+                        },
+                      }))
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  {minText} ~ {maxText}
+                </>
+              )}
+            </S.MainPageConversion>
+          ))}
+        </S.MainPageConversionWrapper>
+      </S.MainPageConversionContainer>
+      <StockResult
+        data={filteredStocks}
+        filteredStocksCnt={filteredStocksCnt}
+        loading={isLoading}
+      />
+      <div ref={ref}></div>
     </S.MainPageContainer>
   );
 };

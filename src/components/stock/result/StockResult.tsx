@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./StockResult.styled";
 import ListOnIcon from "../../../assets/images/icons/view/list_on.png";
 import ListOffIcon from "../../../assets/images/icons/view/list_off.png";
@@ -10,13 +10,20 @@ import SortDropdown from "../../sortDropdown/SortDropdown";
 import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
 import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
 import { FilterStock } from "../../../types/stockTypes";
+import { PulseLoader } from "react-spinners";
 
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
   data: FilterStock[];
+  filteredStocksCnt: number;
+  loading: boolean;
 }
 
-const StockResult = ({ data }: StockResultProps) => {
+const StockResult = ({
+  data,
+  filteredStocksCnt,
+  loading,
+}: StockResultProps) => {
   const [stocks, setStocks] = useState<FilterStock[]>(data);
   const [view, setView] = useState("list");
   const [sortKey, setSortKey] = useState("시가총액");
@@ -46,12 +53,25 @@ const StockResult = ({ data }: StockResultProps) => {
     );
   };
 
+  useEffect(() => {
+    setStocks(data);
+  }, [data]);
+
+  if (loading) {
+    return (
+      <S.LoadingResultContainer>
+        <PulseLoader size={10} color="#2595E0" />
+      </S.LoadingResultContainer>
+    );
+  }
+
   return (
     <S.StockResultContainer>
       <S.StockResultHeader>
-        <S.StockResultTitle>검색 결과 1,234개</S.StockResultTitle>
+        <S.StockResultTitle>검색 결과 {filteredStocksCnt}개</S.StockResultTitle>
         <S.StockResultTool>
-          <S.StockResultSortWrapper>
+          {/* 정렬부분 */}
+          {/* <S.StockResultSortWrapper>
             <SortDropdown
               options={[
                 "시가총액",
@@ -75,7 +95,7 @@ const StockResult = ({ data }: StockResultProps) => {
               isOpen={openDropdown === "sortDirection"}
               onToggle={() => toggleDropdown("sortDirection")}
             />
-          </S.StockResultSortWrapper>
+          </S.StockResultSortWrapper> */}
           <S.StockResultViewWrapper>
             {view === "list" ? (
               <>
@@ -110,22 +130,20 @@ const StockResult = ({ data }: StockResultProps) => {
         </S.StockResultTool>
       </S.StockResultHeader>
 
-      {view === "list" ? (
-        <>
-          <StockList
-            stocks={data}
-            setStocks={setStocks}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        </>
+      {stocks.length === 0 ? (
+        <S.NoResultContainer>검색 결과가 없습니다</S.NoResultContainer>
+      ) : view === "list" ? (
+        <StockList
+          stocks={stocks}
+          setStocks={setStocks}
+          onToggleBookmark={handleToggleBookmark}
+        />
       ) : (
-        <>
-          <StockGrid
-            stocks={data}
-            setStocks={setStocks}
-            onToggleBookmark={handleToggleBookmark}
-          />
-        </>
+        <StockGrid
+          stocks={stocks}
+          setStocks={setStocks}
+          onToggleBookmark={handleToggleBookmark}
+        />
       )}
     </S.StockResultContainer>
   );

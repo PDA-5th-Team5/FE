@@ -3,19 +3,37 @@ import * as S from "./StockPage.styled";
 import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
+//port { stockLineGraph } from "./dummy";
+
 import LineGraph from "../../components/lineGraph/LineGraph";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
+//import { stockLineGraph } from "../stockPage/dummy";
 import {
   Item,
   labelMapping,
   SnowflakeSElements,
 } from "../../types/snowflakeTypes";
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
-import { dummyCompetitors, dummyStockData, stockLineGraph } from "./dummy";
+import {
+  getStockInfo,
+  StockInfoResponse,
+  addToWatchlist,
+  removeFromWatchlist,
+  getCompetitorsAPI,
+  getLineGraphAPI,
+  LineGraphResponse,
+  getCommentsAPI,
+  CommentsResponse,
+  deleteCommentAPI,
+  editCommentAPI,
+} from "../../apis/stock";
+import { useParams } from "react-router-dom";
+
+const IMAGE_BASE = "../../assets/images/stocks/";
 
 export interface StockDataType {
-  status: number;
+  status?: number;
   message: string;
   data: {
     stockInfo: StockDetail;
@@ -23,14 +41,204 @@ export interface StockDataType {
   };
 }
 
+// const stockLineGraph = [
+//   { date: "2023-01", value: 100 },
+//   { date: "2023-02", value: 120 },
+// ];
 const StockPage = () => {
-  const [stockData, setStockData] = useState<StockDataType>(dummyStockData);
+  const { num } = useParams<{ num: string }>();
+  const stockId = num ? parseInt(num, 10) : 1;
+  // console.log(num);
+
+  const [stockData, setStockData] = useState<StockDataType | null>(null);
+  const [lineGraphData, setLineGraphData] = useState<LineGraphResponse | null>(
+    null
+  );
+  const [lineGraphLoading, setLineGraphLoading] = useState(true);
+  const [lineGraphError, setLineGraphError] = useState<string | null>(null);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [competitors, setCompetitors] = useState<Competitor[]>([]);
+  const [competitorsLoading, setCompetitorsLoading] = useState(true);
+  const [competitorsError, setCompetitorsError] = useState<string | null>(null);
+
+  const [commentsData, setCommentsData] = useState<CommentsResponse | null>(
+    null
+  );
+  const [page, setPage] = useState(1);
+  const size = 10;
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+
+  //1. 댓글 조회
+  useEffect(() => {
+    fetchComments();
+  }, [stockId, page]);
+
+  const fetchComments = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getCommentsAPI(stockId, page, size);
+      setCommentsData(data);
+    } catch (error) {
+      console.error("댓글 로딩 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  //2. 댓글 삭제
+  const handleDelete = async (commentId: number) => {
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
+      try {
+        await deleteCommentAPI(stockId, commentId);
+        alert("댓글이 삭제되었습니다.");
+        fetchComments();
+      } catch (error) {
+        console.error("댓글 삭제 실패:", error);
+        alert("댓글 삭제에 실패했습니다.");
+      }
+      setOpenDropdownId(null);
+    }
+  };
+
+  //3. 댓글 수정
+  const handleEdit = (commentId: number, currentContent: string) => {
+    console.log("adddd");
+
+    setEditingCommentId(commentId);
+    setEditContent(currentContent);
+    setOpenDropdownId(null);
+  };
+
+  const handleCancelEdit = () => {
+    console.log("수정");
+
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+  const handleSaveEdit = async (commentId: number) => {
+    console.log("ad");
+
+    if (!editContent.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await editCommentAPI(stockId, commentId, editContent);
+      alert("댓글이 수정되었습니다.");
+      setEditingCommentId(null);
+      setEditContent("");
+      fetchComments(); // 댓글 목록 새로고침
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  useEffect(() => {
+    const fetchStockInfo = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await getStockInfo(stockId);
+
+        // API 응답을 StockDataType 형식으로 변환
+        const transformedData: StockDataType = {
+          status: response.status,
+          message: response.message,
+          data: {
+            stockInfo: {
+              ...response.data.stockInfo,
+              marketCap: (
+                Number(response.data.stockInfo.marketCap) / 10000
+              ).toFixed(2),
+              "1WeekProfitRate": response.data.stockInfo.weekRateChange * 100,
+              "1YearProfitRate": response.data.stockInfo.yearRateChange * 100,
+              dividendYeild: response.data.snowflakeS.dividendYield || 0,
+
+              isBookmark: response.data.stockInfo.fav,
+            },
+            snowflakeS: {
+              per: response.data.snowflakeS.per,
+              lbltRate: response.data.snowflakeS.lbltRate,
+              marketCap: response.data.snowflakeS.marketCap,
+              divYield: response.data.snowflakeS.dividendYield,
+              foreignerRatio: response.data.snowflakeS.foreignerRatio,
+            },
+          },
+        };
+
+        setStockData(transformedData);
+      } catch (error) {
+        console.error("주식 정보 로딩 실패:", error);
+        setError("주식 정보를 불러오는데 실패했습니다.");
+        // 에러 시 알림 (선택사항)
+        // toast.error("주식 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchStockInfo();
+  }, [stockId]);
+
+  useEffect(() => {
+    const fetchLineGraphData = async () => {
+      try {
+        setLineGraphLoading(true);
+        setLineGraphError(null);
+
+        const response = await getLineGraphAPI(stockId);
+        console.log("여기확인", response.data);
+
+        setLineGraphData(response);
+      } catch (error) {
+        console.error("라인그래프 데이터 로딩 실패:", error);
+        setLineGraphError("라인그래프 데이터를 불러오는데 실패했습니다.");
+      } finally {
+        setLineGraphLoading(false);
+      }
+    };
+    fetchLineGraphData();
+  }, [stockId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [stockId]);
+  useEffect(() => {
+    const fetchCompetitors = async () => {
+      try {
+        setCompetitorsLoading(true);
+        setCompetitorsError(null);
 
-  const snowflakeItems: Item[] = stockData.data.snowflakeS
+        const response = await getCompetitorsAPI(stockId);
+
+        if (response.status === 200) {
+          setCompetitors(response.data.competitors);
+        } else {
+          setCompetitorsError(
+            response.message || "경쟁사 정보를 불러오는데 실패했습니다."
+          );
+        }
+      } catch (error) {
+        console.error("경쟁사 정보 로딩 실패:", error);
+        setCompetitorsError("경쟁사 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setCompetitorsLoading(false);
+      }
+    };
+
+    // 주식 정보가 로드된 후 경쟁사 정보를 가져옴
+    if (!isLoading && stockData) {
+      fetchCompetitors();
+    }
+  }, [stockId, isLoading, stockData]);
+
+  const snowflakeItems: Item[] = stockData?.data?.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
         key,
         label: labelMapping[key] ?? key,
@@ -40,33 +248,54 @@ const StockPage = () => {
     : [];
 
   // 각 주식의 스노우플레이크 요소의 키 목록
-  const snowflakeSelectedKeys: string[] = stockData.data.snowflakeS
+  const snowflakeSelectedKeys: string[] = stockData?.data?.snowflakeS
     ? Object.keys(stockData.data.snowflakeS)
     : [];
+  const handleToggleBookmark = async (stockId: number, newState: boolean) => {
+    try {
+      // newState가 true면 추가, false면 삭제
+      const response = newState
+        ? await addToWatchlist(stockId)
+        : await removeFromWatchlist(stockId);
 
-  const handleToggleBookmark = (stockId: number, newState: boolean) => {
-    console.log(stockId);
-
-    setStockData((prevData) => ({
-      ...prevData,
-      data: {
-        ...prevData.data,
-        stockInfo: {
-          ...prevData.data.stockInfo,
-          isBookmark: newState,
-        },
-      },
-    }));
-    // TODO: 추가 로직 (예: API 호출 등)
+      // API 호출이 성공하면 상태 업데이트
+      if (response.status === 200) {
+        setStockData((prevData) => {
+          if (!prevData) return null;
+          return {
+            ...prevData,
+            data: {
+              ...prevData.data,
+              stockInfo: {
+                ...prevData.data.stockInfo,
+                isBookmark: newState,
+              },
+            },
+          };
+        });
+      } else {
+        // 실패 시 에러 처리
+        console.error(
+          `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
+          response.message
+        );
+        // 필요하다면 여기에 알림 추가 (예: toast 메시지)
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error);
+      // 필요하다면 여기에 알림 추가
+    }
   };
-
-  const competitorSnowflakeData = dummyCompetitors.map((competitor) => {
+  if (isLoading || !stockData) {
+    return <div>로딩 중...</div>;
+  }
+  const competitorSnowflakeData = competitors.map((competitor) => {
     const items: Item[] = Object.entries(competitor.snowflakeS).map(
       ([key, value]) => ({
         key,
         label: labelMapping[key] ?? key,
-        D1Value: value,
-        D2Value: value,
+        D1Value: value as number,
+        D2Value: value as number,
       })
     );
     return { competitor, items };
@@ -77,7 +306,13 @@ const StockPage = () => {
       <S.StockInfoContainer>
         <S.StockInfoTop>
           <S.StockInfoLeft>
-            <S.StockInfoImg src={SamsungImg} />
+            <S.StockInfoImg
+              src={`/stocks/${stockData.data.stockInfo.ticker}.png`}
+              alt={`Stock Logo ${stockData.data.stockInfo.ticker}`}
+              onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                e.currentTarget.src = "/stocks/default.png";
+              }}
+            />
             <S.StockInfo>
               <S.StockInfoSector>
                 {stockData.data.stockInfo.sector}
@@ -108,7 +343,7 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>현재가</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.currentPrice}원
+              {stockData.data.stockInfo.currentPrice.toLocaleString()}원
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
@@ -152,7 +387,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>eps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.eps}원
+                {stockData.data.stockInfo.eps.toLocaleString()}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -168,7 +403,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>bps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.bps}원
+                {stockData.data.stockInfo.bps.toLocaleString()}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -181,12 +416,7 @@ const StockPage = () => {
             </S.StockOutlineItem>
             {/* ------- */}
             {/* 아이템 하나 */}
-            <S.StockOutlineItem>
-              <S.StockOutlineTitle>동일업종 PER</S.StockOutlineTitle>
-              <S.StockOutlineContent>
-                {stockData.data.stockInfo.sectorAveragePer}배
-              </S.StockOutlineContent>
-            </S.StockOutlineItem>
+
             {/* ------- */}
           </S.StockOutlineRight>
         </S.StockOutline>
@@ -239,11 +469,26 @@ const StockPage = () => {
 
       <S.StockLineGraph>
         <S.Title>라인그래프</S.Title>
-        <LineGraph data={stockLineGraph} />
+        {lineGraphLoading ? (
+          <div>라인그래프 로딩 중...</div>
+        ) : lineGraphError ? (
+          <div>라인그래프 로드 실패: {lineGraphError}</div>
+        ) : (
+          <LineGraph data={lineGraphData} />
+        )}
       </S.StockLineGraph>
 
       <S.StockComments>
-        <Comment />
+        <Comment
+          data={commentsData}
+          handleDelete={handleDelete}
+          handleSaveEdit={handleSaveEdit}
+          handleEdit={handleEdit}
+          handleCancelEdit={handleCancelEdit}
+          editingCommentId={editingCommentId}
+          editContent={editContent}
+          setEditContent={setEditContent}
+        />
       </S.StockComments>
     </S.StockPageContainer>
   );

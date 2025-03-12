@@ -6,10 +6,13 @@ import PersonIcon from "../../../assets/images/icons/person.png";
 import SearchIcon from "../../../assets/images/icons/search.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import Autocomplete from "./autocomplete/Autocomplete";
+import { logoutAPI } from "../../../apis/user";
+import { toast, ToastContainer } from "react-toastify";
 
 const Header: FC = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -17,6 +20,14 @@ const Header: FC = () => {
     setUserMenuOpen(false);
     setKeyword("");
   }, [location]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("isLoggedIn") === "true") {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, []);
 
   const handleUserClick = () => {
     setUserMenuOpen((prev) => !prev);
@@ -27,9 +38,39 @@ const Header: FC = () => {
     navigate("/mypage");
   };
 
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
   const handleLogout = () => {
-    // TODO: 로그아웃 로직
-    alert("로그아웃 클릭");
+    logoutAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          // 로컬 스토리지에서 삭제
+          const keys = [
+            "accessToken",
+            "email",
+            "nickname",
+            "refreshToken",
+            "userId",
+            "username",
+          ];
+          keys.forEach((key) => {
+            localStorage.removeItem(key);
+          });
+          sessionStorage.removeItem("isLoggedIn");
+          window.location.href = "/login"; // 로그아웃 성공 시 로그인 페이지로 이동
+        } else if (data.status === 400) {
+          toast.error("로그아웃 실패!");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("로그아웃 요청 중 오류가 발생했습니다.");
+      });
+
     setUserMenuOpen(false);
   };
 
@@ -66,23 +107,37 @@ const Header: FC = () => {
             </S.HeaderSearchWrapper>
           </S.HeaderLi>
           {/* 유저 */}
-          <S.HeaderLi onClick={handleUserClick}>
-            <S.HeaderLoginIcon src={PersonIcon} $isOpen={false} />
-            <S.HeaderLoginIcon src={ArrowDownIcon} $isOpen={userMenuOpen} />
+          {!isLoggedIn ? (
+            <S.HeaderLi onClick={handleLogin}>
+              <S.loginSignupButton>Log In / Sign Up</S.loginSignupButton>
+            </S.HeaderLi>
+          ) : (
+            <S.HeaderLi onClick={handleUserClick}>
+              <S.HeaderLoginIcon src={PersonIcon} $isOpen={false} />
+              <S.HeaderLoginIcon src={ArrowDownIcon} $isOpen={userMenuOpen} />
 
-            {userMenuOpen && (
-              <S.UserDropdownMenu>
-                <S.UserDropdownItem onClick={handleMyPage}>
-                  마이페이지
-                </S.UserDropdownItem>
-                <S.UserDropdownItem onClick={handleLogout}>
-                  로그아웃
-                </S.UserDropdownItem>
-              </S.UserDropdownMenu>
-            )}
-          </S.HeaderLi>
+              {userMenuOpen && (
+                <S.UserDropdownMenu>
+                  <S.UserDropdownItem onClick={handleMyPage}>
+                    마이페이지
+                  </S.UserDropdownItem>
+                  <S.UserDropdownItem onClick={handleLogout}>
+                    로그아웃
+                  </S.UserDropdownItem>
+                </S.UserDropdownMenu>
+              )}
+            </S.HeaderLi>
+          )}
         </S.HeaderUl>
       </S.HeaderWrapper>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </S.HeaderContainer>
   );
 };

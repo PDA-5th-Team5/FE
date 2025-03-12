@@ -42,8 +42,7 @@ export const saveMyPortfolioAPI = async (payload: SaveMyPortfolio) => {
   });
   return response.data;
 };
-<<<<<<< Updated upstream
-=======
+
 
 //공유포폴리스트조회
 export interface RangeValue {
@@ -114,4 +113,40 @@ export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse[]> => {
 
   return response.data.data;
 };
->>>>>>> Stashed changes
+
+
+//공유 포트폴리오 상세조회
+export interface SharePortfolioDetailResponse {
+  id: string;
+  title: string;
+  description?: string;
+  category: string;
+  portfolioId: number;
+  market?: string;
+  sector?: string[];
+  
+  marketCap?: RangeValue;
+  per?: RangeValue;
+  eps?: RangeValue;
+  bps?: RangeValue;
+  pbr?: RangeValue;
+  dividendYield?: RangeValue;
+  foreignerRatio?: RangeValue;
+  sps?: RangeValue;
+  saleAccount?: RangeValue;
+  crntRate?: RangeValue;
+  lbltRate?: RangeValue;
+  ntinInrt?: RangeValue;
+  bsopPrfiInrt?: RangeValue;
+  grs?: RangeValue;
+  roeVal?: RangeValue;
+  bsopPrti?: RangeValue;
+  thtrNtin?: RangeValue;
+}
+
+export const getSharePortfolioDetailAPI = async(portfolioId: number): Promise<SharePortfolioDetailResponse> => {
+  const response = await portfolioAPI.get<APIResponse<SharePortfolioDetailResponse>>(
+    `/share/${portfolioId}`
+  );
+  return response.data.data;
+}

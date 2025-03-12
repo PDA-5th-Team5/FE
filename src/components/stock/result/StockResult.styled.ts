@@ -64,3 +64,16 @@ export const StockResultViewOff = styled.div`
   width: 40px;
   height: 32px;
 `;
+
+export const NoResultContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  color: #8b8d91;
+  font-size: 14px;
+`;
+
+export const LoadingResultContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: 1000px;
+`;
