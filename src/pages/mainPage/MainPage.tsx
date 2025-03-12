@@ -317,14 +317,16 @@ const MainPage: React.FC = () => {
           maxText = thresholdArr[maxIndex - 1].toString();
         }
       }
-      return {
-        label: item.key,
-        minText,
-        maxText,
-      };
+      return { label: item.key, minText, maxText };
     });
 
-    setThresholdRanges(newRanges);
+    // API 무한 요청 막기
+    setThresholdRanges((prevRanges) => {
+      if (JSON.stringify(prevRanges) === JSON.stringify(newRanges)) {
+        return prevRanges;
+      }
+      return newRanges;
+    });
   }, [filteredItems, thresholds]);
 
   // 사용자 입력값에 대해서 가장 가까운 min값 계산
@@ -438,6 +440,12 @@ const MainPage: React.FC = () => {
 
     setIsEditingAll(false);
     setEditStates({});
+
+    // API 재요청
+    setFilteredStocks([]);
+    setPage(0);
+    setIsLast(false);
+    handleFilterStocks(0);
   };
 
   return (

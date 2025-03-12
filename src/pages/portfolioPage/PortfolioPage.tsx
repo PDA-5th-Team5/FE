@@ -1,15 +1,21 @@
 import * as S from "./PortfolioPage.styled";
 import StockResult from "../../components/stock/result/StockResult";
-import { transformElementsToItems } from "../../utils/snowflakeUtils";
+import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
 import { Stock } from "../../types/stockTypes";
-
 export interface StockResultData {
   stockCnt: number;
   stockInfos: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
+}
+
+interface PortfolioPageProps {
+  portfolioData?: any;
+  elementsObj?: { [key: string]: number[] };
+  snowflakeItems?: any[];
+  description?: string;
 }
 
 // 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
@@ -76,25 +82,6 @@ const dummyPortfolioResponse = {
   },
 };
 
-const portfolioSnowflakeData = {
-  status: 200,
-  message: "성공입니다.",
-  data: {
-    snowflakeP: {
-      elements: {
-        bsopPrti: [5, 19], // 영업이익
-        thtrNtin: [1, 3], // 당기순이익
-        roeVal: [10, 16], // ROE (자기자본이익률)
-        pbr: [2, 7], // 총자본 순이익률
-        eps: [3, 6], // EPS
-        per: [12, 18], // PER
-      },
-      market: "코스피",
-      sectors: ["반도체", "바이오"],
-    },
-  },
-};
-
 const lineGraphData = {
   status: 200,
   message: "성공입니다.",
@@ -112,15 +99,16 @@ const lineGraphData = {
   },
 };
 
-const PortfolioPage = () => {
-  // dummy 데이터의 elements를 이용하여 아이템 생성
-  const dummyPortfolioItems = transformElementsToItems(
-    portfolioSnowflakeData.data.snowflakeP.elements
-  );
-
-  // 여기서는 모든 키를 선택한 상태로 가정
-  const selectedPortfolioKeys = dummyPortfolioItems.map((item) => item.key);
-
+const PortfolioPage = ({
+  portfolioData,
+  elementsObj,
+  snowflakeItems,
+  // description,
+}: PortfolioPageProps) => {
+  const portfolioItems = portfolioData
+    ? transformPortfolioToItems(portfolioData)
+    : [];
+  const selectedPortfolioKeys = portfolioItems.map((item) => item.key);
   const stockResultData: StockResultData = {
     stockCnt: dummyPortfolioResponse.data.stockCnt,
     stockInfos: dummyPortfolioResponse.data.stockInfos,
@@ -128,14 +116,7 @@ const PortfolioPage = () => {
 
   return (
     <S.PortfolioPageContainer>
-      <S.PortfolioDescription>
-        제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에
-        대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다
-        제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에
-        대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다
-        제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에
-        대한 설명을 적을겁니다 제가 쓴 포트폴리오 123에 대한 설명을 적을겁니다
-      </S.PortfolioDescription>
+      <S.PortfolioDescription>{portfolioData.title}</S.PortfolioDescription>
 
       <S.PortfolioContent>
         <S.PortfolioContentLeft>
@@ -202,22 +183,24 @@ const PortfolioPage = () => {
             <LineGraph data={lineGraphData} />
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
-
         <S.PortfolioContentRight>
           <S.PortfolioContentTitle>
             포트폴리오 Snowflake
+            {/* //   {snowflakeItems} */}
           </S.PortfolioContentTitle>
           <S.PortfolioContentSnowflake>
             <S.PortfolioContentSnowflakeWrapper>
               <PortfolioSnowflake
-                allItems={dummyPortfolioItems}
+                allItems={portfolioItems}
                 selectedKeys={selectedPortfolioKeys}
                 showLabels={true}
               />
             </S.PortfolioContentSnowflakeWrapper>
           </S.PortfolioContentSnowflake>
           <S.PortfolioContentMarketWrapper>
-            <S.PortfolioContentMarket>KOSPI</S.PortfolioContentMarket>
+            <S.PortfolioContentMarket>
+              {portfolioData.market}
+            </S.PortfolioContentMarket>
           </S.PortfolioContentMarketWrapper>
         </S.PortfolioContentRight>
       </S.PortfolioContent>
