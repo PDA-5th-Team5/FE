@@ -162,9 +162,21 @@ export interface TelegramAlerts {
   createdAt: string;
 }
 
-export const getTelegramAlertsAPI = async(): Promise<APIResponse<TelegramAlerts[]>> => {
-  const response = await portfolioAPI.get<APIResponse<TelegramAlerts[]>>(
-   '/alerts'
-  );
+// 내 포트폴리오 알림 조회
+export const getTelegramAlertsAPI = async (): Promise<
+  APIResponse<TelegramAlerts[]>
+> => {
+  const response =
+    await portfolioAPI.get<APIResponse<TelegramAlerts[]>>("/alerts");
   return response.data;
-}
+};
+
+// 내 포트폴리오 알림 추가
+export const postTelegramAlertAPI = async (
+  portfolioId: number
+): Promise<APIResponse<null>> => {
+  const response = await portfolioAPI.post<APIResponse<null>>("/alerts", {
+    portfolioId: portfolioId,
+  });
+  return response.data;
+};

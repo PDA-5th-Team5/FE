@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { postTelegramAlertAPI } from "../../../apis/portfolio";
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -34,18 +35,45 @@ const ToggleContainer = styled.div`
 
 interface ToggleProps {
   checked: boolean;
-  onChange?: (value: boolean) => void;
+  portfolioId: number;
 }
 
-const Toggle = ({ checked, onChange }: ToggleProps) => {
+const Toggle = ({ checked, portfolioId }: ToggleProps) => {
   const [isOn, setisOn] = useState(checked);
 
-  const toggleHandler = () => {
+  const toggleHandler = (portfolioId: number) => {
+    if (isOn) {
+      alert("꺼진다 이제");
+    } else {
+      alert("켜진다 이제");
+      postTelegramAlert(portfolioId);
+    }
+
     setisOn(!isOn);
   };
+
+  const postTelegramAlert = (portfolioId: number) => {
+    postTelegramAlertAPI(portfolioId)
+      .then((data) => {
+        if (data.status === 200) {
+        } else if (data.status === 400) {
+          console.error("내 포트폴리오 알림 추가에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
   return (
     <>
-      <ToggleContainer onClick={toggleHandler}>
+      <ToggleContainer
+        onClick={() => {
+          toggleHandler(portfolioId);
+        }}
+      >
         <div
           className={`toggle-container ${isOn ? "toggle--checked" : null}`}
         />

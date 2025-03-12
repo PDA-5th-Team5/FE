@@ -430,7 +430,10 @@ const MyPage = () => {
                             텔레그램으로 알림 받기
                           </S.TelegramToggleText>
                           <S.TelegramToggle>
-                            <Toggle checked={isToggleOn} />
+                            <Toggle
+                              checked={isToggleOn}
+                              portfolioId={portfolio.myPortfolioId}
+                            />
                           </S.TelegramToggle>
                         </S.TelegramToggleWrapper>
                       </S.TelegramItem>
