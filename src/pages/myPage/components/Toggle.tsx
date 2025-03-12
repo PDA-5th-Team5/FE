@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 const ToggleContainer = styled.div`
@@ -32,21 +31,17 @@ const ToggleContainer = styled.div`
   }
 `;
 
-const Toggle = () => {
-  const [isOn, setisOn] = useState(false);
+interface ToggleProps {
+  checked: boolean;
+  onToggle: () => void;
+}
 
-  const toggleHandler = () => {
-    setisOn(!isOn);
-  };
+const Toggle = ({ checked, onToggle }: ToggleProps) => {
   return (
-    <>
-      <ToggleContainer onClick={toggleHandler}>
-        <div
-          className={`toggle-container ${isOn ? "toggle--checked" : null}`}
-        />
-        <div className={`toggle-circle ${isOn ? "toggle--checked" : null}`} />
-      </ToggleContainer>
-    </>
+    <ToggleContainer onClick={onToggle}>
+      <div className={`toggle-container ${checked ? "toggle--checked" : ""}`} />
+      <div className={`toggle-circle ${checked ? "toggle--checked" : ""}`} />
+    </ToggleContainer>
   );
 };
 

@@ -1,4 +1,3 @@
-import exp from "constants";
 import { APIResponse, portfolioAPI } from ".";
 import { PortfolioDetail, MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";
@@ -82,11 +81,6 @@ export interface SharePortfolioItem {
   };
 }
 
-export interface APIResponse<T> {
-  status: number;
-  message: string;
-  data: T;
-}
 
 export const sharePortfolioListAPI = async (
   sortBy: string = "loadCount"
@@ -161,6 +155,45 @@ export const getMyPortfolioDetailAPI = async (
     `/my/${portfolioId}`
   );
   return response.data.data;
+
+}
+
+// 내 포트폴리오 알림 조회 API (GET)
+export interface TelegramAlerts {
+  alertId: number;
+  portfolioId: number;
+  userId: string;
+  createdAt: string;
+}
+
+// 내 포트폴리오 알림 조회
+export const getTelegramAlertsAPI = async (): Promise<
+  APIResponse<TelegramAlerts[]>
+> => {
+  const response =
+    await portfolioAPI.get<APIResponse<TelegramAlerts[]>>("/alerts");
+  return response.data;
+};
+
+// 내 포트폴리오 알림 추가
+export const postTelegramAlertAPI = async (
+  portfolioId: number
+): Promise<APIResponse<null>> => {
+  const response = await portfolioAPI.post<APIResponse<null>>("/alerts", {
+    portfolioId: portfolioId,
+  });
+  return response.data;
+};
+
+
+// 내 포트폴리오 알림 삭제
+export const deleteTelegramAlertAPI = async (
+  alertId: number
+): Promise<APIResponse<null>> => {
+  const response = await portfolioAPI.delete<APIResponse<null>>(
+    `/alerts/${alertId}`
+  );
+  return response.data;
 };
 
 //댓글
@@ -291,7 +324,6 @@ export const getShareSummaryAPI = async (
   const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
     `/share/${sharePortfolioId}/summary`
   );
-
   return response.data;
 };
 
