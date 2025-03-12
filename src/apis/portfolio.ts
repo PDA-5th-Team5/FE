@@ -1,3 +1,4 @@
+import exp from "constants";
 import { APIResponse, portfolioAPI } from ".";
 import { PortfolioDetail,MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";
@@ -116,7 +117,7 @@ export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse[]> => {
 
 
 //공유 포트폴리오 상세조회
-export interface SharePortfolioDetailResponse {
+export interface PortfolioDetailResponse {
   id: string;
   title: string;
   description?: string;
@@ -144,9 +145,16 @@ export interface SharePortfolioDetailResponse {
   thtrNtin?: RangeValue;
 }
 
-export const getSharePortfolioDetailAPI = async(portfolioId: number): Promise<SharePortfolioDetailResponse> => {
-  const response = await portfolioAPI.get<APIResponse<SharePortfolioDetailResponse>>(
+export const getSharePortfolioDetailAPI = async(portfolioId: number): Promise<PortfolioDetailResponse> => {
+  const response = await portfolioAPI.get<APIResponse<PortfolioDetailResponse>>(
     `/share/${portfolioId}`
+  );
+  return response.data.data;
+}
+
+export const getMyPortfolioDetailAPI = async(portfolioId: number): Promise<PortfolioDetailResponse> => {
+  const response = await portfolioAPI.get<APIResponse<PortfolioDetailResponse>>(
+    `/my/${portfolioId}`
   );
   return response.data.data;
 }

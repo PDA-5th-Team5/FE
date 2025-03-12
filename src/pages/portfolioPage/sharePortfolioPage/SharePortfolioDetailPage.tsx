@@ -9,8 +9,9 @@ import { getSharePortfolioDetailAPI } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 const SharePortfolioDetailPage = () => {
   const { num } = useParams<{ num: string }>();
-  const [portfolio, setPortfolio] =
-    useState<SharePortfolioDetailResponse | null>(null);
+  const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
+    null
+  );
   const [elementsObj, setElementsObj] = useState<{ [key: string]: number[] }>(
     {}
   );
