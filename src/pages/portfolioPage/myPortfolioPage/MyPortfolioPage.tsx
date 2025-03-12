@@ -48,7 +48,6 @@ const MyPortfolioPage = () => {
     const fetchMyPortfolios = async () => {
       try {
         const response = await myPortfolioListAPI(); // API 호출
-        console.log("포트폴리오 데이터:", response); // 응답 데이터 확인
 
         if (response.myPortfoliosCnt > 0) {
           setPortfolioList(response.myPortfolios);
@@ -94,9 +93,6 @@ const MyPortfolioPage = () => {
         }
 
         const response = await getMyPortfolioDetailAPI(portfolioId);
-        console.log("전체 응답:", response);
-        console.log("제목", response.title);
-        console.log("설명", response.description);
 
         setPortfolio(response);
 
