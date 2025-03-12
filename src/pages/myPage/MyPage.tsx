@@ -35,53 +35,6 @@ const MyPage = () => {
       });
   }, []);
 
-  // 댓글 더미데이터
-  // const portfolioComments = {
-  //   category: "portfolio",
-  //   commentsCnt: 8,
-  //   comments: [
-  //     {
-  //       connectId: 1,
-  //       name: "내 포트폴리오얌",
-  //       ticker: "005930",
-  //       commentId: 1,
-  //       content: "댓글내용",
-  //       date: "2024.02.18",
-  //     },
-  //     {
-  //       connectId: 2,
-  //       name: "포트폴리오명은 이거얌",
-  //       ticker: "005930",
-  //       commentId: 2,
-  //       content: "댓글내용2",
-  //       date: "2024.02.18",
-  //     },
-  //   ],
-  // };
-
-  // const stockComments = {
-  //   category: "stock",
-  //   commentsCnt: 12,
-  //   comments: [
-  //     {
-  //       connectId: 1,
-  //       name: "삼성전자",
-  //       ticker: "005930",
-  //       commentId: 1,
-  //       content: "댓글내용",
-  //       date: "2024.02.18",
-  //     },
-  //     {
-  //       connectId: 2,
-  //       name: "LG전자",
-  //       ticker: "005930",
-  //       commentId: 2,
-  //       content: "댓글내용2",
-  //       date: "2024.02.18",
-  //     },
-  //   ],
-  // };
-
   //더미데이터
   const dummyStockResponse = {
     status: 201,
