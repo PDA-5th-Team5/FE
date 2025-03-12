@@ -61,7 +61,7 @@ const CommentList = ({
   //   return <div>댓글을 불러오는 중...</div>;
   // }
 
-  if (!data) {
+  if (!data || !data.comments) {
     return <div>댓글을 불러올 수 없습니다.</div>;
   }
 
