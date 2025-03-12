@@ -167,3 +167,9 @@ export const postTelegramIDAPI = async (
   });
   return response.data;
 };
+
+// 유저 텔레그램_chat_id 조회 API (GET)
+export const getTelegramIDAPI = async (): Promise<APIResponse<string>> => {
+  const response = await userAPI.get<APIResponse<string>>("/telegram");
+  return response.data;
+};

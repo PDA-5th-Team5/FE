@@ -5,7 +5,11 @@ import StockGrid from "../../components/stock/grid/StockGrid";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
 import { FilterStock } from "../../types/stockTypes";
-import { postTelegramIDAPI, updateProfileAPI } from "../../apis/user";
+import {
+  getTelegramIDAPI,
+  postTelegramIDAPI,
+  updateProfileAPI,
+} from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
@@ -52,6 +56,8 @@ const MyPage = () => {
         console.error("API 호출 실패", error);
         toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
       });
+
+    getTelegramID();
   }, []);
 
   //더미데이터
@@ -234,6 +240,22 @@ const MyPage = () => {
       .catch((error) => {
         console.error("API 호출 실패", error);
         toast.error("유효한 ID가 아닙니다.");
+      });
+  };
+
+  const getTelegramID = () => {
+    getTelegramIDAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setTelegramID(data.data);
+        } else if (data.status === 400) {
+          console.error("ID 조회에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
       });
   };
 
