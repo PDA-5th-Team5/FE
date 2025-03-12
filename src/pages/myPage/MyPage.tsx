@@ -17,6 +17,16 @@ const MyPage = () => {
   const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
 
+  // 텔레그램 탭
+  const [activeTelegramTab, setActiveTelegramTab] = useState("list");
+  const telegramTabItems: TabItem[] = [
+    { label: "알림 목록 (3)", value: "list" },
+    { label: "ID 등록", value: "regist" },
+  ];
+  const handleTelegramTabClick = (value: string) => {
+    setActiveTelegramTab(value);
+  };
+
   useEffect(() => {
     stocksAPI()
       .then((data) => {
@@ -306,6 +316,21 @@ const MyPage = () => {
                   </S.CommentItem>
                 ))}
               </S.CommentList>
+            </S.SectionComment>
+          </>
+        )}
+
+        {activeTab === "telegram" && (
+          <>
+            <S.SectionTitle>텔레그램 알림</S.SectionTitle>
+            <S.SectionComment>
+              <Tabs
+                items={telegramTabItems}
+                activeValue={activeTelegramTab}
+                onChange={handleTelegramTabClick}
+              />
+
+              <S.CommentList></S.CommentList>
             </S.SectionComment>
           </>
         )}
