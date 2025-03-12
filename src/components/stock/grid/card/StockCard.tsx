@@ -11,15 +11,14 @@ export interface StockCardProps {
   setStocks: React.Dispatch<React.SetStateAction<FilterStock[]>>;
   allItems: Item[];
   selectedKeys: string[];
-  onToggleBookmark: (stockId: number, newState: boolean) => void;
+  isMyWatchlist?: boolean;
 }
 
 const StockCard = ({
   stock,
-
   allItems,
   selectedKeys,
-  onToggleBookmark,
+  isMyWatchlist,
 }: StockCardProps) => {
   const bgColor = getRandomColor(stock.stockId);
 
@@ -35,7 +34,7 @@ const StockCard = ({
           <Bookmark
             stockId={stock.stockId}
             isBookmarked={stock.fav}
-            onToggleBookmark={onToggleBookmark}
+            isMyWatchlist={isMyWatchlist}
           />
         </S.CardHeaderRight>
       </S.CardHeader>
