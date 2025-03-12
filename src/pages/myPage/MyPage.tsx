@@ -16,8 +16,10 @@ import { commentsAPI, stocksAPI } from "../../apis/user";
 import Toggle from "./components/Toggle";
 import TelegramGuide from "./components/TelegramGuide";
 import {
+  deleteTelegramAlertAPI,
   getTelegramAlertsAPI,
   myPortfolioListAPI,
+  postTelegramAlertAPI,
   TelegramAlerts,
 } from "../../apis/portfolio";
 import { MyPortfolioResponse } from "../../types/portfolioTypes";
@@ -339,9 +341,33 @@ const MyPage = () => {
                     const matchingAlert = telegramAlerts.find(
                       (alert) => alert.portfolioId === portfolio.myPortfolioId
                     );
+                    const isChecked = !!matchingAlert;
+
+                    const handleToggle = () => {
+                      if (!telegramID) {
+                        alert("텔레그램 Chat ID 등록이 필요합니다");
+                        return;
+                      }
+
+                      if (isChecked) {
+                        if (matchingAlert?.alertId) {
+                          deleteTelegramAlertAPI(matchingAlert.alertId).then(
+                            () => {
+                              getTelegramAlerts();
+                            }
+                          );
+                        }
+                      } else {
+                        postTelegramAlertAPI(portfolio.myPortfolioId).then(
+                          () => {
+                            getTelegramAlerts();
+                          }
+                        );
+                      }
+                    };
 
                     return (
-                      <S.TelegramItem>
+                      <S.TelegramItem key={portfolio.myPortfolioId}>
                         <S.TelegramTitle>
                           {portfolio.myPortfolioTitle}
                         </S.TelegramTitle>
@@ -351,11 +377,8 @@ const MyPage = () => {
                           </S.TelegramToggleText>
                           <S.TelegramToggle>
                             <Toggle
-                              checked={!!matchingAlert}
-                              portfolioId={portfolio.myPortfolioId}
-                              alertId={matchingAlert?.alertId}
-                              getTelegramAlerts={getTelegramAlerts}
-                              telegramID={telegramID}
+                              checked={isChecked}
+                              onToggle={handleToggle}
                             />
                           </S.TelegramToggle>
                         </S.TelegramToggleWrapper>

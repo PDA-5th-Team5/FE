@@ -1,9 +1,4 @@
-import { useState } from "react";
 import styled from "styled-components";
-import {
-  deleteTelegramAlertAPI,
-  postTelegramAlertAPI,
-} from "../../../apis/portfolio";
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -38,84 +33,15 @@ const ToggleContainer = styled.div`
 
 interface ToggleProps {
   checked: boolean;
-  portfolioId: number;
-  alertId?: number;
-  getTelegramAlerts: () => void;
-  telegramID: string;
+  onToggle: () => void;
 }
 
-const Toggle = ({
-  checked,
-  portfolioId,
-  alertId,
-  getTelegramAlerts,
-  telegramID,
-}: ToggleProps) => {
-  const [isOn, setisOn] = useState(checked);
-
-  const toggleHandler = () => {
-    if (!telegramID) {
-      alert("텔레그램 Chat ID 등록이 필요합니다");
-      return;
-    }
-
-    if (isOn) {
-      if (alertId !== undefined) {
-        deleteTelegramAlert(alertId);
-      } else {
-        console.error("알림이 해제되지 않았습니다.");
-      }
-    } else {
-      postTelegramAlert(portfolioId);
-    }
-    setisOn(!isOn);
-  };
-
-  const postTelegramAlert = (portfolioId: number) => {
-    postTelegramAlertAPI(portfolioId)
-      .then((data) => {
-        if (data.status === 201) {
-          getTelegramAlerts();
-        } else if (data.status === 400) {
-          console.error("내 포트폴리오 알림 추가에 실패하였습니다.");
-        } else {
-          console.error("알 수 없는 오류가 발생했습니다. ");
-        }
-      })
-      .catch((error) => {
-        console.error("API 호출 실패", error);
-      });
-  };
-
-  const deleteTelegramAlert = (alertId: number) => {
-    deleteTelegramAlertAPI(alertId)
-      .then((data) => {
-        if (data.status === 200) {
-          getTelegramAlerts();
-        } else if (data.status === 400) {
-          console.error("내 포트폴리오 알림 삭제에 실패하였습니다.");
-        } else {
-          console.error("알 수 없는 오류가 발생했습니다. ");
-        }
-      })
-      .catch((error) => {
-        console.error("API 호출 실패", error);
-      });
-  };
-
+const Toggle = ({ checked, onToggle }: ToggleProps) => {
   return (
-    <>
-      <ToggleContainer
-        onClick={() => {
-          toggleHandler();
-        }}
-      >
-        <div
-          className={`toggle-container ${isOn ? "toggle--checked" : null}`}
-        />
-        <div className={`toggle-circle ${isOn ? "toggle--checked" : null}`} />
-      </ToggleContainer>
-    </>
+    <ToggleContainer onClick={onToggle}>
+      <div className={`toggle-container ${checked ? "toggle--checked" : ""}`} />
+      <div className={`toggle-circle ${checked ? "toggle--checked" : ""}`} />
+    </ToggleContainer>
   );
 };
 
