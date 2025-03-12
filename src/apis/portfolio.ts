@@ -323,6 +323,10 @@ export const shareMyPortfolioAPI = async (
 };
 
 // 나의 포트폴리오 삭제 API (DELETE)
+export interface SaveSharePortfolio {
+  portfolioId: number;
+}
+
 export const deleteMyPortfolioAPI = async (
   myPortfolioId: number
 ): Promise<void> => {
