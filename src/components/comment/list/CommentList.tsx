@@ -45,7 +45,6 @@ const CommentList = ({
   const { num } = useParams<{ num: string }>();
   const stockId = num ? parseInt(num, 10) : 1;
   const currentUserId = localStorage.getItem("userId");
-  console.log("댓글", data);
 
   const handleToggleDropdown = (commentId: number) => {
     setOpenDropdownId((prev) => (prev === commentId ? null : commentId));
@@ -64,11 +63,11 @@ const CommentList = ({
   if (!data || !data.comments) {
     return <div>댓글을 불러올 수 없습니다.</div>;
   }
+  console.log("ddd", data);
 
   return (
     <S.CommentListContainer>
       <S.CommentListHeader>댓글 {data.commentCnt}</S.CommentListHeader>
-
       {data.comments.length === 0 ? (
         <S.NoComments>아직 댓글이 없습니다.</S.NoComments>
       ) : (
