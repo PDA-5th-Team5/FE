@@ -322,6 +322,7 @@ export const shareMyPortfolioAPI = async (
   return response.data.data;
 };
 
+// 나의 포트폴리오 삭제 API (DELETE)
 export const deleteMyPortfolioAPI = async (
   myPortfolioId: number
 ): Promise<void> => {
@@ -337,4 +338,27 @@ export const deleteMyPortfolioAPI = async (
     },
   });
   return response.data;
+};
+
+// 남의 공유 포트폴리오 가져오기(저장) (POST)
+export const saveSharePortfolioAPI = async (
+  portfolioId: number
+): Promise<SaveSharePortfolio> => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("로그인 해주세요");
+  }
+
+  const response = await portfolioAPI.post<APIResponse<SaveSharePortfolio>>(
+    `/share/${portfolioId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  console.log("공유 포트폴리오 가져오기 응답:", response.data);
+  return response.data.data;
 };
