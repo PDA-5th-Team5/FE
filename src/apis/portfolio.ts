@@ -1,6 +1,6 @@
 import exp from "constants";
 import { APIResponse, portfolioAPI } from ".";
-import { PortfolioDetail,MyPortfolioResponse } from "../types/portfolioTypes";
+import { PortfolioDetail, MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";
 
 // 1) 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
@@ -44,7 +44,6 @@ export const saveMyPortfolioAPI = async (payload: SaveMyPortfolio) => {
   return response.data;
 };
 
-
 //공유포폴리스트조회
 export interface RangeValue {
   min: number;
@@ -62,7 +61,7 @@ export interface SharePortfolioItem {
     portfolioId: number;
     market?: string;
     sector?: string[];
-    
+
     marketCap?: RangeValue;
     per?: RangeValue;
     eps?: RangeValue;
@@ -89,12 +88,14 @@ export interface APIResponse<T> {
   data: T;
 }
 
-export const sharePortfolioListAPI = async(sortBy: string = "loadCount"): Promise<SharePortfolioItem[]> => {
+export const sharePortfolioListAPI = async (
+  sortBy: string = "loadCount"
+): Promise<SharePortfolioItem[]> => {
   const response = await portfolioAPI.get<APIResponse<SharePortfolioItem[]>>(
     `/share/board?page=0&sortBy=${sortBy}`
   );
   return response.data.data;
-}
+};
 
 // 나의 포트폴리오 리스트 조회 API
 export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse> => {
@@ -115,7 +116,6 @@ export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse> => {
   return response.data.data;
 };
 
-
 //공유 포트폴리오 상세조회
 export interface PortfolioDetailResponse {
   id: string;
@@ -125,7 +125,7 @@ export interface PortfolioDetailResponse {
   portfolioId: number;
   market?: string;
   sector?: string[];
-  
+
   marketCap?: RangeValue;
   per?: RangeValue;
   eps?: RangeValue;
@@ -145,20 +145,23 @@ export interface PortfolioDetailResponse {
   thtrNtin?: RangeValue;
 }
 
-export const getSharePortfolioDetailAPI = async(portfolioId: number): Promise<PortfolioDetailResponse> => {
+export const getSharePortfolioDetailAPI = async (
+  portfolioId: number
+): Promise<PortfolioDetailResponse> => {
   const response = await portfolioAPI.get<APIResponse<PortfolioDetailResponse>>(
     `/share/${portfolioId}`
   );
   return response.data.data;
-}
+};
 
-export const getMyPortfolioDetailAPI = async(portfolioId: number): Promise<PortfolioDetailResponse> => {
+export const getMyPortfolioDetailAPI = async (
+  portfolioId: number
+): Promise<PortfolioDetailResponse> => {
   const response = await portfolioAPI.get<APIResponse<PortfolioDetailResponse>>(
     `/my/${portfolioId}`
   );
   return response.data.data;
-}
-
+};
 
 //댓글
 //댓글 작성
@@ -175,15 +178,17 @@ export const createPortfolioCommentAPI = async (
     JSON.stringify({ content }),
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'application/json' 
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "application/json",
       },
-      transformRequest: [(data) => {
-        return data;
-      }]
+      transformRequest: [
+        (data) => {
+          return data;
+        },
+      ],
     }
   );
-  
+
   return response.data;
 };
 
@@ -204,20 +209,18 @@ export interface CommentsResponse {
 }
 
 export const getPortfolioCommentsAPI = async (
-  sharePortfolioId: number,
-
+  sharePortfolioId: number
 ): Promise<CommentsResponse> => {
   const response = await portfolioAPI.get<APIResponse<CommentsResponse>>(
     `/share/${sharePortfolioId}/comments`
   );
-  console.log(response)
+  console.log(response);
   // API 응답 형식에 맞게 데이터 변환
   return {
     commentCnt: response.data.data.commentCnt,
-    comments: response.data.data.comments
+    comments: response.data.data.comments,
   };
 };
-
 
 // 댓글 삭제 API
 export const deleteCommentAPI = async (
@@ -228,11 +231,11 @@ export const deleteCommentAPI = async (
     `/${stockId}/comments/${commentId}`,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
-  
+
   return response.data;
 };
 
@@ -243,7 +246,7 @@ export interface CommentRequest {
 
 export const editCommentAPI = async (
   stockId: number,
-  commentId : number,
+  commentId: number,
   content: string
 ): Promise<APIResponse<null>> => {
   const response = await portfolioAPI.patch<APIResponse<null>>(
@@ -251,14 +254,44 @@ export const editCommentAPI = async (
     content,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'text/plain'
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "text/plain",
       },
-      transformRequest: [(data) => {
-        return data;
-      }]
+      transformRequest: [
+        (data) => {
+          return data;
+        },
+      ],
     }
   );
-  
+
+  return response.data;
+};
+
+// 포트폴리오 평균값 조회 (GET)
+export interface SummaryResponse {
+  avgMarketCap: number;
+  avgPer: number;
+  avgDebt: number;
+  avgDividend: number;
+}
+
+export const getMySummaryAPI = async (
+  myPortfolioId: number
+): Promise<APIResponse<SummaryResponse>> => {
+  const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
+    `/my/${myPortfolioId}/summary`
+  );
+
+  return response.data;
+};
+
+export const getShareSummaryAPI = async (
+  sharePortfolioId: number
+): Promise<APIResponse<SummaryResponse>> => {
+  const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
+    `/share/${sharePortfolioId}/summary`
+  );
+
   return response.data;
 };
