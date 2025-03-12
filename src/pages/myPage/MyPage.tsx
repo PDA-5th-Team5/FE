@@ -120,9 +120,9 @@ const MyPage = () => {
   const [stockComments, setStockComments] = useState<Comment[]>([]);
   const [portfolioComments, setPortfolioComments] = useState<Comment[]>([]);
 
-  const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
-    "profile"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "stocks" | "comments" | "telegram"
+  >("profile");
 
   // MyCommentsAPI 호출: 컴포넌트 마운트 시 댓글 데이터 가져오기
   useEffect(() => {
@@ -141,7 +141,9 @@ const MyPage = () => {
       });
   }, []);
 
-  const handleTabClick = (tab: "profile" | "stocks" | "comments") => {
+  const handleTabClick = (
+    tab: "profile" | "stocks" | "comments" | "telegram"
+  ) => {
     setActiveTab(tab);
   };
 
@@ -222,6 +224,13 @@ const MyPage = () => {
           onClick={() => handleTabClick("comments")}
         >
           나의 댓글
+        </S.MyPageSidebarItem>
+
+        <S.MyPageSidebarItem
+          $active={activeTab === "telegram"}
+          onClick={() => handleTabClick("telegram")}
+        >
+          텔레그램 알림
         </S.MyPageSidebarItem>
       </S.MyPageSidebar>
 
