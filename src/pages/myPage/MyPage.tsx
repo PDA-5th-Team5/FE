@@ -5,7 +5,7 @@ import StockGrid from "../../components/stock/grid/StockGrid";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
 import { FilterStock } from "../../types/stockTypes";
-import { updateProfileAPI } from "../../apis/user";
+import { postTelegramIDAPI, updateProfileAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
@@ -18,6 +18,7 @@ const MyPage = () => {
   const [stocks, setStocks] = useState<FilterStock[]>([]);
   const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
+  const [telegramID, setTelegramID] = useState("");
 
   // 텔레그램 탭
   const [activeTelegramTab, setActiveTelegramTab] = useState("list");
@@ -219,6 +220,23 @@ const MyPage = () => {
     );
   };
 
+  const addTelegramID = (telegramID: string) => {
+    postTelegramIDAPI(telegramID)
+      .then((data) => {
+        if (data.status === 201) {
+          toast.success("텔레그램 Chat ID!");
+        } else if (data.status === 400) {
+          toast.error("유효한 ID가 아닙니다.");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("유효한 ID가 아닙니다.");
+      });
+  };
+
   return (
     <S.MyPageContainer>
       {/* 왼쪽 사이드바 */}
@@ -362,10 +380,15 @@ const MyPage = () => {
                         <S.SectionProfileInput
                           placeholder={"ID 10자를 입력해주세요"}
                           type="text"
-                          value={nickname}
-                          onChange={(e) => setNickname(e.target.value)}
+                          value={telegramID}
+                          onChange={(e) => setTelegramID(e.target.value)}
                         />
-                        <Button text="등록" />
+                        <Button
+                          text="등록"
+                          onClick={() => {
+                            addTelegramID(telegramID);
+                          }}
+                        />
                       </S.SectionProfileInputWrapper>
                     </S.SectionProfileItem>
                     <TelegramGuide />

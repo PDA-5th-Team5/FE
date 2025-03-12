@@ -157,3 +157,13 @@ export const stocksAPI = async (): Promise<
     await userAPI.get<APIResponse<MyStocksResponseData>>("/stocks");
   return response.data;
 };
+
+// 유저 텔레그램_chat_id 추가, 업데이트 API (POST)
+export const postTelegramIDAPI = async (
+  telegramID: string
+): Promise<APIResponse<null>> => {
+  const response = await userAPI.post<APIResponse<null>>("/telegram", {
+    chatId: telegramID,
+  });
+  return response.data;
+};
