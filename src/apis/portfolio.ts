@@ -97,13 +97,13 @@ export const sharePortfolioListAPI = async(sortBy: string = "loadCount"): Promis
 }
 
 // 나의 포트폴리오 리스트 조회 API
-export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse[]> => {
+export const myPortfolioListAPI = async (): Promise<MyPortfolioResponse> => {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
     throw new Error("로그인 해주세요!");
   }
 
-  const response = await portfolioAPI.get<APIResponse<MyPortfolioResponse[]>>(
+  const response = await portfolioAPI.get<APIResponse<MyPortfolioResponse>>(
     "/my",
     {
       headers: {
