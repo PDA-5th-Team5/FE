@@ -9,6 +9,8 @@ import { updateProfileAPI } from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
+import Toggle from "./components/Toggle";
+import TelegramGuide from "./components/TelegramGuide";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
@@ -16,6 +18,22 @@ const MyPage = () => {
   const [stocks, setStocks] = useState<FilterStock[]>([]);
   const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
+
+  // 텔레그램 탭
+  const [activeTelegramTab, setActiveTelegramTab] = useState("list");
+  const telegramTabItems: TabItem[] = [
+    { label: "알림 목록 (3)", value: "list" },
+    { label: "ID 등록", value: "regist" },
+  ];
+  const handleTelegramTabClick = (value: string) => {
+    setActiveTelegramTab(value);
+  };
+  // 텔레그램 토글
+  const [telegramToggle, setTelegramToggle] = useState(false);
+
+  const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTelegramToggle(e.target.checked);
+  };
 
   useEffect(() => {
     stocksAPI()
@@ -34,53 +52,6 @@ const MyPage = () => {
         toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
       });
   }, []);
-
-  // 댓글 더미데이터
-  // const portfolioComments = {
-  //   category: "portfolio",
-  //   commentsCnt: 8,
-  //   comments: [
-  //     {
-  //       connectId: 1,
-  //       name: "내 포트폴리오얌",
-  //       ticker: "005930",
-  //       commentId: 1,
-  //       content: "댓글내용",
-  //       date: "2024.02.18",
-  //     },
-  //     {
-  //       connectId: 2,
-  //       name: "포트폴리오명은 이거얌",
-  //       ticker: "005930",
-  //       commentId: 2,
-  //       content: "댓글내용2",
-  //       date: "2024.02.18",
-  //     },
-  //   ],
-  // };
-
-  // const stockComments = {
-  //   category: "stock",
-  //   commentsCnt: 12,
-  //   comments: [
-  //     {
-  //       connectId: 1,
-  //       name: "삼성전자",
-  //       ticker: "005930",
-  //       commentId: 1,
-  //       content: "댓글내용",
-  //       date: "2024.02.18",
-  //     },
-  //     {
-  //       connectId: 2,
-  //       name: "LG전자",
-  //       ticker: "005930",
-  //       commentId: 2,
-  //       content: "댓글내용2",
-  //       date: "2024.02.18",
-  //     },
-  //   ],
-  // };
 
   //더미데이터
   const dummyStockResponse = {
@@ -167,9 +138,9 @@ const MyPage = () => {
   const [stockComments, setStockComments] = useState<Comment[]>([]);
   const [portfolioComments, setPortfolioComments] = useState<Comment[]>([]);
 
-  const [activeTab, setActiveTab] = useState<"profile" | "stocks" | "comments">(
-    "profile"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "stocks" | "comments" | "telegram"
+  >("profile");
 
   // MyCommentsAPI 호출: 컴포넌트 마운트 시 댓글 데이터 가져오기
   useEffect(() => {
@@ -188,7 +159,9 @@ const MyPage = () => {
       });
   }, []);
 
-  const handleTabClick = (tab: "profile" | "stocks" | "comments") => {
+  const handleTabClick = (
+    tab: "profile" | "stocks" | "comments" | "telegram"
+  ) => {
     setActiveTab(tab);
   };
 
@@ -270,6 +243,13 @@ const MyPage = () => {
         >
           나의 댓글
         </S.MyPageSidebarItem>
+
+        <S.MyPageSidebarItem
+          $active={activeTab === "telegram"}
+          onClick={() => handleTabClick("telegram")}
+        >
+          텔레그램 알림
+        </S.MyPageSidebarItem>
       </S.MyPageSidebar>
 
       {/* 오른쪽 내용 */}
@@ -344,6 +324,54 @@ const MyPage = () => {
                   </S.CommentItem>
                 ))}
               </S.CommentList>
+            </S.SectionComment>
+          </>
+        )}
+
+        {activeTab === "telegram" && (
+          <>
+            <S.SectionTitle>텔레그램 알림</S.SectionTitle>
+            <S.SectionComment>
+              <Tabs
+                items={telegramTabItems}
+                activeValue={activeTelegramTab}
+                onChange={handleTelegramTabClick}
+              />
+              {activeTelegramTab === "list" ? (
+                <S.CommentList>
+                  <S.TelegramItem>
+                    <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
+                    <S.TelegramToggleWrapper>
+                      <S.TelegramToggleText>
+                        텔레그램으로 알림 받기
+                      </S.TelegramToggleText>
+                      <S.TelegramToggle>
+                        <Toggle />
+                      </S.TelegramToggle>
+                    </S.TelegramToggleWrapper>
+                  </S.TelegramItem>
+                </S.CommentList>
+              ) : (
+                <>
+                  <S.CommentList>
+                    <S.SectionProfileItem>
+                      <S.SectionProfileTitle>
+                        텔레그램 챗 ID
+                      </S.SectionProfileTitle>
+                      <S.SectionProfileInputWrapper>
+                        <S.SectionProfileInput
+                          placeholder={"ID 10자를 입력해주세요"}
+                          type="text"
+                          value={nickname}
+                          onChange={(e) => setNickname(e.target.value)}
+                        />
+                        <Button text="등록" />
+                      </S.SectionProfileInputWrapper>
+                    </S.SectionProfileItem>
+                    <TelegramGuide />
+                  </S.CommentList>
+                </>
+              )}
             </S.SectionComment>
           </>
         )}

@@ -18,7 +18,9 @@ const MyPortfolioPage = () => {
     null
   );
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedPortfolioId, setSelectedPortfolioId] = useState<number | null>(null);
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState<number | null>(
+    null
+  );
   const [portfolioList, setPortfolioList] = useState<MyPortfolio[]>([]);
 
   const [portfolioName, setPortfolioName] = useState("내 포트폴리오 123");
@@ -33,13 +35,13 @@ const MyPortfolioPage = () => {
     commentCnt: 0,
     comments: [],
   });
-  const [portfolioList] = useState([
-    "내 포트폴리오 123",
-    "주식 공부용 포트폴리오",
-    "ETF 전용 포트폴리오",
-    "내 포트폴리오",
-    "내 포트폴리오아무거나",
-  ]);
+  // const [portfolioList] = useState([
+  //   "내 포트폴리오 123",
+  //   "주식 공부용 포트폴리오",
+  //   "ETF 전용 포트폴리오",
+  //   "내 포트폴리오",
+  //   "내 포트폴리오아무거나",
+  // ]);
 
   useEffect(() => {
     // 나의 포트폴리오 리스트 불러오기
@@ -246,10 +248,8 @@ const MyPortfolioPage = () => {
       <S.MyPortfolioPageHeader>
         <S.MyPortfolioNameContainer>
           <S.MyPortfolioName onClick={handleTitleClick}>
-            {
-              portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
-                ?.myPortfolioTitle || "포트폴리오 없음"
-            }
+            {portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
+              ?.myPortfolioTitle || "포트폴리오 없음"}
             <S.DropdownIcon src={DropdownIcon} />
           </S.MyPortfolioName>
 
