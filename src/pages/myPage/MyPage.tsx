@@ -416,8 +416,8 @@ const MyPage = () => {
               {activeTelegramTab === "list" ? (
                 <S.CommentList>
                   {myPortfolioList?.myPortfolios.map((portfolio) => {
-                    const isToggleOn = telegramAlerts.some(
-                      (toggle) => toggle.portfolioId === portfolio.myPortfolioId
+                    const matchingAlert = telegramAlerts.find(
+                      (alert) => alert.portfolioId === portfolio.myPortfolioId
                     );
 
                     return (
@@ -431,8 +431,9 @@ const MyPage = () => {
                           </S.TelegramToggleText>
                           <S.TelegramToggle>
                             <Toggle
-                              checked={isToggleOn}
+                              checked={!!matchingAlert}
                               portfolioId={portfolio.myPortfolioId}
+                              alertId={matchingAlert?.alertId}
                             />
                           </S.TelegramToggle>
                         </S.TelegramToggleWrapper>

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { postTelegramAlertAPI } from "../../../apis/portfolio";
+import {
+  deleteTelegramAlertAPI,
+  postTelegramAlertAPI,
+} from "../../../apis/portfolio";
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -36,16 +39,20 @@ const ToggleContainer = styled.div`
 interface ToggleProps {
   checked: boolean;
   portfolioId: number;
+  alertId?: number;
 }
 
-const Toggle = ({ checked, portfolioId }: ToggleProps) => {
+const Toggle = ({ checked, portfolioId, alertId }: ToggleProps) => {
   const [isOn, setisOn] = useState(checked);
 
-  const toggleHandler = (portfolioId: number) => {
+  const toggleHandler = () => {
     if (isOn) {
-      alert("꺼진다 이제");
+      if (alertId !== undefined) {
+        deleteTelegramAlert(alertId);
+      } else {
+        console.error("알림이 해제되지 않았습니다.");
+      }
     } else {
-      alert("켜진다 이제");
       postTelegramAlert(portfolioId);
     }
 
@@ -67,11 +74,26 @@ const Toggle = ({ checked, portfolioId }: ToggleProps) => {
       });
   };
 
+  const deleteTelegramAlert = (alertId: number) => {
+    deleteTelegramAlertAPI(alertId)
+      .then((data) => {
+        if (data.status === 200) {
+        } else if (data.status === 400) {
+          console.error("내 포트폴리오 알림 삭제에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
   return (
     <>
       <ToggleContainer
         onClick={() => {
-          toggleHandler(portfolioId);
+          toggleHandler();
         }}
       >
         <div

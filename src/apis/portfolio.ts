@@ -180,3 +180,14 @@ export const postTelegramAlertAPI = async (
   });
   return response.data;
 };
+
+
+// 내 포트폴리오 알림 삭제
+export const deleteTelegramAlertAPI = async (
+  alertId: number
+): Promise<APIResponse<null>> => {
+  const response = await portfolioAPI.delete<APIResponse<null>>(
+    `/alerts/${alertId}`
+  );
+  return response.data;
+};
