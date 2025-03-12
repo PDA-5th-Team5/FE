@@ -4,6 +4,14 @@ import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
 import { Stock } from "../../types/stockTypes";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  getShareSummaryAPI,
+  getMySummaryAPI,
+  SummaryResponse,
+} from "../../apis/portfolio";
+
 export interface StockResultData {
   stockCnt: number;
   stockInfos: Stock[];
@@ -16,6 +24,7 @@ interface PortfolioPageProps {
   elementsObj?: { [key: string]: number[] };
   snowflakeItems?: any[];
   description?: string;
+  isMy?: boolean;
 }
 
 // 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
@@ -103,8 +112,47 @@ const PortfolioPage = ({
   portfolioData,
   elementsObj,
   snowflakeItems,
+  isMy,
   // description,
 }: PortfolioPageProps) => {
+  const { num } = useParams<{ num: string }>();
+  const [summary, setSummary] = useState<SummaryResponse>();
+
+  // 공유 포트폴리오 평균값 조회
+  useEffect(() => {
+    if (num) {
+      if (isMy) {
+        getMySummaryAPI(num)
+          .then((data) => {
+            if (data.status === 200) {
+              setSummary(data.data);
+            } else if (data.status === 400) {
+              console.log("나의 포트폴리오 평균값 조회 실패");
+            } else {
+              console.log("알 수 없는 오류 발생");
+            }
+          })
+          .catch((error) => {
+            console.error("API 호출 실패", error);
+          });
+      } else {
+        getShareSummaryAPI(num)
+          .then((data) => {
+            if (data.status === 200) {
+              setSummary(data.data);
+            } else if (data.status === 400) {
+              console.log("공유 포트폴리오 평균값 조회 실패");
+            } else {
+              console.log("알 수 없는 오류 발생");
+            }
+          })
+          .catch((error) => {
+            console.error("API 호출 실패", error);
+          });
+      }
+    }
+  }, [num]);
+
   const portfolioItems = portfolioData
     ? transformPortfolioToItems(portfolioData)
     : [];
@@ -128,7 +176,8 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemLine $isFirst={true} />
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
-                    50조
+                    {/* 50조 */}
+                    {summary?.avgMarketCap}억
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 시가총액
@@ -141,7 +190,8 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemLine />
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
-                    23.08
+                    {/* 23.08 */}
+                    {summary?.avgPer}배
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 PER
@@ -154,7 +204,8 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemLine />
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
-                    25.01%
+                    {/* 25.01% */}
+                    {summary?.avgDebt}%
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 부채비율
@@ -167,7 +218,8 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemLine />
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
-                    2.08
+                    {/* 2.08 */}
+                    {summary?.avgDividend}%
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 배당

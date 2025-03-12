@@ -277,7 +277,7 @@ export interface SummaryResponse {
 }
 
 export const getMySummaryAPI = async (
-  myPortfolioId: number
+  myPortfolioId: string
 ): Promise<APIResponse<SummaryResponse>> => {
   const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
     `/my/${myPortfolioId}/summary`
@@ -287,7 +287,7 @@ export const getMySummaryAPI = async (
 };
 
 export const getShareSummaryAPI = async (
-  sharePortfolioId: number
+  sharePortfolioId: string
 ): Promise<APIResponse<SummaryResponse>> => {
   const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
     `/share/${sharePortfolioId}/summary`
