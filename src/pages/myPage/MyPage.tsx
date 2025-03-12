@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
 import Toggle from "./components/Toggle";
+import TelegramGuide from "./components/TelegramGuide";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
@@ -336,20 +337,41 @@ const MyPage = () => {
                 activeValue={activeTelegramTab}
                 onChange={handleTelegramTabClick}
               />
-
-              <S.CommentList>
-                <S.TelegramItem>
-                  <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
-                  <S.TelegramToggleWrapper>
-                    <S.TelegramToggleText>
-                      텔레그램으로 알림 받기
-                    </S.TelegramToggleText>
-                    <S.TelegramToggle>
-                      <Toggle />
-                    </S.TelegramToggle>
-                  </S.TelegramToggleWrapper>
-                </S.TelegramItem>
-              </S.CommentList>
+              {activeTelegramTab === "list" ? (
+                <S.CommentList>
+                  <S.TelegramItem>
+                    <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
+                    <S.TelegramToggleWrapper>
+                      <S.TelegramToggleText>
+                        텔레그램으로 알림 받기
+                      </S.TelegramToggleText>
+                      <S.TelegramToggle>
+                        <Toggle />
+                      </S.TelegramToggle>
+                    </S.TelegramToggleWrapper>
+                  </S.TelegramItem>
+                </S.CommentList>
+              ) : (
+                <>
+                  <S.CommentList>
+                    <S.SectionProfileItem>
+                      <S.SectionProfileTitle>
+                        텔레그램 챗 ID
+                      </S.SectionProfileTitle>
+                      <S.SectionProfileInputWrapper>
+                        <S.SectionProfileInput
+                          placeholder={"ID 10자를 입력해주세요"}
+                          type="text"
+                          value={nickname}
+                          onChange={(e) => setNickname(e.target.value)}
+                        />
+                        <Button text="등록" />
+                      </S.SectionProfileInputWrapper>
+                    </S.SectionProfileItem>
+                    <TelegramGuide />
+                  </S.CommentList>
+                </>
+              )}
             </S.SectionComment>
           </>
         )}

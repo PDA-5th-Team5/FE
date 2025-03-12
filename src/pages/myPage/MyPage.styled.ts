@@ -177,3 +177,8 @@ export const TelegramToggleText = styled.div`
 `;
 
 export const TelegramToggle = styled.div``;
+
+export const SectionProfileInputWrapper = styled.div`
+  display: flex;
+  gap: 28px;
+`;
