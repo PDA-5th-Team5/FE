@@ -1,6 +1,11 @@
 import { APIResponse, stockAPI } from ".";
 
-import { SnowflakeItems, SnowflakeS, SnowflakeSElements, SnowflakePElements} from "../types/snowflakeTypes";
+import {
+  SnowflakeItems,
+  SnowflakeS,
+  SnowflakeSElements,
+  SnowflakePElements,
+} from "../types/snowflakeTypes";
 
 import { FilterStock } from "../types/stockTypes";
 
@@ -36,15 +41,17 @@ export const createCommentAPI = async (
     content,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'text/plain'
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "text/plain",
       },
-      transformRequest: [(data) => {
-        return data;
-      }]
+      transformRequest: [
+        (data) => {
+          return data;
+        },
+      ],
     }
   );
-  
+
   return response.data;
 };
 
@@ -72,11 +79,11 @@ export const getCommentsAPI = async (
   const response = await stockAPI.get<APIResponse<CommentsResponse>>(
     `/${stockId}/comments?page=${page}&size=${size}`
   );
-  
+
   // API 응답 형식에 맞게 데이터 변환
   return {
     commentCnt: response.data.data.commentCnt,
-    comments: response.data.data.comments
+    comments: response.data.data.comments,
   };
 };
 
@@ -91,21 +98,17 @@ export interface Candle {
 }
 
 export interface CandleChartResponse {
-  candleDTOList : Candle[];
+  candleDTOList: Candle[];
 }
 
 export const getCandleAPI = async (
-  stockId : number
-) : Promise<APIResponse<CandleChartResponse>> => {
+  stockId: number
+): Promise<APIResponse<CandleChartResponse>> => {
   const response = await stockAPI.get<APIResponse<CandleChartResponse>>(
     `/${stockId}/candle`
   );
   return response.data;
-
-}
-
-
-
+};
 
 // 댓글 삭제 API
 export const deleteCommentAPI = async (
@@ -116,11 +119,11 @@ export const deleteCommentAPI = async (
     `/${stockId}/comments/${commentId}`,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
-  
+
   return response.data;
 };
 
@@ -131,7 +134,7 @@ export interface CommentRequest {
 
 export const editCommentAPI = async (
   stockId: number,
-  commentId : number,
+  commentId: number,
   content: string
 ): Promise<APIResponse<null>> => {
   const response = await stockAPI.patch<APIResponse<null>>(
@@ -139,18 +142,19 @@ export const editCommentAPI = async (
     content,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'text/plain'
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "text/plain",
       },
-      transformRequest: [(data) => {
-        return data;
-      }]
+      transformRequest: [
+        (data) => {
+          return data;
+        },
+      ],
     }
   );
-  
+
   return response.data;
 };
-
 
 // 전체 섹터 조회 API 연결
 export const getSectorsAPI = async (): Promise<APIResponse<string[]>> => {
@@ -187,7 +191,6 @@ export const getFilterStocksAPI = async ({
   return response.data;
 };
 
-
 //개별종목정보조회
 export interface StockInfoResponse {
   stockInfo: {
@@ -219,30 +222,28 @@ export interface StockInfoResponse {
 export const getStockInfo = async (
   stockId: number
 ): Promise<APIResponse<StockInfoResponse>> => {
-  const token = localStorage.getItem('accessToken');
-  const config = token 
-    ? { headers: { Authorization: `Bearer ${token}` } } 
-    : {};
+  const token = localStorage.getItem("accessToken");
+  const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
   const response = await stockAPI.get<APIResponse<StockInfoResponse>>(
-    `/${stockId}`,config
+    `/${stockId}`,
+    config
   );
-  
+
   return response.data;
 };
-
 
 // 북마크 추가 API 함수
 export const addToWatchlist = async (stockId: number): Promise<any> => {
   try {
-    const token = localStorage.getItem('accessToken');
-    const response = await stockAPI.post(`/${stockId}/watchlist`, null,{
+    const token = localStorage.getItem("accessToken");
+    const response = await stockAPI.post(`/${stockId}/watchlist`, null, {
       headers: {
-         Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('관심종목 추가 실패:', error);
+    console.error("관심종목 추가 실패:", error);
     throw error;
   }
 };
@@ -250,16 +251,16 @@ export const addToWatchlist = async (stockId: number): Promise<any> => {
 // 북마크 삭제 API 함수
 export const removeFromWatchlist = async (stockId: number): Promise<any> => {
   try {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
 
-    const response = await stockAPI.delete(`/${stockId}/watchlist`,{
+    const response = await stockAPI.delete(`/${stockId}/watchlist`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response.data;
   } catch (error) {
-    console.error('관심종목 삭제 실패:', error);
+    console.error("관심종목 삭제 실패:", error);
     throw error;
   }
 };
@@ -269,7 +270,7 @@ export interface Competitors {
   stockId: number;
   companyName: string;
   ticker: string;
-  snowflakeS:SnowflakeSElements;
+  snowflakeS: SnowflakeSElements;
 }
 export interface CompetitorsResponse {
   status: number;
@@ -278,19 +279,19 @@ export interface CompetitorsResponse {
     competitors: Competitors[];
   };
 }
-export const getCompetitorsAPI = async (stockId: number): Promise<CompetitorsResponse> => {
+export const getCompetitorsAPI = async (
+  stockId: number
+): Promise<CompetitorsResponse> => {
   try {
     const response = await stockAPI.get<CompetitorsResponse>(
       `/${stockId}/competitors`
     );
     return response.data;
   } catch (error) {
-    console.error('경쟁사 정보 조회 실패:', error);
+    console.error("경쟁사 정보 조회 실패:", error);
     throw error;
   }
 };
-
-
 
 // 라인그래프조회
 export interface LineGraphResponse {
@@ -306,20 +307,19 @@ export interface LineGraphResponse {
   };
 }
 
-
-export const getLineGraphAPI = async (stockId : number) : Promise<LineGraphResponse> => {
+export const getLineGraphAPI = async (
+  stockId: number
+): Promise<LineGraphResponse> => {
   try {
-    const response = await stockAPI.post<LineGraphResponse>(
-      `/graph`,
-        {stockId}
-      
-    );
+    const response = await stockAPI.post<LineGraphResponse>(`/graph`, {
+      stockId,
+    });
     return response.data;
-  } catch (error){
-    console.error('라인그래프 조회 실패', error)
+  } catch (error) {
+    console.error("라인그래프 조회 실패", error);
     throw error;
   }
-}
+};
 
 // 임계값 조회
 export const getThresholdsAPI = async (): Promise<
@@ -330,4 +330,3 @@ export const getThresholdsAPI = async (): Promise<
 
   return response.data;
 };
-

@@ -18,7 +18,9 @@ const MyPortfolioPage = () => {
     null
   );
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedPortfolioId, setSelectedPortfolioId] = useState<number | null>(null);
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState<number | null>(
+    null
+  );
   const [portfolioList, setPortfolioList] = useState<MyPortfolio[]>([]);
 
   const [portfolioName, setPortfolioName] = useState("내 포트폴리오 123");
@@ -33,20 +35,19 @@ const MyPortfolioPage = () => {
     commentCnt: 0,
     comments: [],
   });
-  const [portfolioList] = useState([
-    "내 포트폴리오 123",
-    "주식 공부용 포트폴리오",
-    "ETF 전용 포트폴리오",
-    "내 포트폴리오",
-    "내 포트폴리오아무거나",
-  ]);
+  // const [portfolioList] = useState([
+  //   "내 포트폴리오 123",
+  //   "주식 공부용 포트폴리오",
+  //   "ETF 전용 포트폴리오",
+  //   "내 포트폴리오",
+  //   "내 포트폴리오아무거나",
+  // ]);
 
   useEffect(() => {
     // 나의 포트폴리오 리스트 불러오기
     const fetchMyPortfolios = async () => {
       try {
         const response = await myPortfolioListAPI(); // API 호출
-        console.log("포트폴리오 데이터:", response); // 응답 데이터 확인
 
         if (response.myPortfoliosCnt > 0) {
           setPortfolioList(response.myPortfolios);
@@ -92,9 +93,6 @@ const MyPortfolioPage = () => {
         }
 
         const response = await getMyPortfolioDetailAPI(portfolioId);
-        console.log("전체 응답:", response);
-        console.log("제목", response.title);
-        console.log("설명", response.description);
 
         setPortfolio(response);
 
@@ -246,10 +244,8 @@ const MyPortfolioPage = () => {
       <S.MyPortfolioPageHeader>
         <S.MyPortfolioNameContainer>
           <S.MyPortfolioName onClick={handleTitleClick}>
-            {
-              portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
-                ?.myPortfolioTitle || "포트폴리오 없음"
-            }
+            {portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
+              ?.myPortfolioTitle || "포트폴리오 없음"}
             <S.DropdownIcon src={DropdownIcon} />
           </S.MyPortfolioName>
 
@@ -290,6 +286,7 @@ const MyPortfolioPage = () => {
         portfolioData={portfolio}
         elementsObj={elementsObj}
         snowflakeItems={snowflakeItems}
+        isMy={true}
       />
     </S.MyPortfolioPageContainer>
   );

@@ -189,7 +189,7 @@ const MainPage: React.FC = () => {
         category: "my",
         title: portfolioTitle,
         description: portfolioDesc,
-        market: marketFilter,
+        market: marketFilter === "전체" ? "ALL" : marketFilter,
         ...selectedMetrics,
         sector: selectedSectorKeys,
       };

@@ -3,7 +3,9 @@ import styled from "styled-components";
 import PersonIcon from "../../../assets/images/icons/person_gray.png";
 import Button from "../../button/Button";
 import { createCommentAPI } from "../../../apis/stock";
+import { createPortfolioCommentAPI } from "../../../apis/portfolio";
 import { useParams } from "react-router-dom";
+import { CommentsResponse } from "../../../apis/stock";
 const CommentInputContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -47,12 +49,22 @@ const CommentButton = styled.div`
 
 interface CommentInputProps {
   onCommentSubmitted?: () => void;
+  pageType?: "stock" | "portfolio";
+  fetchComments: () => Promise<CommentsResponse>;
 }
 
-const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
+const CommentInput = ({
+  onCommentSubmitted,
+  pageType = "stock",
+  fetchComments,
+}: CommentInputProps) => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { num } = useParams<{ num: string }>();
+  const location = window.location.pathname;
+  const actualPageType = location.includes("/portfolio")
+    ? "portfolio"
+    : pageType;
 
   const saveComment = async () => {
     if (!content.trim()) {
@@ -62,8 +74,9 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
 
     try {
       setIsLoading(true);
-      // console.log("URL 파라미터 id:", num);
       const stockId = num ? parseInt(num, 10) : 1;
+      const sharePortfolioId = num ? parseInt(num, 10) : 1;
+
       if (isNaN(stockId)) {
         console.error("ID 파싱 실패:", num);
         throw new Error("주식 ID를 변환할 수 없습니다");
@@ -73,13 +86,20 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
         throw new Error("유효하지 않은 주식 ID입니다");
       }
 
-      await createCommentAPI(stockId, content);
+      // 페이지 타입에 따라 다른 API 호출
+      if (actualPageType === "stock") {
+        await createCommentAPI(stockId, content);
+      } else if (actualPageType === "portfolio") {
+        await createPortfolioCommentAPI(sharePortfolioId, content);
+      }
 
       setContent("");
       alert("댓글이 저장되었습니다.");
+
       // 댓글 저장 후 목록 갱신 호출
       if (onCommentSubmitted) {
         onCommentSubmitted();
+        fetchComments();
       }
     } catch (error) {
       console.error("댓글 저장 실패:", error);
@@ -97,7 +117,11 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
       </CommentInputHeader>
 
       <CommentInputTextarea
-        placeholder="주식에 대한 의견을 나누어 보세요."
+        placeholder={
+          actualPageType === "stock"
+            ? "주식에 대한 의견을 나누어 보세요."
+            : "포트폴리오오에 대한 의견을 나누어 보세요."
+        }
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />

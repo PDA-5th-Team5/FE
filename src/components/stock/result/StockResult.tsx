@@ -133,17 +133,9 @@ const StockResult = ({
       {stocks.length === 0 ? (
         <S.NoResultContainer>검색 결과가 없습니다</S.NoResultContainer>
       ) : view === "list" ? (
-        <StockList
-          stocks={stocks}
-          setStocks={setStocks}
-          onToggleBookmark={handleToggleBookmark}
-        />
+        <StockList stocks={stocks} setStocks={setStocks} />
       ) : (
-        <StockGrid
-          stocks={stocks}
-          setStocks={setStocks}
-          onToggleBookmark={handleToggleBookmark}
-        />
+        <StockGrid stocks={stocks} setStocks={setStocks} />
       )}
     </S.StockResultContainer>
   );

@@ -5,10 +5,17 @@ import PortfolioPage from "../PortfolioPage";
 import * as S from "./SharePortfolioDetailPage.styled";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getSharePortfolioDetailAPI } from "../../../apis/portfolio";
+import {
+  getSharePortfolioDetailAPI,
+  getPortfolioCommentsAPI,
+  deletePortfolioCommentAPI,
+  editPortfolioCommentAPI,
+} from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 const SharePortfolioDetailPage = () => {
   const { num } = useParams<{ num: string }>();
+  const sharePortfolioId = num ? parseInt(num, 10) : 1;
+
   const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
     null
   );
@@ -18,11 +25,85 @@ const SharePortfolioDetailPage = () => {
   const [snowflakeItems, setSnowflakeItems] = useState<any[]>([]);
   const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+
+  const size = 10;
   const [error, setError] = useState<string | null>(null);
   const [commentsData, setCommentsData] = useState({
     commentCnt: 0,
     comments: [],
   });
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editContent, setEditContent] = useState("");
+
+  //1. 댓글 조회
+  useEffect(() => {
+    fetchComments();
+  }, [sharePortfolioId, page]);
+
+  const fetchComments = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getPortfolioCommentsAPI(sharePortfolioId);
+      setCommentsData(data);
+    } catch (error) {
+      console.error("댓글 로딩 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  //2. 댓글 삭제
+  const handleDelete = async (commentId: number) => {
+    if (window.confirm("댓글을 삭제하시겠습니까?")) {
+      try {
+        await deletePortfolioCommentAPI(sharePortfolioId, commentId);
+        alert("댓글이 삭제되었습니다.");
+        fetchComments();
+      } catch (error) {
+        console.error("댓글 삭제 실패:", error);
+        alert("댓글 삭제에 실패했습니다.");
+      }
+      setOpenDropdownId(null);
+    }
+  };
+
+  //3. 댓글 수정
+  const handleEdit = (commentId: number, currentContent: string) => {
+    console.log("adddd");
+
+    setEditingCommentId(commentId);
+    setEditContent(currentContent);
+    setOpenDropdownId(null);
+  };
+
+  const handleCancelEdit = () => {
+    console.log("수정");
+
+    setEditingCommentId(null);
+    setEditContent("");
+  };
+  const handleSaveEdit = async (commentId: number) => {
+    console.log("ad");
+
+    if (!editContent.trim()) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await editPortfolioCommentAPI(sharePortfolioId, commentId, editContent);
+      alert("댓글이 수정되었습니다.");
+      setEditingCommentId(null);
+      setEditContent("");
+      fetchComments(); // 댓글 목록 새로고침
+    } catch (error) {
+      console.error("댓글 수정 실패:", error);
+      alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   useEffect(() => {
     const fetchPortfolioDetail = async () => {
@@ -35,9 +116,6 @@ const SharePortfolioDetailPage = () => {
         }
 
         const response = await getSharePortfolioDetailAPI(portfolioId);
-        console.log("전체 응답:", response);
-        console.log("제목", response.title);
-        console.log("설명", response.description);
 
         setPortfolio(response);
 
@@ -205,11 +283,22 @@ const SharePortfolioDetailPage = () => {
           portfolioData={portfolio}
           elementsObj={elementsObj}
           snowflakeItems={snowflakeItems}
+          isMy={false}
         />
       </S.PortfolioDetailContent>
 
       <S.PortfolioDetailComments>
-        <Comment data={commentsData} />
+        <Comment
+          data={commentsData}
+          handleDelete={handleDelete}
+          handleSaveEdit={handleSaveEdit}
+          handleEdit={handleEdit}
+          handleCancelEdit={handleCancelEdit}
+          editingCommentId={editingCommentId}
+          editContent={editContent}
+          setEditContent={setEditContent}
+          fetchComments={fetchComments}
+        />
       </S.PortfolioDetailComments>
     </S.PortfolioDetailContainer>
   );

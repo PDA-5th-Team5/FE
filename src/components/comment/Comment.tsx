@@ -22,6 +22,8 @@ interface CommentProps {
   editingCommentId: number | null;
   editContent: string;
   setEditContent: React.Dispatch<React.SetStateAction<string>>;
+  pageType?: "stock" | "portfolio";
+  fetchComments: () => Promise<CommentsResponse>;
 }
 
 const Comment = ({
@@ -33,6 +35,8 @@ const Comment = ({
   editingCommentId,
   editContent,
   setEditContent,
+  fetchComments,
+  pageType = "stock",
 }: CommentProps) => {
   const [refreshComments, setRefreshComments] = useState(false);
   const { num } = useParams<{ num: string }>();
@@ -44,7 +48,11 @@ const Comment = ({
 
   return (
     <CommentContainer>
-      <CommentInput onCommentSubmitted={handleCommentSubmitted} />
+      <CommentInput
+        onCommentSubmitted={handleCommentSubmitted}
+        pageType={pageType}
+        fetchComments={fetchComments}
+      />
       <CommentList
         key={refreshComments ? "refresh" : "initial"}
         data={data}
