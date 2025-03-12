@@ -210,7 +210,6 @@ export const getPortfolioCommentsAPI = async (
   const response = await portfolioAPI.get<APIResponse<CommentsResponse>>(
     `/share/${sharePortfolioId}/comments`
   );
-  console.log(response)
   // API 응답 형식에 맞게 데이터 변환
   return {
     commentCnt: response.data.data.commentCnt,
@@ -220,12 +219,12 @@ export const getPortfolioCommentsAPI = async (
 
 
 // 댓글 삭제 API
-export const deleteCommentAPI = async (
-  stockId: number,
+export const deletePortfolioCommentAPI = async (
+  sharePortfolioId: number,
   commentId: number
 ): Promise<APIResponse<null>> => {
   const response = await portfolioAPI.delete<APIResponse<null>>(
-    `/${stockId}/comments/${commentId}`,
+    `/share/${sharePortfolioId}/comments/${commentId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -241,18 +240,18 @@ export interface CommentRequest {
   content: string;
 }
 
-export const editCommentAPI = async (
-  stockId: number,
+export const editPortfolioCommentAPI = async (
+  sharePortfolioId: number,
   commentId : number,
   content: string
 ): Promise<APIResponse<null>> => {
   const response = await portfolioAPI.patch<APIResponse<null>>(
-    `/${stockId}/comments/${commentId}`,
-    content,
+    `/share/${sharePortfolioId}/comments/${commentId}`,
+    JSON.stringify({ content }),
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'text/plain'
+        'Content-Type': 'application/json'
       },
       transformRequest: [(data) => {
         return data;
