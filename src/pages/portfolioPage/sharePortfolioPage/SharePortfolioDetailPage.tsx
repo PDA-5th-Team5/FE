@@ -283,6 +283,7 @@ const SharePortfolioDetailPage = () => {
           portfolioData={portfolio}
           elementsObj={elementsObj}
           snowflakeItems={snowflakeItems}
+          isMy={false}
         />
       </S.PortfolioDetailContent>
 

@@ -286,6 +286,7 @@ const MyPortfolioPage = () => {
         portfolioData={portfolio}
         elementsObj={elementsObj}
         snowflakeItems={snowflakeItems}
+        isMy={true}
       />
     </S.MyPortfolioPageContainer>
   );
