@@ -294,3 +294,30 @@ export const getShareSummaryAPI = async (
 
   return response.data;
 };
+
+// 나의 포트폴리오 공유 (POST)
+export interface ShareMyPortfolio {
+  portfolioId: number;
+}
+
+export const shareMyPortfolioAPI = async (
+  portfolioId: number
+): Promise<ShareMyPortfolio> => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("로그인 해주세요");
+  }
+
+  const response = await portfolioAPI.post<APIResponse<ShareMyPortfolio>>(
+    `/my/${portfolioId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  console.log("🟢 포트폴리오 공유 응답:", response.data);
+  return response.data.data;
+};

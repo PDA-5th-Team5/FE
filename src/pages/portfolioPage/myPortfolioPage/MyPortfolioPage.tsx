@@ -7,12 +7,13 @@ import PortfolioPage from "../PortfolioPage";
 import { useParams } from "react-router-dom";
 import { getMyPortfolioDetailAPI } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
-
+import { shareMyPortfolioAPI } from "../../../apis/portfolio";
 import { myPortfolioListAPI } from "../../../apis/portfolio"; // 나의 포트폴리오 리스트 API 가져오기
 import { MyPortfolio } from "../../../types/portfolioTypes"; // 타입 추가
 
 const MyPortfolioPage = () => {
   const { num } = useParams<{ num: string }>();
+  const portfolioId = num ? Number(num) : null;
 
   const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
     null
@@ -80,7 +81,19 @@ const MyPortfolioPage = () => {
   };
 
   const onClickShare = () => {
-    alert("공유되었습니다");
+    if (portfolioId === null) {
+      alert("포트폴리오 ID가 없습니다.");
+      return;
+    }
+
+    shareMyPortfolioAPI(portfolioId)
+      .then(() => {
+        alert("공유되었습니다");
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        alert("포트폴리오 공유에 실패했습니다.");
+      });
   };
   useEffect(() => {
     const fetchPortfolioDetail = async () => {
