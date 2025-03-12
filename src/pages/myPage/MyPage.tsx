@@ -15,6 +15,12 @@ import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
 import Toggle from "./components/Toggle";
 import TelegramGuide from "./components/TelegramGuide";
+import {
+  getTelegramAlertsAPI,
+  myPortfolioListAPI,
+  TelegramAlerts,
+} from "../../apis/portfolio";
+import { MyPortfolioResponse } from "../../types/portfolioTypes";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
@@ -23,11 +29,13 @@ const MyPage = () => {
   const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
   const [telegramID, setTelegramID] = useState("");
+  const [myPortfolioList, setMyPortfolioList] = useState<MyPortfolioResponse>();
+  const [telegramAlerts, setTelegramAlerts] = useState<TelegramAlerts[]>([]);
 
   // 텔레그램 탭
   const [activeTelegramTab, setActiveTelegramTab] = useState("list");
   const telegramTabItems: TabItem[] = [
-    { label: "알림 목록 (3)", value: "list" },
+    { label: `알림 목록 (${myPortfolioList?.myPortfoliosCnt})`, value: "list" },
     { label: "ID 등록", value: "regist" },
   ];
   const handleTelegramTabClick = (value: string) => {
@@ -58,6 +66,8 @@ const MyPage = () => {
       });
 
     getTelegramID();
+    getMyPortfolio();
+    getTelegramAlerts();
   }, []);
 
   //더미데이터
@@ -259,6 +269,32 @@ const MyPage = () => {
       });
   };
 
+  const getMyPortfolio = () => {
+    myPortfolioListAPI()
+      .then((data) => {
+        setMyPortfolioList(data);
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
+  const getTelegramAlerts = () => {
+    getTelegramAlertsAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setTelegramAlerts(data.data);
+        } else if (data.status === 400) {
+          console.error("내 포트폴리오 알림 조회에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
   return (
     <S.MyPageContainer>
       {/* 왼쪽 사이드바 */}
@@ -379,17 +415,27 @@ const MyPage = () => {
               />
               {activeTelegramTab === "list" ? (
                 <S.CommentList>
-                  <S.TelegramItem>
-                    <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
-                    <S.TelegramToggleWrapper>
-                      <S.TelegramToggleText>
-                        텔레그램으로 알림 받기
-                      </S.TelegramToggleText>
-                      <S.TelegramToggle>
-                        <Toggle />
-                      </S.TelegramToggle>
-                    </S.TelegramToggleWrapper>
-                  </S.TelegramItem>
+                  {myPortfolioList?.myPortfolios.map((portfolio) => {
+                    const isToggleOn = telegramAlerts.some(
+                      (toggle) => toggle.portfolioId === portfolio.myPortfolioId
+                    );
+
+                    return (
+                      <S.TelegramItem>
+                        <S.TelegramTitle>
+                          {portfolio.myPortfolioTitle}
+                        </S.TelegramTitle>
+                        <S.TelegramToggleWrapper>
+                          <S.TelegramToggleText>
+                            텔레그램으로 알림 받기
+                          </S.TelegramToggleText>
+                          <S.TelegramToggle>
+                            <Toggle checked={isToggleOn} />
+                          </S.TelegramToggle>
+                        </S.TelegramToggleWrapper>
+                      </S.TelegramItem>
+                    );
+                  })}
                 </S.CommentList>
               ) : (
                 <>

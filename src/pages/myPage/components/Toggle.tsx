@@ -32,8 +32,13 @@ const ToggleContainer = styled.div`
   }
 `;
 
-const Toggle = () => {
-  const [isOn, setisOn] = useState(false);
+interface ToggleProps {
+  checked: boolean;
+  onChange?: (value: boolean) => void;
+}
+
+const Toggle = ({ checked, onChange }: ToggleProps) => {
+  const [isOn, setisOn] = useState(checked);
 
   const toggleHandler = () => {
     setisOn(!isOn);
