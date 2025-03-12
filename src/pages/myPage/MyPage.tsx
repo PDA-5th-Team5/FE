@@ -434,6 +434,7 @@ const MyPage = () => {
                               checked={!!matchingAlert}
                               portfolioId={portfolio.myPortfolioId}
                               alertId={matchingAlert?.alertId}
+                              getTelegramAlerts={getTelegramAlerts}
                             />
                           </S.TelegramToggle>
                         </S.TelegramToggleWrapper>
