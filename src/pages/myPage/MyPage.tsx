@@ -5,12 +5,24 @@ import StockGrid from "../../components/stock/grid/StockGrid";
 import Tabs, { TabItem } from "../../components/tab/Tabs";
 import { useNavigate } from "react-router-dom";
 import { FilterStock } from "../../types/stockTypes";
-import { updateProfileAPI } from "../../apis/user";
+import {
+  getTelegramIDAPI,
+  postTelegramIDAPI,
+  updateProfileAPI,
+} from "../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Comment } from "../../apis/user";
 import { commentsAPI, stocksAPI } from "../../apis/user";
 import Toggle from "./components/Toggle";
 import TelegramGuide from "./components/TelegramGuide";
+import {
+  deleteTelegramAlertAPI,
+  getTelegramAlertsAPI,
+  myPortfolioListAPI,
+  postTelegramAlertAPI,
+  TelegramAlerts,
+} from "../../apis/portfolio";
+import { MyPortfolioResponse } from "../../types/portfolioTypes";
 
 const MyPage = () => {
   const [nickname, setNickname] = useState("");
@@ -18,21 +30,18 @@ const MyPage = () => {
   const [stocks, setStocks] = useState<FilterStock[]>([]);
   const [stocksCnt, setStocksCnt] = useState(0);
   const navigate = useNavigate();
+  const [telegramID, setTelegramID] = useState("");
+  const [myPortfolioList, setMyPortfolioList] = useState<MyPortfolioResponse>();
+  const [telegramAlerts, setTelegramAlerts] = useState<TelegramAlerts[]>([]);
 
   // 텔레그램 탭
   const [activeTelegramTab, setActiveTelegramTab] = useState("list");
   const telegramTabItems: TabItem[] = [
-    { label: "알림 목록 (3)", value: "list" },
+    { label: `알림 목록 (${myPortfolioList?.myPortfoliosCnt})`, value: "list" },
     { label: "ID 등록", value: "regist" },
   ];
   const handleTelegramTabClick = (value: string) => {
     setActiveTelegramTab(value);
-  };
-  // 텔레그램 토글
-  const [telegramToggle, setTelegramToggle] = useState(false);
-
-  const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTelegramToggle(e.target.checked);
   };
 
   useEffect(() => {
@@ -51,88 +60,11 @@ const MyPage = () => {
         console.error("API 호출 실패", error);
         toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
       });
-  }, []);
 
-  //더미데이터
-  const dummyStockResponse = {
-    status: 201,
-    message: "성공입니다.",
-    data: {
-      stockCnt: 4,
-      stockInfos: [
-        {
-          snowflakeS: {
-            elements: {
-              bsopPrti: 19,
-              thtrNtin: 19,
-              roeVal: 16,
-              pbr: 7,
-              eps: 6,
-              per: 18,
-            },
-          },
-          stockId: 1,
-          ticker: "05252",
-          companyName: "삼성전자",
-          currentPrice: 50000,
-          "1DayFluctuationRate": 0.2,
-          "1WeekFluctuationRate": 7.3,
-          "1YearFluctuationRate": 13.1,
-          marketCap: 4500,
-          per: 13.56,
-          debtRate: 30.49,
-          sector: "반도체",
-          isBookmark: false,
-          description:
-            "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-        },
-        {
-          snowflakeS: {
-            elements: {
-              bsopPrti: 19,
-              thtrNtin: 3,
-              roeVal: 16,
-            },
-          },
-          stockId: 2,
-          ticker: "013660",
-          companyName: "하이닉스",
-          currentPrice: 50000,
-          "1DayFluctuationRate": 0.4,
-          "1WeekFluctuationRate": 5.1,
-          "1YearFluctuationRate": 10.0,
-          marketCap: 9000,
-          per: 17.56,
-          debtRate: 33.49,
-          sector: "반도체",
-          isBookmark: false, // 추가
-          description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-        },
-        {
-          snowflakeS: {
-            elements: {
-              thtrNtin: 3, // 당기순이익
-              roeVal: 10, // ROE
-            },
-          },
-          stockId: 3,
-          ticker: "013660",
-          companyName: "하이닉스",
-          currentPrice: 50000,
-          "1DayFluctuationRate": 0.4,
-          "1WeekFluctuationRate": 5.1,
-          "1YearFluctuationRate": 10.0,
-          marketCap: 9000,
-          per: 17.56,
-          debtRate: 33.49,
-          sector: "반도체",
-          isBookmark: false, // 추가
-          description: "하이닉스는 메모리 반도체 분야의 선도 기업입니다.", // 추가
-        },
-        // ...추가 주식 데이터
-      ],
-    },
-  };
+    getTelegramID();
+    getMyPortfolio();
+    getTelegramAlerts();
+  }, []);
 
   // 댓글 상태: 초기엔 빈 배열로 설정
   const [stockComments, setStockComments] = useState<Comment[]>([]);
@@ -224,6 +156,65 @@ const MyPage = () => {
         stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
       )
     );
+  };
+
+  const addTelegramID = (telegramID: string) => {
+    postTelegramIDAPI(telegramID)
+      .then((data) => {
+        if (data.status === 201) {
+          toast.success("텔레그램 Chat ID가 등록되었습니다");
+        } else if (data.status === 400) {
+          toast.error("유효한 ID가 아닙니다.");
+        } else {
+          toast.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+        toast.error("유효한 ID가 아닙니다.");
+      });
+  };
+
+  const getTelegramID = () => {
+    getTelegramIDAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setTelegramID(data.data);
+        } else if (data.status === 400) {
+          console.error("ID 조회에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
+  const getMyPortfolio = () => {
+    myPortfolioListAPI()
+      .then((data) => {
+        setMyPortfolioList(data);
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
+  };
+
+  const getTelegramAlerts = () => {
+    getTelegramAlertsAPI()
+      .then((data) => {
+        if (data.status === 200) {
+          setTelegramAlerts(data.data);
+        } else if (data.status === 400) {
+          console.error("내 포트폴리오 알림 조회에 실패하였습니다.");
+        } else {
+          console.error("알 수 없는 오류가 발생했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("API 호출 실패", error);
+      });
   };
 
   return (
@@ -346,33 +337,75 @@ const MyPage = () => {
               />
               {activeTelegramTab === "list" ? (
                 <S.CommentList>
-                  <S.TelegramItem>
-                    <S.TelegramTitle>포트폴리오 제목</S.TelegramTitle>
-                    <S.TelegramToggleWrapper>
-                      <S.TelegramToggleText>
-                        텔레그램으로 알림 받기
-                      </S.TelegramToggleText>
-                      <S.TelegramToggle>
-                        <Toggle />
-                      </S.TelegramToggle>
-                    </S.TelegramToggleWrapper>
-                  </S.TelegramItem>
+                  {myPortfolioList?.myPortfolios.map((portfolio) => {
+                    const matchingAlert = telegramAlerts.find(
+                      (alert) => alert.portfolioId === portfolio.myPortfolioId
+                    );
+                    const isChecked = !!matchingAlert;
+
+                    const handleToggle = () => {
+                      if (!telegramID) {
+                        alert("텔레그램 Chat ID 등록이 필요합니다");
+                        return;
+                      }
+
+                      if (isChecked) {
+                        if (matchingAlert?.alertId) {
+                          deleteTelegramAlertAPI(matchingAlert.alertId).then(
+                            () => {
+                              getTelegramAlerts();
+                            }
+                          );
+                        }
+                      } else {
+                        postTelegramAlertAPI(portfolio.myPortfolioId).then(
+                          () => {
+                            getTelegramAlerts();
+                          }
+                        );
+                      }
+                    };
+
+                    return (
+                      <S.TelegramItem key={portfolio.myPortfolioId}>
+                        <S.TelegramTitle>
+                          {portfolio.myPortfolioTitle}
+                        </S.TelegramTitle>
+                        <S.TelegramToggleWrapper>
+                          <S.TelegramToggleText>
+                            텔레그램으로 알림 받기
+                          </S.TelegramToggleText>
+                          <S.TelegramToggle>
+                            <Toggle
+                              checked={isChecked}
+                              onToggle={handleToggle}
+                            />
+                          </S.TelegramToggle>
+                        </S.TelegramToggleWrapper>
+                      </S.TelegramItem>
+                    );
+                  })}
                 </S.CommentList>
               ) : (
                 <>
                   <S.CommentList>
                     <S.SectionProfileItem>
                       <S.SectionProfileTitle>
-                        텔레그램 챗 ID
+                        텔레그램 Chat ID
                       </S.SectionProfileTitle>
                       <S.SectionProfileInputWrapper>
                         <S.SectionProfileInput
                           placeholder={"ID 10자를 입력해주세요"}
                           type="text"
-                          value={nickname}
-                          onChange={(e) => setNickname(e.target.value)}
+                          value={telegramID}
+                          onChange={(e) => setTelegramID(e.target.value)}
                         />
-                        <Button text="등록" />
+                        <Button
+                          text="등록"
+                          onClick={() => {
+                            addTelegramID(telegramID);
+                          }}
+                        />
                       </S.SectionProfileInputWrapper>
                     </S.SectionProfileItem>
                     <TelegramGuide />
