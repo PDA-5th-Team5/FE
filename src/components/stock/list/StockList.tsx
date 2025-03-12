@@ -8,10 +8,10 @@ import StockSnowflake from "../../snowflake/StockSnowflake";
 export interface StockProps {
   stocks: FilterStock[];
   setStocks: React.Dispatch<React.SetStateAction<FilterStock[]>>;
-  onToggleBookmark: (stockId: number, newState: boolean) => void;
+  isMyWatchlist?: boolean;
 }
 
-const StockList = ({ stocks, onToggleBookmark }: StockProps) => {
+const StockList = ({ stocks }: StockProps) => {
   const navigate = useNavigate();
 
   const handleRowClick = (id: number) => {
@@ -88,11 +88,7 @@ const StockList = ({ stocks, onToggleBookmark }: StockProps) => {
               <td>{stock.sector}</td>
               <td onClick={(e) => e.stopPropagation}>
                 <S.BookmarkWrapper>
-                  <Bookmark
-                    stockId={stock.stockId}
-                    isBookmarked={stock.fav}
-                    onToggleBookmark={onToggleBookmark}
-                  />
+                  <Bookmark stockId={stock.stockId} isBookmarked={stock.fav} />
                 </S.BookmarkWrapper>
               </td>
             </tr>

@@ -10,7 +10,7 @@ const GridContainer = styled.div`
   gap: 40px;
 `;
 
-const StockGrid = ({ stocks, setStocks, onToggleBookmark }: StockProps) => {
+const StockGrid = ({ stocks, setStocks, isMyWatchlist }: StockProps) => {
   return (
     <GridContainer>
       {stocks.map((stock) => {
@@ -37,7 +37,7 @@ const StockGrid = ({ stocks, setStocks, onToggleBookmark }: StockProps) => {
             setStocks={setStocks}
             allItems={snowflakeItems}
             selectedKeys={snowflakeSelectedKeys}
-            onToggleBookmark={onToggleBookmark}
+            isMyWatchlist={isMyWatchlist}
           />
         );
       })}

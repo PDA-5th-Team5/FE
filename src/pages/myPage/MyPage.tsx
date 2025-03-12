@@ -138,9 +138,15 @@ const MyPage = () => {
   const [stockComments, setStockComments] = useState<Comment[]>([]);
   const [portfolioComments, setPortfolioComments] = useState<Comment[]>([]);
 
+  const storedActiveTab = localStorage.getItem("activeTab") as
+    | "profile"
+    | "stocks"
+    | "comments"
+    | "telegram"
+    | null;
   const [activeTab, setActiveTab] = useState<
     "profile" | "stocks" | "comments" | "telegram"
-  >("profile");
+  >(storedActiveTab ?? "profile");
 
   // MyCommentsAPI 호출: 컴포넌트 마운트 시 댓글 데이터 가져오기
   useEffect(() => {
@@ -163,6 +169,7 @@ const MyPage = () => {
     tab: "profile" | "stocks" | "comments" | "telegram"
   ) => {
     setActiveTab(tab);
+    localStorage.setItem("activeTab", tab);
   };
 
   const profileEdit = () => {
@@ -294,7 +301,7 @@ const MyPage = () => {
               <StockGrid
                 stocks={stocks}
                 setStocks={setStocks}
-                onToggleBookmark={handleToggleBookmark}
+                isMyWatchlist={true}
               />
             </S.SectionGrid>
           </>
