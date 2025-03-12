@@ -41,6 +41,7 @@ interface ToggleProps {
   portfolioId: number;
   alertId?: number;
   getTelegramAlerts: () => void;
+  telegramID: string;
 }
 
 const Toggle = ({
@@ -48,10 +49,16 @@ const Toggle = ({
   portfolioId,
   alertId,
   getTelegramAlerts,
+  telegramID,
 }: ToggleProps) => {
   const [isOn, setisOn] = useState(checked);
 
   const toggleHandler = () => {
+    if (!telegramID) {
+      alert("텔레그램 Chat ID 등록이 필요합니다");
+      return;
+    }
+
     if (isOn) {
       if (alertId !== undefined) {
         deleteTelegramAlert(alertId);

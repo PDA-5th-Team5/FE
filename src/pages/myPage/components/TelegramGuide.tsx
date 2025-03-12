@@ -40,7 +40,7 @@ const TelegramGuide = () => {
   return (
     <>
       <TelegramGuideContainer>
-        <TelegramGuideText>텔레그램 챗 ID를 발급하는 방법</TelegramGuideText>
+        <TelegramGuideText>텔레그램 Chat ID를 발급하는 방법</TelegramGuideText>
 
         <TelegramGuideText>
           1. App store 또는 구글 플레이 스토어에서
@@ -59,7 +59,7 @@ const TelegramGuide = () => {
 
         <TelegramGuideText>
           3. 해당 채팅 창에서 <span>/start</span> 를 입력하여
-          <span> 텔레그램 챗 ID</span>를 발급합니다.
+          <span> 텔레그램 Chat ID</span>를 발급합니다.
         </TelegramGuideText>
         <TelegramGuideImg src={TelegramGuide3} />
       </TelegramGuideContainer>

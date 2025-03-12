@@ -348,6 +348,7 @@ const MyPage = () => {
                               portfolioId={portfolio.myPortfolioId}
                               alertId={matchingAlert?.alertId}
                               getTelegramAlerts={getTelegramAlerts}
+                              telegramID={telegramID}
                             />
                           </S.TelegramToggle>
                         </S.TelegramToggleWrapper>
@@ -360,7 +361,7 @@ const MyPage = () => {
                   <S.CommentList>
                     <S.SectionProfileItem>
                       <S.SectionProfileTitle>
-                        텔레그램 챗 ID
+                        텔레그램 Chat ID
                       </S.SectionProfileTitle>
                       <S.SectionProfileInputWrapper>
                         <S.SectionProfileInput
