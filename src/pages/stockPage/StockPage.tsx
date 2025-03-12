@@ -487,6 +487,7 @@ const StockPage = () => {
           editingCommentId={editingCommentId}
           editContent={editContent}
           setEditContent={setEditContent}
+          fetchComments={fetchComments}
         />
       </S.StockComments>
     </S.StockPageContainer>
