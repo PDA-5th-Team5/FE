@@ -10,6 +10,7 @@ import {
   getPortfolioCommentsAPI,
   deletePortfolioCommentAPI,
   editPortfolioCommentAPI,
+  saveSharePortfolioAPI,
 } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 const SharePortfolioDetailPage = () => {
@@ -262,8 +263,14 @@ const SharePortfolioDetailPage = () => {
   if (!portfolio) {
     return <div>포트폴리오를 찾을 수 없습니다.</div>;
   }
-  const onClickSave = () => {
-    alert("저장");
+  const onClickSave = async () => {
+    try {
+      await saveSharePortfolioAPI(sharePortfolioId);
+      alert("포트폴리오가 내 목록에 저장되었습니다.");
+    } catch (error) {
+      console.error("포트폴리오 저장 실패:", error);
+      alert("포트폴리오 저장에 실패했습니다.");
+    }
   };
 
   return (
