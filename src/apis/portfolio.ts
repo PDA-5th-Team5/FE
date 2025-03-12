@@ -318,6 +318,23 @@ export const shareMyPortfolioAPI = async (
     }
   );
 
-  console.log("🟢 포트폴리오 공유 응답:", response.data);
+  console.log("포트폴리오 공유 응답:", response.data);
   return response.data.data;
+};
+
+export const deleteMyPortfolioAPI = async (
+  myPortfolioId: number
+): Promise<void> => {
+  const accessToken = localStorage.getItem("accessToken");
+
+  if (!accessToken) {
+    throw new Error("로그인 해주세요.");
+  }
+
+  const response = await portfolioAPI.delete(`/my/${myPortfolioId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
 };
