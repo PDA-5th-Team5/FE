@@ -160,7 +160,7 @@ const MyPage = () => {
     postTelegramIDAPI(telegramID)
       .then((data) => {
         if (data.status === 201) {
-          toast.success("텔레그램 Chat ID!");
+          toast.success("텔레그램 Chat ID가 등록되었습니다");
         } else if (data.status === 400) {
           toast.error("유효한 ID가 아닙니다.");
         } else {

@@ -193,7 +193,7 @@ export const deleteTelegramAlertAPI = async (
   const response = await portfolioAPI.delete<APIResponse<null>>(
     `/alerts/${alertId}`
   );
-
+  return response.data;
 };
 
 //댓글
@@ -324,7 +324,5 @@ export const getShareSummaryAPI = async (
   const response = await portfolioAPI.get<APIResponse<SummaryResponse>>(
     `/share/${sharePortfolioId}/summary`
   );
-
-
   return response.data;
 };

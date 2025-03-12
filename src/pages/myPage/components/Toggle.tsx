@@ -68,13 +68,13 @@ const Toggle = ({
     } else {
       postTelegramAlert(portfolioId);
     }
+    setisOn(!isOn);
   };
 
   const postTelegramAlert = (portfolioId: number) => {
     postTelegramAlertAPI(portfolioId)
       .then((data) => {
         if (data.status === 201) {
-          setisOn(!isOn);
           getTelegramAlerts();
         } else if (data.status === 400) {
           console.error("내 포트폴리오 알림 추가에 실패하였습니다.");
@@ -90,8 +90,7 @@ const Toggle = ({
   const deleteTelegramAlert = (alertId: number) => {
     deleteTelegramAlertAPI(alertId)
       .then((data) => {
-        if (data.status === 204) {
-          setisOn(!isOn);
+        if (data.status === 200) {
           getTelegramAlerts();
         } else if (data.status === 400) {
           console.error("내 포트폴리오 알림 삭제에 실패하였습니다.");
