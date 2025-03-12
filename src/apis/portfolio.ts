@@ -1,4 +1,3 @@
-import exp from "constants";
 import { APIResponse, portfolioAPI } from ".";
 import { PortfolioDetail,MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";

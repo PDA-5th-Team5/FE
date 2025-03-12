@@ -41,12 +41,6 @@ const MyPage = () => {
   const handleTelegramTabClick = (value: string) => {
     setActiveTelegramTab(value);
   };
-  // 텔레그램 토글
-  const [telegramToggle, setTelegramToggle] = useState(false);
-
-  const handleToggleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTelegramToggle(e.target.checked);
-  };
 
   useEffect(() => {
     stocksAPI()
