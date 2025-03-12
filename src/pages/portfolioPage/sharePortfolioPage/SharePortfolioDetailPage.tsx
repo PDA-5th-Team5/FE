@@ -5,10 +5,15 @@ import PortfolioPage from "../PortfolioPage";
 import * as S from "./SharePortfolioDetailPage.styled";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getSharePortfolioDetailAPI } from "../../../apis/portfolio";
+import {
+  getSharePortfolioDetailAPI,
+  getPortfolioCommentsAPI,
+} from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 const SharePortfolioDetailPage = () => {
   const { num } = useParams<{ num: string }>();
+  const sharePortfolioId = num ? parseInt(num, 10) : 1;
+
   const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
     null
   );
@@ -18,12 +23,30 @@ const SharePortfolioDetailPage = () => {
   const [snowflakeItems, setSnowflakeItems] = useState<any[]>([]);
   const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const size = 10;
   const [error, setError] = useState<string | null>(null);
   const [commentsData, setCommentsData] = useState({
     commentCnt: 0,
     comments: [],
   });
+  //1. 댓글 조회
+  useEffect(() => {
+    fetchComments();
+  }, [sharePortfolioId, page]);
 
+  const fetchComments = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getPortfolioCommentsAPI(sharePortfolioId);
+      setCommentsData(data);
+    } catch (error) {
+      console.error("댓글 로딩 실패:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     const fetchPortfolioDetail = async () => {
       try {
@@ -209,7 +232,7 @@ const SharePortfolioDetailPage = () => {
       </S.PortfolioDetailContent>
 
       <S.PortfolioDetailComments>
-        <Comment data={commentsData} />
+        <Comment data={commentsData} pageType="portfolio" />
       </S.PortfolioDetailComments>
     </S.PortfolioDetailContainer>
   );

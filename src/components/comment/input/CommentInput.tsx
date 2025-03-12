@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PersonIcon from "../../../assets/images/icons/person_gray.png";
 import Button from "../../button/Button";
 import { createCommentAPI } from "../../../apis/stock";
+import { createPortfolioCommentAPI } from "../../../apis/portfolio";
 import { useParams } from "react-router-dom";
 const CommentInputContainer = styled.div`
   display: flex;
@@ -47,9 +48,13 @@ const CommentButton = styled.div`
 
 interface CommentInputProps {
   onCommentSubmitted?: () => void;
+  pageType?: "stock" | "portfolio";
 }
 
-const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
+const CommentInput = ({
+  onCommentSubmitted,
+  pageType = "stock",
+}: CommentInputProps) => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { num } = useParams<{ num: string }>();
@@ -64,6 +69,9 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
       setIsLoading(true);
       // console.log("URL 파라미터 id:", num);
       const stockId = num ? parseInt(num, 10) : 1;
+      const sharePortfolioId = num ? parseInt(num, 10) : 1;
+      console.log("페이지 타입:", pageType);
+
       if (isNaN(stockId)) {
         console.error("ID 파싱 실패:", num);
         throw new Error("주식 ID를 변환할 수 없습니다");
@@ -72,8 +80,22 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
       if (stockId === 0) {
         throw new Error("유효하지 않은 주식 ID입니다");
       }
+      console.log("타입 비교:", {
+        pageType,
+        isPortfolio: pageType === "portfolio",
+        isTypeOf: typeof pageType,
+      });
+      // 페이지 타입에 따라 다른 API 호출
+      if (pageType === "stock") {
+        console.log("주식 ID:", stockId);
 
-      await createCommentAPI(stockId, content);
+        await createCommentAPI(stockId, content);
+      } else if (pageType === "portfolio") {
+        console.log("포트폴리오 ID:", sharePortfolioId);
+        console.log("포트폴리오 ID:", sharePortfolioId);
+
+        await createPortfolioCommentAPI(sharePortfolioId, content); // 포트폴리오 댓글 API 함수 필요
+      }
 
       setContent("");
       alert("댓글이 저장되었습니다.");
@@ -97,7 +119,11 @@ const CommentInput = ({ onCommentSubmitted }: CommentInputProps) => {
       </CommentInputHeader>
 
       <CommentInputTextarea
-        placeholder="주식에 대한 의견을 나누어 보세요."
+        placeholder={
+          pageType === "stock"
+            ? "주식에 대한 의견을 나누어 보세요."
+            : "포트폴리오오에 대한 의견을 나누어 보세요."
+        }
         value={content}
         onChange={(e) => setContent(e.target.value)}
       />
