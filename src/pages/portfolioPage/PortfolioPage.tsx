@@ -18,7 +18,6 @@ import {
 } from "../../apis/portfolio";
 import { formatMarketCap } from "../../utils/transferUtils";
 
-
 export interface StockResultData {
   totalCount: number;
   stockInfos: Stock[];
@@ -40,9 +39,6 @@ export interface StocksResponse {
   portfolioTitle?: string;
   portfolioDescription?: string;
 }
-
-
-
 
 const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
@@ -224,7 +220,6 @@ const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
             </S.PortfolioContentTitle>
 
             <LineGraph data={graphData} />
-
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>
