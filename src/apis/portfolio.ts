@@ -464,3 +464,47 @@ export const getMyPortfolioStocksAPI = async (
   });
   return response.data.data;
 };
+
+
+//라인그래프
+export interface LineGraphItem {
+  market?: string;
+  portfolioTitle?: string;
+  price?: { [date: string]: number };
+  closePrice?: { [date: string]: number };
+  avgClosePrice?: { [date: string]: number };
+}
+
+export interface LineGraphResponse {
+  lineGraph: {
+    market: string;
+    price: { [date: string]: number };
+    portfolioTitle: string;
+    avgClosePrice: { [date: string]: number };
+  }
+}
+export const getPortfolioGraphAPI = async (
+  portfolioId: number,
+  market: string = "ALL"
+): Promise<LineGraphResponse> => {
+  const isMy = location.pathname.includes('/my/');
+
+  const endpoint = isMy 
+    ? `/my/graph?portfolioId=${portfolioId}&market=${market}` 
+    : `/share/graph?portfolioId=${portfolioId}&market=${market}`;
+  
+  const response = await portfolioAPI.post<APIResponse<LineGraphResponse>>(
+    endpoint,
+    {
+      portfolioId,
+      market
+    },
+    {
+      headers: isMy 
+        ? { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        : {}
+    }
+  );
+  
+  return response.data.data;
+};

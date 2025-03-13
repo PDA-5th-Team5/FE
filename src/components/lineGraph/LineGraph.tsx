@@ -1,27 +1,33 @@
-// import { Line } from "react-chartjs-2";
-// import {
-//   Chart as ChartJS,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   TimeScale,
-// } from "chart.js";
-// import "chartjs-adapter-date-fns";
 
-// ChartJS.register(
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-//   LineElement,
-//   Title,
-//   Tooltip,
-//   Legend,
-//   TimeScale
-// );
+import { Line } from "react-chartjs-2";
+import * as S from "../stock/result/StockResult.styled";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale,
+} from "chart.js";
+import "chartjs-adapter-date-fns";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  TimeScale
+);
+import { PulseLoader } from "react-spinners";
+
+
 
 // interface LineGraphItem {
 //   market?: string;
@@ -35,11 +41,13 @@
 // //   value: number;
 // // }
 
-// interface LineGraphData {
-//   status: number;
-//   message: string;
-//   data: LineGraphItem[];
-// }
+
+export interface LineGraphData {
+  status: number;
+  message: string;
+  data: LineGraphItem[];
+}
+
 
 // interface LineGraphProps {
 //   data: LineGraphData;
@@ -53,16 +61,32 @@
 //   return new Date(year, month, day);
 // };
 
-// const LineGraph = ({ data }: LineGraphProps) => {
-//   const datasets = data.lineGraph.map((item) => {
-//     let key: keyof LineGraphItem | "" = "";
-//     if (item.price) {
-//       key = "price";
-//     } else if (item.avgClosePrice) {
-//       key = "avgClosePrice";
-//     } else if (item.closePrice) {
-//       key = "closePrice";
-//     }
+
+const LineGraph = ({ data }: LineGraphProps) => {
+  if (!data || !data.data) {
+    return (
+      <S.LoadingResultContainer>
+        <PulseLoader size={10} color="#2595E0" />
+      </S.LoadingResultContainer>
+    );
+  }
+  // if (loading) {
+  //   return (
+  //     <S.LoadingResultContainer>
+  //       <PulseLoader size={10} color="#2595E0" />
+  //     </S.LoadingResultContainer>
+  //   );
+  // }
+  const datasets = data.data.map((item) => {
+    let key: keyof LineGraphItem | "" = "";
+    if (item.price) {
+      key = "price";
+    } else if (item.avgClosePrice) {
+      key = "avgClosePrice";
+    } else if (item.closePrice) {
+      key = "closePrice";
+    }
+
 
 //     const dataPoints = key
 //       ? Object.entries(item[key] || {})
@@ -73,16 +97,19 @@
 //           .sort((a, b) => a.x.getTime() - b.x.getTime())
 //       : [];
 
-//     let borderColor;
-//     let customLabel;
-//     if (item.market === "KOSPI") {
-//       borderColor = "#D44F48";
-//     } else if (item.market === "KOSDAQ") {
-//       borderColor = "#E5B443";
-//     } else {
-//       borderColor = "#63C685";
-//       customLabel = item.avgClosePrice ? "종가 평균" : "종가";
-//     }
+    let borderColor;
+    let customLabel;
+    if (item.market === "KOSPI") {
+      borderColor = "#D44F48";
+    } else if (item.market === "KOSDAQ") {
+      borderColor = "#E5B443";
+    } else if (item.market === "ALL") {
+      borderColor = "#3366FF";
+    } else {
+      borderColor = "#63C685";
+      customLabel = item.avgClosePrice ? "종가 평균" : "종가";
+    }
+
 
 //     return {
 //       label: customLabel ?? item.market,
