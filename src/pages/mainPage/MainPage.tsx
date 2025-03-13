@@ -568,6 +568,7 @@ const MainPage: React.FC = () => {
                   multiple={true}
                   onChange={(newSelected) => setSelectedKeys(newSelected)}
                   maxSelection={8}
+                  showTooltip={true}
                 />
               </S.MainPageFilterWrapper>
             </S.MainPageFilterSection>

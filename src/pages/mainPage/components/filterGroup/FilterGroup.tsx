@@ -79,7 +79,12 @@ interface FilterGroupPropsMultiple extends FilterGroupBase {
   onChange: (value: string[]) => void;
 }
 
-type FilterGroupProps = FilterGroupPropsSingle | FilterGroupPropsMultiple;
+interface TooltipControlProps {
+  showTooltip?: boolean;
+}
+
+type FilterGroupProps = (FilterGroupPropsSingle | FilterGroupPropsMultiple) &
+  TooltipControlProps;
 
 const FilterGroup: React.FC<FilterGroupProps> = ({
   options,
@@ -87,6 +92,7 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
   multiple = false,
   onChange,
   maxSelection,
+  showTooltip = false,
 }) => {
   const handleClick = (option: string) => {
     if (multiple) {
@@ -126,9 +132,11 @@ const FilterGroup: React.FC<FilterGroupProps> = ({
           {option}
 
           {/* 툴팁 아이콘 */}
-          <Tooltip title={option} body={stockIndicators[option]}>
-            <InfoIcon>ⓘ</InfoIcon>
-          </Tooltip>
+          {showTooltip && (
+            <Tooltip title={option} body={stockIndicators[option]}>
+              <InfoIcon>ⓘ</InfoIcon>
+            </Tooltip>
+          )}
         </MainPageFilterItem>
       ))}
     </>
