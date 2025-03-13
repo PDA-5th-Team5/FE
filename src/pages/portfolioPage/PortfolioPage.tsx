@@ -3,17 +3,22 @@ import StockResult from "../../components/stock/result/StockResult";
 import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
-import { Stock } from "../../types/stockTypes";
+// import { Stock } from "../../types/stockType";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getShareSummaryAPI,
   getMySummaryAPI,
   SummaryResponse,
+  getSharePortfolioStocksAPI,
+  getMyPortfolioStocksAPI,
+  SharePortfolioStocksResponse,
+  Stock,
 } from "../../apis/portfolio";
+import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
-  stockCnt: number;
+  totalCount: number;
   stockInfos: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
@@ -26,71 +31,12 @@ interface PortfolioPageProps {
   description?: string;
   isMy?: boolean;
 }
-
-// 더미 데이터 : 나의 포트폴리오 종목 리스트 조회 + 포트폴리오명 & 설명
-const dummyPortfolioResponse = {
-  status: 200,
-  message: "성공입니다.",
-  data: {
-    portfolioTitle: "포트폴리오명",
-    portfolioDescription: "이 포트폴리오에 대한 설명을....",
-    stockCnt: 12,
-    stockInfos: [
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 19,
-            thtrNtin: 3,
-            roeVal: 16,
-            pbr: 7,
-            eps: 6,
-            per: 18,
-          },
-        },
-        stockId: 1,
-        ticker: "05252",
-        companyName: "삼성전자",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.2,
-        "1WeekFluctuationRate": 7.3,
-        "1YearFluctuationRate": 13.1,
-        marketCap: 4500,
-        per: 13.56,
-        debtRate: 30.49,
-        sector: "반도체",
-        isBookmark: true,
-        description:
-          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-      },
-
-      {
-        snowflakeS: {
-          elements: {
-            bsopPrti: 8,
-            thtrNtin: 3,
-            roeVal: 20,
-            pbr: 2,
-          },
-        },
-        stockId: 2,
-        ticker: "05252",
-        companyName: "삼성전자",
-        currentPrice: 50000,
-        "1DayFluctuationRate": 0.2,
-        "1WeekFluctuationRate": 7.3,
-        "1YearFluctuationRate": 13.1,
-        marketCap: 4500,
-        per: 13.56,
-        debtRate: 30.49,
-        sector: "반도체",
-        isBookmark: false,
-        description:
-          "삼성전자는 세계적인 전자제품 제조업체로, 다양한 소비자 가전 및 반도체 제품을 생산합니다.",
-      },
-    ],
-  },
-};
-
+interface StocksResponse {
+  totalCount: number;
+  stocks: Stock[];
+  portfolioTitle?: string;
+  portfolioDescription?: string;
+}
 const lineGraphData = {
   status: 200,
   message: "성공입니다.",
@@ -113,54 +59,71 @@ const PortfolioPage = ({
   elementsObj,
   snowflakeItems,
   isMy,
+
   // description,
 }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
   const [summary, setSummary] = useState<SummaryResponse>();
+  const [stocksData, setStocksData] = useState<StocksResponse>({
+    totalCount: 0,
+    stocks: [],
+  });
+  const [loading, setLoading] = useState<boolean>(true);
 
   // 공유 포트폴리오 평균값 조회
   useEffect(() => {
     if (num) {
-      if (isMy) {
-        getMySummaryAPI(num)
-          .then((data) => {
-            if (data.status === 200) {
-              setSummary(data.data);
-            } else if (data.status === 400) {
-              console.log("나의 포트폴리오 평균값 조회 실패");
-            } else {
-              console.log("알 수 없는 오류 발생");
-            }
-          })
-          .catch((error) => {
-            console.error("API 호출 실패", error);
-          });
-      } else {
-        getShareSummaryAPI(num)
-          .then((data) => {
-            if (data.status === 200) {
-              setSummary(data.data);
-            } else if (data.status === 400) {
-              console.log("공유 포트폴리오 평균값 조회 실패");
-            } else {
-              console.log("알 수 없는 오류 발생");
-            }
-          })
-          .catch((error) => {
-            console.error("API 호출 실패", error);
-          });
-      }
+      const portfolioId = parseInt(num);
+
+      // 포트폴리오 요약 정보 로드
+      const loadSummary = async () => {
+        try {
+          const summaryData = isMy
+            ? await getMySummaryAPI(num)
+            : await getShareSummaryAPI(num);
+
+          if (summaryData.status === 200) {
+            setSummary(summaryData.data);
+          } else {
+            console.log(
+              `${isMy ? "나의" : "공유"} 포트폴리오 평균값 조회 실패`
+            );
+          }
+        } catch (error) {
+          console.error("API 호출 실패", error);
+        }
+      };
+
+      // 포트폴리오 종목 정보 로드
+      const loadStocks = async () => {
+        try {
+          setLoading(true);
+          console.log("API 호출 시작:", portfolioId, isMy);
+
+          const apiResponse = isMy
+            ? await getMyPortfolioStocksAPI(portfolioId)
+            : await getSharePortfolioStocksAPI(portfolioId);
+
+          setStocksData(apiResponse);
+        } catch (error) {
+          console.error(
+            `${isMy ? "나의" : "공유"} 포트폴리오 종목 조회 실패`,
+            error
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadSummary();
+      loadStocks();
     }
-  }, [num]);
+  }, [num, isMy]);
 
   const portfolioItems = portfolioData
     ? transformPortfolioToItems(portfolioData)
     : [];
   const selectedPortfolioKeys = portfolioItems.map((item) => item.key);
-  const stockResultData: StockResultData = {
-    stockCnt: dummyPortfolioResponse.data.stockCnt,
-    stockInfos: dummyPortfolioResponse.data.stockInfos,
-  };
 
   return (
     <S.PortfolioPageContainer>
@@ -258,7 +221,11 @@ const PortfolioPage = ({
       </S.PortfolioContent>
 
       <S.PortfolioStock>
-        {/* <StockResult data={stockResultData} /> */}
+        <StockResult
+          data={stocksData}
+          filteredStocksCnt={stocksData.totalCount}
+          loading={loading}
+        />
       </S.PortfolioStock>
     </S.PortfolioPageContainer>
   );
