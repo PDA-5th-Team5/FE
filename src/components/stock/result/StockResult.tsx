@@ -11,39 +11,36 @@ import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
 import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
 import { FilterStock } from "../../../types/stockTypes";
 import { PulseLoader } from "react-spinners";
-
+import { StockResultData } from "../../../pages/portfolioPage/PortfolioPage";
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
-  data: FilterStock[];
+  data: any;
   filteredStocksCnt: number;
   loading: boolean;
 }
-
 const StockResult = ({
   data,
   filteredStocksCnt,
   loading,
 }: StockResultProps) => {
-  const [stocks, setStocks] = useState<FilterStock[]>(data);
+  const stocksArray = data && data.stocks ? data.stocks : [];
+
+  const [stocks, setStocks] = useState<FilterStock[]>(stocksArray);
   const [view, setView] = useState("list");
   const [sortKey, setSortKey] = useState("시가총액");
   const [sortDirection, setSortDirection] = useState("내림차순");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-
   const handleSortKeyChange = (value: string) => {
     setSortKey(value);
     // TODO API 연결
   };
-
   const handleSortDirectionChange = (value: string) => {
     setSortDirection(value);
     // TODO API 연결
   };
-
   const toggleDropdown = (id: string) => {
     setOpenDropdown((prev) => (prev === id ? null : id));
   };
-
   // 북마크 토글 상태 업데이트 함수
   const handleToggleBookmark = (stockId: number, newState: boolean) => {
     setStocks((prevStocks) =>
@@ -52,10 +49,23 @@ const StockResult = ({
       )
     );
   };
-
   useEffect(() => {
-    setStocks(data);
+    if (data) {
+      // 배열인 경우 (첫 번째 API 응답 - 종목 리스트 조회)
+      if (Array.isArray(data)) {
+        setStocks(data);
+      }
+      // 객체인 경우 (두 번째 API 응답 - 메인 페이지 조건 검색)
+      else if (data.stocks) {
+        setStocks(data.stocks);
+      }
+    }
   }, [data]);
+
+  // 검색 결과 개수 표시
+  const totalCount = Array.isArray(data)
+    ? filteredStocksCnt
+    : data.totalCount || filteredStocksCnt;
 
   if (loading) {
     return (
@@ -64,11 +74,10 @@ const StockResult = ({
       </S.LoadingResultContainer>
     );
   }
-
   return (
     <S.StockResultContainer>
       <S.StockResultHeader>
-        <S.StockResultTitle>검색 결과 {filteredStocksCnt}개</S.StockResultTitle>
+        <S.StockResultTitle>검색 결과 {totalCount}개</S.StockResultTitle>
         <S.StockResultTool>
           {/* 정렬부분 */}
           {/* <S.StockResultSortWrapper>
@@ -129,7 +138,6 @@ const StockResult = ({
           </S.StockResultViewWrapper>
         </S.StockResultTool>
       </S.StockResultHeader>
-
       {stocks.length === 0 ? (
         <S.NoResultContainer>검색 결과가 없습니다</S.NoResultContainer>
       ) : view === "list" ? (
@@ -140,5 +148,4 @@ const StockResult = ({
     </S.StockResultContainer>
   );
 };
-
 export default StockResult;

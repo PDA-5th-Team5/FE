@@ -4,17 +4,19 @@ import DropdownIcon from "../../../assets/images/icons/arrowDown.png";
 import PlusIcon from "../../../assets/images/icons/plus_blue.png";
 import HeaderButtons from "../../../components/pageHeader/HeaderButtons";
 import PortfolioPage from "../PortfolioPage";
-import { useParams } from "react-router-dom";
-import { getMyPortfolioDetailAPI } from "../../../apis/portfolio";
+import { useNavigate, useParams } from "react-router-dom";
+import { getMyPortfolioDetailAPI, PortfolioDetailResponse } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 import { shareMyPortfolioAPI } from "../../../apis/portfolio";
 import { deleteMyPortfolioAPI } from "../../../apis/portfolio";
 import { myPortfolioListAPI } from "../../../apis/portfolio"; // 나의 포트폴리오 리스트 API 가져오기
 import { MyPortfolio } from "../../../types/portfolioTypes"; // 타입 추가
+import { toast } from "react-toastify";
 
 const MyPortfolioPage = () => {
   const { num } = useParams<{ num: string }>();
   const portfolioId = num ? Number(num) : null;
+  const navigate = useNavigate();
 
   const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
     null
@@ -34,7 +36,7 @@ const MyPortfolioPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [commentsData, setCommentsData] = useState({
-    commentCnt: 0,
+    commentsCnt: 0,
     comments: [],
   });
   // const [portfolioList] = useState([
@@ -45,21 +47,20 @@ const MyPortfolioPage = () => {
   //   "내 포트폴리오아무거나",
   // ]);
 
-  useEffect(() => {
-    // 나의 포트폴리오 리스트 불러오기
-    const fetchMyPortfolios = async () => {
-      try {
-        const response = await myPortfolioListAPI(); // API 호출
-
-        if (response.myPortfoliosCnt > 0) {
-          setPortfolioList(response.myPortfolios);
-          setSelectedPortfolioId(response.myPortfolios[0].myPortfolioId); // 첫 번째 포트폴리오 ID를 기본값으로 설정
+      // 나의 포트폴리오 리스트 불러오기
+      const fetchMyPortfolios = async () => {
+        try {
+          const response = await myPortfolioListAPI(); // API 호출
+            setPortfolioList(response.myPortfolios);
+            setSelectedPortfolioId(response.myPortfolios[0].myPortfolioId); // 첫 번째 포트폴리오 ID를 기본값으로 설정
+            return response.myPortfolios;
+        } catch (error) {
+          console.error("나의 포트폴리오 리스트 불러오기 실패:", error);
+          return []; 
         }
-      } catch (error) {
-        console.error("나의 포트폴리오 리스트 불러오기 실패:", error);
-      }
-    };
+      };
 
+  useEffect(() => {
     fetchMyPortfolios();
   }, []);
 
@@ -70,42 +71,42 @@ const MyPortfolioPage = () => {
   const handleSelect = (portfolioId: number) => {
     setSelectedPortfolioId(portfolioId);
     setIsOpen(false);
+    navigate(`/portfolio/my/${portfolioId}`)
   };
 
   const handleCreateNew = () => {
-    alert("새로운 포트폴리오 만들기");
     setIsOpen(false);
+    navigate('/')
   };
 
-  const onClickDelete = () => {
+  const onClickDelete = async () => {
     if (!selectedPortfolioId) {
       return;
     }
-
+  
     if (!window.confirm("정말 삭제하시겠습니까?")) {
       return;
     }
-
-    deleteMyPortfolioAPI(selectedPortfolioId)
-      .then(() => {
-        alert("포트폴리오가 삭제되었습니다.");
-        setPortfolioList((prevList) =>
-          prevList.filter(
-            (portfolio) => portfolio.myPortfolioId !== selectedPortfolioId
-          )
-        );
-
-        if (portfolioList.length > 1) {
-          setPortfolioName(portfolioList[0].myPortfolioTitle);
-          setSelectedPortfolioId(portfolioList[0].myPortfolioId);
-        } else {
-          setPortfolioName("");
-          setSelectedPortfolioId(null);
-        }
-      })
-      .catch((error) => {
-        alert("포트폴리오 삭제에 실패했습니다.");
-      });
+  
+    try {
+      await deleteMyPortfolioAPI(selectedPortfolioId);
+      alert("포트폴리오가 삭제되었습니다.");
+  
+      const newPortfolioList = await fetchMyPortfolios();
+  
+      if (newPortfolioList.length > 0) {
+        const firstPortfolioId = newPortfolioList[0].myPortfolioId;
+        // 첫 번째 포트폴리오 페이지로 이동
+        navigate(`/portfolio/my/${firstPortfolioId}`);
+      } else {
+        // 남은 포트폴리오가 없으면 초기 페이지 등으로 이동
+        setPortfolioName("");
+        setSelectedPortfolioId(null);
+        navigate("/");
+      }
+    } catch (error) {
+      alert("포트폴리오 삭제에 실패했습니다.");
+    }
   };
 
   const onClickShare = () => {
@@ -267,6 +268,7 @@ const MyPortfolioPage = () => {
     };
 
     fetchPortfolioDetail();
+    fetchPortfolioDetail();
   }, [num]);
 
   if (loading) {
@@ -285,8 +287,7 @@ const MyPortfolioPage = () => {
       <S.MyPortfolioPageHeader>
         <S.MyPortfolioNameContainer>
           <S.MyPortfolioName onClick={handleTitleClick}>
-            {portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
-              ?.myPortfolioTitle || "포트폴리오 없음"}
+            {portfolio.title}
             <S.DropdownIcon src={DropdownIcon} />
           </S.MyPortfolioName>
 

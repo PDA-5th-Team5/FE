@@ -1,7 +1,6 @@
 import { APIResponse, portfolioAPI } from ".";
 import { PortfolioDetail, MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";
-
 // 1) 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
 export interface RecommededPortfolio {
   sharePortfolioId: number;
@@ -81,11 +80,10 @@ export interface SharePortfolioItem {
   };
 }
 
-
 export const sharePortfolioListAPI = async (
   sortBy: string = "loadCount"
-): Promise<SharePortfolioItem[]> => {
-  const response = await portfolioAPI.get<APIResponse<SharePortfolioItem[]>>(
+): Promise<FilterStock[]> => {
+  const response = await portfolioAPI.get<APIResponse<FilterStock[]>>(
     `/share/board?page=0&sortBy=${sortBy}`
   );
   return response.data.data;
@@ -155,8 +153,7 @@ export const getMyPortfolioDetailAPI = async (
     `/my/${portfolioId}`
   );
   return response.data.data;
-
-}
+};
 
 // 내 포트폴리오 알림 조회 API (GET)
 export interface TelegramAlerts {
@@ -184,7 +181,6 @@ export const postTelegramAlertAPI = async (
   });
   return response.data;
 };
-
 
 // 내 포트폴리오 알림 삭제
 export const deleteTelegramAlertAPI = async (
@@ -237,7 +233,7 @@ export interface Comment {
 }
 
 export interface CommentsResponse {
-  commentCnt: number;
+  commentsCnt: number;
   comments: Comment[];
 }
 
@@ -249,7 +245,7 @@ export const getPortfolioCommentsAPI = async (
   );
   // API 응답 형식에 맞게 데이터 변환
   return {
-    commentCnt: response.data.data.commentCnt,
+    commentsCnt: response.data.data.commentsCnt,
     comments: response.data.data.comments,
   };
 };
@@ -396,5 +392,75 @@ export const saveSharePortfolioAPI = async (
   );
 
   console.log("공유 포트폴리오 가져오기 응답:", response.data);
+  return response.data.data;
+};
+
+// 공유포폴 종목리스트 조회
+export interface SharePortfolioStocksResponse {
+  // stockCnt: number;
+  stocks: Stock[];
+  portfolioTitle?: string;
+  portfolioDescription?: string;
+  totalCount: number;
+}
+// 통합된 Stock 타입 정의
+export interface Stock {
+  stockId: number;
+  ticker: string;
+  marketType: string;
+  companyName: string;
+  sector: string;
+  companyOverview?: string;
+  snowflakeS?: {
+    [key: string]: number | undefined;
+  };
+  marketCap: number;
+  per: number;
+  bps?: number;
+  dividendYield?: number;
+  foreignerRatio?: number;
+  lbltRate: number;
+  roeVal?: number;
+  weekRateChange: number;
+  yearRateChange: number;
+  currentPrice: number;
+  changeRate: number;
+  fav: boolean;
+}
+
+// FilterStock을 Stock의 확장으로 정의
+export interface FilterStock extends Stock {
+  totalCount?: number; // 필요한 경우에만 포함
+}
+export const getSharePortfolioStocksAPI = async (
+  portfolioId: number,
+  page: number = 0
+): Promise<SharePortfolioStocksResponse> => {
+  const response = await portfolioAPI.get<
+    APIResponse<SharePortfolioStocksResponse>
+  >(`/share/${portfolioId}/stock?page=${page}`);
+  console.log("API 원시 응답:", response);
+  console.log("API 데이터:", response.data);
+
+  return response.data.data;
+};
+
+// 나의 포트폴리오 종목리스트 조회
+export const getMyPortfolioStocksAPI = async (
+  portfolioId: number,
+  page: number = 0
+): Promise<SharePortfolioStocksResponse> => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    throw new Error("로그인 해주세요!");
+  }
+
+  const response = await portfolioAPI.get<
+    APIResponse<SharePortfolioStocksResponse>
+  >(`/my/${portfolioId}/stock?page=${page}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data.data;
 };

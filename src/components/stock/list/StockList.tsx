@@ -19,6 +19,7 @@ const StockList = ({ stocks }: StockProps) => {
     navigate(`/stock/${id}`);
   };
 
+  const stocksArray = Array.isArray(stocks) ? stocks : [];
   return (
     <S.StyledTable>
       <thead>
@@ -36,7 +37,7 @@ const StockList = ({ stocks }: StockProps) => {
         </tr>
       </thead>
       <tbody>
-        {stocks.map((stock) => {
+        {stocksArray.map((stock) => {
           // 각 주식의 스노우플레이크 데이터가 있다면 Item 배열로 변환
           const snowflakeItems = stock.snowflakeS
             ? Object.entries(stock.snowflakeS).map(([key, values]) => ({

@@ -15,7 +15,8 @@ interface Comment {
 }
 
 interface CommentsResponse {
-  commentCnt: number;
+  commentCnt?: number;
+  commentsCnt?: number;
   comments: Comment[];
 }
 
@@ -67,7 +68,9 @@ const CommentList = ({
 
   return (
     <S.CommentListContainer>
-      <S.CommentListHeader>댓글 {data.commentCnt}</S.CommentListHeader>
+      <S.CommentListHeader>
+        댓글 {data.commentCnt ?? data.commentsCnt}
+      </S.CommentListHeader>
       {data.comments.length === 0 ? (
         <S.NoComments>아직 댓글이 없습니다.</S.NoComments>
       ) : (
@@ -105,20 +108,23 @@ const CommentList = ({
             )}
 
             {/* 드롭다운 */}
-            {openDropdownId === comment.commentId && (
-              <S.MoreDropdown>
-                <S.MoreDropdownItem
-                  onClick={() => handleEdit(comment.commentId, comment.content)}
-                >
-                  수정
-                </S.MoreDropdownItem>
-                <S.MoreDropdownItem
-                  onClick={() => handleDelete(comment.commentId)}
-                >
-                  삭제
-                </S.MoreDropdownItem>
-              </S.MoreDropdown>
-            )}
+            {openDropdownId === comment.commentId &&
+              editingCommentId !== comment.commentId && (
+                <S.MoreDropdown>
+                  <S.MoreDropdownItem
+                    onClick={() =>
+                      handleEdit(comment.commentId, comment.content)
+                    }
+                  >
+                    수정
+                  </S.MoreDropdownItem>
+                  <S.MoreDropdownItem
+                    onClick={() => handleDelete(comment.commentId)}
+                  >
+                    삭제
+                  </S.MoreDropdownItem>
+                </S.MoreDropdown>
+              )}
           </S.Comment>
         ))
       )}
