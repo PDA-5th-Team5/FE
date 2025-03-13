@@ -77,6 +77,12 @@ const Header = () => {
   };
 
   const handlePortfolioClick = async () => {
+
+    if (!isLoggedIn) {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+
     try {
       const portfolioList = await myPortfolioListAPI();
       if (portfolioList && portfolioList.myPortfolios.length > 0) {
