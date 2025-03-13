@@ -105,20 +105,23 @@ const CommentList = ({
             )}
 
             {/* 드롭다운 */}
-            {openDropdownId === comment.commentId && (
-              <S.MoreDropdown>
-                <S.MoreDropdownItem
-                  onClick={() => handleEdit(comment.commentId, comment.content)}
-                >
-                  수정
-                </S.MoreDropdownItem>
-                <S.MoreDropdownItem
-                  onClick={() => handleDelete(comment.commentId)}
-                >
-                  삭제
-                </S.MoreDropdownItem>
-              </S.MoreDropdown>
-            )}
+            {openDropdownId === comment.commentId &&
+              editingCommentId !== comment.commentId && (
+                <S.MoreDropdown>
+                  <S.MoreDropdownItem
+                    onClick={() =>
+                      handleEdit(comment.commentId, comment.content)
+                    }
+                  >
+                    수정
+                  </S.MoreDropdownItem>
+                  <S.MoreDropdownItem
+                    onClick={() => handleDelete(comment.commentId)}
+                  >
+                    삭제
+                  </S.MoreDropdownItem>
+                </S.MoreDropdown>
+              )}
           </S.Comment>
         ))
       )}
