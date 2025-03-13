@@ -18,6 +18,15 @@ const StockList = ({ stocks }: StockProps) => {
     navigate(`/stock/${id}`);
   };
 
+  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
+  const formatMarketCap = (marketCap: number): string => {
+    // 1조 = 10000억
+    if (marketCap >= 10000) {
+      return `${(marketCap / 10000).toFixed(2)}조`;
+    }
+    return `${marketCap}억`;
+  };
+
   return (
     <S.StyledTable>
       <thead>
@@ -73,16 +82,16 @@ const StockList = ({ stocks }: StockProps) => {
                 <S.StockListTicker>{stock.ticker}</S.StockListTicker>
                 <S.StockListName>{stock.companyName}</S.StockListName>
               </td>
-              <td>₩{stock.currentPrice}</td>
+              <td>{stock.currentPrice.toLocaleString()}원</td>
 
               <S.ChangeTd $isPositive={stock.weekRateChange >= 0}>
-                {stock.weekRateChange}
+                {stock.weekRateChange}%
               </S.ChangeTd>
 
               <S.ChangeTd $isPositive={stock.yearRateChange >= 0}>
                 {stock.yearRateChange}%
               </S.ChangeTd>
-              <td>{stock.marketCap}</td>
+              <td>{formatMarketCap(stock.marketCap)}</td>
               <td>{stock.per}</td>
               <td>{stock.lbltRate}%</td>
               <td>{stock.sector}</td>
