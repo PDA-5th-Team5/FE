@@ -233,7 +233,7 @@ export interface Comment {
 }
 
 export interface CommentsResponse {
-  commentCnt: number;
+  commentsCnt: number;
   comments: Comment[];
 }
 
@@ -245,7 +245,7 @@ export const getPortfolioCommentsAPI = async (
   );
   // API 응답 형식에 맞게 데이터 변환
   return {
-    commentCnt: response.data.data.commentCnt,
+    commentsCnt: response.data.data.commentsCnt,
     comments: response.data.data.comments,
   };
 };

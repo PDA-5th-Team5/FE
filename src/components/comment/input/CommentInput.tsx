@@ -73,6 +73,12 @@ const CommentInput = ({
   }, []);
 
   const saveComment = async () => {
+
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+
     if (!content.trim()) {
       alert("댓글 내용을 입력해주세요.");
       return;
