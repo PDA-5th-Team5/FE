@@ -50,15 +50,12 @@ const MyPage = () => {
         if (data.status === 200) {
           setStocks(data.data.stockInfos);
           setStocksCnt(data.data.stockCnt);
-        } else if (data.status === 400) {
-          toast.error("나의 종목 불러오기 실패!");
         } else {
-          toast.error("알 수 없는 오류가 발생했습니다.");
+          console.log("나의 종목이 없음");
         }
       })
       .catch((error) => {
         console.error("API 호출 실패", error);
-        toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
       });
 
     getTelegramID();
@@ -88,12 +85,11 @@ const MyPage = () => {
           setStockComments(data.data.commentsS);
           setPortfolioComments(data.data.commentsP);
         } else {
-          toast.error("댓글 데이터를 불러오지 못했습니다.");
+          console.log("댓글 데이터 없음");
         }
       })
       .catch((error) => {
         console.error("댓글 API 호출 에러", error);
-        toast.error("댓글 데이터를 불러오지 못했습니다.");
       });
   }, []);
 
