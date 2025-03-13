@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
 import { loginAPI } from "../../apis/user";
@@ -123,6 +123,13 @@ const SignUpPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.toastMessage) {
+      toast.success(location.state.toastMessage);
+    }
+  }, [location]);
 
   // 로그인 확인 핸들러
   const loginSubmit = () => {
