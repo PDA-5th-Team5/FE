@@ -34,7 +34,7 @@ const MyPortfolioPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [commentsData, setCommentsData] = useState({
-    commentCnt: 0,
+    commentsCnt: 0,
     comments: [],
   });
   // const [portfolioList] = useState([
