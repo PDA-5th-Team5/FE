@@ -1,4 +1,5 @@
 import { APIResponse, portfolioAPI } from ".";
+import { StocksResponse } from "../pages/portfolioPage/PortfolioPage";
 import { PortfolioDetail, MyPortfolioResponse } from "../types/portfolioTypes";
 import { SnowflakeItems } from "../types/snowflakeTypes";
 // 1) 인기 포트폴리오 조회 & 전문가 포트폴리오 조회
@@ -82,8 +83,8 @@ export interface SharePortfolioItem {
 
 export const sharePortfolioListAPI = async (
   sortBy: string = "loadCount"
-): Promise<FilterStock[]> => {
-  const response = await portfolioAPI.get<APIResponse<FilterStock[]>>(
+): Promise<SharePortfolioItem[]> => {
+  const response = await portfolioAPI.get<APIResponse<SharePortfolioItem[]>>(
     `/share/board?page=0&sortBy=${sortBy}`
   );
   return response.data.data;
@@ -244,10 +245,8 @@ export const getPortfolioCommentsAPI = async (
     `/share/${sharePortfolioId}/comments`
   );
   // API 응답 형식에 맞게 데이터 변환
-  return {
-    commentsCnt: response.data.data.commentsCnt,
-    comments: response.data.data.comments,
-  };
+  return response.data.data
+ 
 };
 
 // 댓글 삭제 API
@@ -401,7 +400,7 @@ export interface SharePortfolioStocksResponse {
   stocks: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
-  totalCount: number;
+  totalCount?: number;
 }
 // 통합된 Stock 타입 정의
 export interface Stock {
@@ -432,12 +431,13 @@ export interface Stock {
 export interface FilterStock extends Stock {
   totalCount?: number; // 필요한 경우에만 포함
 }
+
 export const getSharePortfolioStocksAPI = async (
   portfolioId: number,
   page: number = 0
-): Promise<SharePortfolioStocksResponse> => {
+): Promise<StocksResponse> => {
   const response = await portfolioAPI.get<
-    APIResponse<SharePortfolioStocksResponse>
+    APIResponse<StocksResponse>
   >(`/share/${portfolioId}/stock?page=${page}`);
   console.log("API 원시 응답:", response);
   console.log("API 데이터:", response.data);
@@ -449,14 +449,14 @@ export const getSharePortfolioStocksAPI = async (
 export const getMyPortfolioStocksAPI = async (
   portfolioId: number,
   page: number = 0
-): Promise<SharePortfolioStocksResponse> => {
+): Promise<StocksResponse> => {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
     throw new Error("로그인 해주세요!");
   }
 
   const response = await portfolioAPI.get<
-    APIResponse<SharePortfolioStocksResponse>
+    APIResponse<StocksResponse>
   >(`/my/${portfolioId}/stock?page=${page}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

@@ -1,11 +1,10 @@
 import Bookmark from "../../components/bookmark/Bookmark";
 import * as S from "./StockPage.styled";
-import SamsungImg from "../../assets/images/samsung.png";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
 //port { stockLineGraph } from "./dummy";
 
-import LineGraph from "../../components/lineGraph/LineGraph";
+// import LineGraph from "../../components/lineGraph/LineGraph";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 //import { stockLineGraph } from "../stockPage/dummy";
@@ -17,9 +16,9 @@ import {
 import StockSnowflake from "../../components/snowflake/StockSnowflake";
 import {
   getStockInfo,
-  StockInfoResponse,
-  addToWatchlist,
-  removeFromWatchlist,
+  // StockInfoResponse,
+  // addToWatchlist,
+  // removeFromWatchlist,
   getCompetitorsAPI,
   getLineGraphAPI,
   LineGraphResponse,
@@ -27,12 +26,13 @@ import {
   CommentsResponse,
   deleteCommentAPI,
   editCommentAPI,
+  Competitors,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
 import { formatMarketCapS } from "../../utils/transferUtils";
-import { isNumber } from "chart.js/helpers";
+// import { isNumber } from "chart.js/helpers";
 
-const IMAGE_BASE = "../../assets/images/stocks/";
+// const IMAGE_BASE = "../../assets/images/stocks/";
 
 export interface StockDataType {
   status?: number;
@@ -60,36 +60,46 @@ const StockPage = () => {
   const [lineGraphError, setLineGraphError] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [competitors, setCompetitors] = useState<Competitor[]>([]);
-  const [competitorsLoading, setCompetitorsLoading] = useState(true);
-  const [competitorsError, setCompetitorsError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
+  const [competitors, setCompetitors] = useState<Competitors[]>([]);
+  // const [competitorsLoading, setCompetitorsLoading] = useState(true);
+  // const [competitorsError, setCompetitorsError] = useState<string | null>(null);
 
-  const [commentsData, setCommentsData] = useState<CommentsResponse | null>(
-    null
-  );
-  const [page, setPage] = useState(1);
-  const size = 10;
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [commentsData, setCommentsData] = useState<CommentsResponse>({
+    comments: [],
+  });
+  // const [page, setPage] = useState(1);
+  // const size = 10;
+  // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
+
+  // 이거 line 그래프 구현하면서 삭제해주세요. 
+  console.log(lineGraphData);
+  console.log(lineGraphData);
 
   //1. 댓글 조회
   useEffect(() => {
     fetchComments();
-  }, [stockId, page]);
+  }, [stockId]);
 
-  const fetchComments = async () => {
+  const fetchComments = async (): Promise<CommentsResponse> => {
+    let result: CommentsResponse;
     try {
       setIsLoading(true);
-      const data = await getCommentsAPI(stockId, page, size);
+      const data = await getCommentsAPI(stockId);
       setCommentsData(data);
+      result = data;
     } catch (error) {
       console.error("댓글 로딩 실패:", error);
+      result = { comments: []};
+      setCommentsData(result);
     } finally {
       setIsLoading(false);
     }
+    return result;
   };
+  
   //2. 댓글 삭제
   const handleDelete = async (commentId: number) => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
@@ -101,7 +111,7 @@ const StockPage = () => {
         console.error("댓글 삭제 실패:", error);
         alert("댓글 삭제에 실패했습니다.");
       }
-      setOpenDropdownId(null);
+      // setOpenDropdownId(null);
     }
   };
 
@@ -111,7 +121,7 @@ const StockPage = () => {
 
     setEditingCommentId(commentId);
     setEditContent(currentContent);
-    setOpenDropdownId(null);
+    // setOpenDropdownId(null);
   };
 
   const handleCancelEdit = () => {
@@ -144,7 +154,7 @@ const StockPage = () => {
     const fetchStockInfo = async () => {
       try {
         setIsLoading(true);
-        setError(null);
+        // setError(null);
 
         const response = await getStockInfo(stockId);
 
@@ -169,7 +179,7 @@ const StockPage = () => {
               per: response.data.snowflakeS.per,
               lbltRate: response.data.snowflakeS.lbltRate,
               marketCap: response.data.snowflakeS.marketCap,
-              divYield: response.data.snowflakeS.dividendYield,
+              dividendYield: response.data.snowflakeS.dividendYield,
               foreignerRatio: response.data.snowflakeS.foreignerRatio,
             },
           },
@@ -178,7 +188,7 @@ const StockPage = () => {
         setStockData(transformedData);
       } catch (error) {
         console.error("주식 정보 로딩 실패:", error);
-        setError("주식 정보를 불러오는데 실패했습니다.");
+        // setError("주식 정보를 불러오는데 실패했습니다.");
         // 에러 시 알림 (선택사항)
         // toast.error("주식 정보를 불러오는데 실패했습니다.");
       } finally {
@@ -215,23 +225,24 @@ const StockPage = () => {
   useEffect(() => {
     const fetchCompetitors = async () => {
       try {
-        setCompetitorsLoading(true);
-        setCompetitorsError(null);
+        // setCompetitorsLoading(true);
+        // setCompetitorsError(null);
 
         const response = await getCompetitorsAPI(stockId);
 
         if (response.status === 200) {
           setCompetitors(response.data.competitors);
         } else {
-          setCompetitorsError(
-            response.message || "경쟁사 정보를 불러오는데 실패했습니다."
-          );
+          console.error(response.message || "경쟁사 정보를 불러오는데 실패했습니다.")
+          // setCompetitorsError(
+          //   response.message || "경쟁사 정보를 불러오는데 실패했습니다."
+          // );
         }
       } catch (error) {
         console.error("경쟁사 정보 로딩 실패:", error);
-        setCompetitorsError("경쟁사 정보를 불러오는데 실패했습니다.");
+        // setCompetitorsError("경쟁사 정보를 불러오는데 실패했습니다.");
       } finally {
-        setCompetitorsLoading(false);
+        // setCompetitorsLoading(false);
       }
     };
 
@@ -476,7 +487,8 @@ const StockPage = () => {
         ) : lineGraphError ? (
           <div>라인그래프 로드 실패: {lineGraphError}</div>
         ) : (
-          <LineGraph data={lineGraphData} />
+          <>임시</>
+          // <LineGraph data={lineGraphData} />
         )}
       </S.StockLineGraph>
 
