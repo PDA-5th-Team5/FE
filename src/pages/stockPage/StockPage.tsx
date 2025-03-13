@@ -153,9 +153,6 @@ const StockPage = () => {
           data: {
             stockInfo: {
               ...response.data.stockInfo,
-              marketCap: (
-                Number(response.data.stockInfo.marketCap) / 10000
-              ).toFixed(2),
               "1WeekProfitRate": response.data.stockInfo.weekRateChange * 100,
               "1YearProfitRate": response.data.stockInfo.yearRateChange * 100,
               dividendYeild: response.data.snowflakeS.dividendYield || 0,
@@ -301,6 +298,16 @@ const StockPage = () => {
     return { competitor, items };
   });
 
+  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
+  const formatMarketCap = (marketCapS: string): string => {
+    // 1조 = 10000억
+    const marketCap = Number(marketCapS);
+    if (marketCap >= 10000) {
+      return `${(marketCap / 10000).toFixed(2)}조`;
+    }
+    return `${marketCap.toLocaleString()}억`;
+  };
+
   return (
     <S.StockPageContainer>
       <S.StockInfoContainer>
@@ -350,7 +357,7 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>시가총액</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.marketCap}조
+              {formatMarketCap(stockData.data.stockInfo.marketCap ?? "")}
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
