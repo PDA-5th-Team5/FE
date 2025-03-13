@@ -21,6 +21,7 @@ const SignUpPageBox = styled.div`
   height: 720px;
   background-color: #1b212d;
   border: 1px solid #3c4049;
+  border-radius: 8px;
 `;
 
 // 로고/타이틀 영역
@@ -30,6 +31,7 @@ const LogoWrapper = styled.div`
   align-items: center;
   margin-top: 59px;
   margin-bottom: 44px;
+  cursor: pointer;
 `;
 
 // 폼 전체 감싸는 컨테이너
@@ -127,11 +129,42 @@ const SignupPage = () => {
 
   // 회원가입 확인 핸들러
   const signupSubmit = () => {
+    // 아이디: 소문자와 숫자만 허용
+    if (!/^[a-z0-9]+$/.test(username)) {
+      toast.error("아이디는 소문자와 숫자만 사용 가능합니다.");
+      return;
+    }
+
+    // 비밀번호: 8자 이상, 소문자와 숫자가 모두 포함되어야 함
+    if (!/^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/.test(password)) {
+      toast.error("비밀번호는 8자 이상이며, 소문자와 숫자 조합이어야 합니다.");
+      return;
+    }
+
+    // 이메일: 기본적인 이메일 형식 검사
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      toast.error("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 닉네임: 10자 이내
+    if (nickname.length > 10) {
+      toast.error("닉네임은 10자 이내여야 합니다.");
+      return;
+    }
+
+    // 닉네임: 공백 처리
+    if (nickname.length < 1) {
+      toast.error("닉네임을 입력하세요.");
+      return;
+    }
+
+    // 모든 유효성 검사를 통과한 경우 API 호출 진행
     signupAPI(username, password, email, nickname)
       .then((data) => {
         if (data.status === 200) {
-          alert("회원가입 성공!");
-          navigate("/login");
+          toast.success("회원가입 성공!.");
+          navigate("/login", { state: { toastMessage: "회원가입 성공!" } });
         } else if (data.status === 409) {
           toast.error("아이디가 중복됩니다.");
         } else if (data.status === 500) {
@@ -146,11 +179,15 @@ const SignupPage = () => {
       });
   };
 
+  const logoHandler = () => {
+    navigate("/");
+  };
+
   return (
     <SignUpPageContainer>
       <SignUpPageBox>
         {/* 상단 로고 */}
-        <LogoWrapper>
+        <LogoWrapper onClick={logoHandler}>
           <S.HeaderImg src={Logo} alt="로고 이미지" />
         </LogoWrapper>
 
@@ -159,7 +196,7 @@ const SignupPage = () => {
           <FormField>
             <FormLabel>아이디</FormLabel>
             <FormInput
-              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="소문자 또는 숫자로 입력해주세요"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />

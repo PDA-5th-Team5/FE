@@ -40,22 +40,42 @@ const Bookmark = ({ stockId, isBookmarked, isMyWatchlist }: BookmarkProps) => {
   }, []);
 
   const handleClick = async (e: React.MouseEvent) => {
-    console.log("북마크 클릭");
-    setsubBookmarked(false);
     e.preventDefault();
     e.stopPropagation();
-    const newState = !bookmarked;
 
-    if (isMyWatchlist && bookmarked) {
-      const confirmed = window.confirm("정말 삭제하시겠습니까?");
-      if (confirmed) {
+    if (sessionStorage.getItem("isLoggedIn") === "true") {
+      setsubBookmarked(false);
+      const newState = !bookmarked;
+
+      if (isMyWatchlist && bookmarked) {
+        const confirmed = window.confirm("정말 삭제하시겠습니까?");
+        if (confirmed) {
+          try {
+            const response = newState
+              ? await addToWatchlist(stockId)
+              : await removeFromWatchlist(stockId);
+            if (response.status === 200) {
+              setBookmarked(newState);
+              window.location.reload();
+            } else {
+              console.error(
+                `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
+                response.message
+              );
+            }
+          } catch (error) {
+            console.error("API 호출 오류:", error);
+          }
+        } else {
+          return; // 취소한 경우 API 호출 로직 실행하지 않음
+        }
+      } else {
         try {
           const response = newState
             ? await addToWatchlist(stockId)
             : await removeFromWatchlist(stockId);
           if (response.status === 200) {
             setBookmarked(newState);
-            window.location.reload();
           } else {
             console.error(
               `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
@@ -65,25 +85,9 @@ const Bookmark = ({ stockId, isBookmarked, isMyWatchlist }: BookmarkProps) => {
         } catch (error) {
           console.error("API 호출 오류:", error);
         }
-      } else {
-        return; // 취소한 경우 API 호출 로직 실행하지 않음
       }
     } else {
-      try {
-        const response = newState
-          ? await addToWatchlist(stockId)
-          : await removeFromWatchlist(stockId);
-        if (response.status === 200) {
-          setBookmarked(newState);
-        } else {
-          console.error(
-            `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
-            response.message
-          );
-        }
-      } catch (error) {
-        console.error("API 호출 오류:", error);
-      }
+      alert("로그인이 필요합니다.");
     }
   };
 

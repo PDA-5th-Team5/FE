@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import * as S from "../../components/layouts/header/Header.styled";
 import Logo from "../../assets/images/logo.png";
 import { loginAPI } from "../../apis/user";
@@ -20,6 +20,7 @@ const LoginPageBox = styled.div`
   height: 720px;
   background-color: #1b212d;
   border: 1px solid #3c4049;
+  border-radius: 8px;
 `;
 
 // 로고/타이틀 영역
@@ -29,6 +30,7 @@ const LogoWrapper = styled.div`
   align-items: center;
   margin-top: 59px;
   margin-bottom: 88px;
+  cursor: pointer;
 `;
 
 // 폼 전체 감싸는 컨테이너
@@ -119,10 +121,19 @@ const StyledButton = styled.button`
   }
 `;
 
-const SignUpPage = () => {
+const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.toastMessage) {
+      toast.success(location.state.toastMessage);
+      // toast 메시지를 표시한 후, location.state 초기화
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   // 로그인 확인 핸들러
   const loginSubmit = () => {
@@ -149,11 +160,15 @@ const SignUpPage = () => {
       });
   };
 
+  const logoHandler = () => {
+    navigate("/");
+  };
+
   return (
     <LoginPageContainer>
       <LoginPageBox>
         {/* 상단 로고 */}
-        <LogoWrapper>
+        <LogoWrapper onClick={logoHandler}>
           <S.HeaderImg src={Logo} alt="로고 이미지" />
         </LogoWrapper>
 
@@ -162,7 +177,7 @@ const SignUpPage = () => {
           <FormField>
             <FormLabel>아이디</FormLabel>
             <FormInput
-              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="아이디"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -172,7 +187,7 @@ const SignUpPage = () => {
             <FormLabel>비밀번호</FormLabel>
             <FormInput
               type="password"
-              placeholder="8자 이상, 소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -207,4 +222,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;

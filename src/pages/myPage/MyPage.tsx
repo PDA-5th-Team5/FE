@@ -50,15 +50,12 @@ const MyPage = () => {
         if (data.status === 200) {
           setStocks(data.data.stockInfos);
           setStocksCnt(data.data.stockCnt);
-        } else if (data.status === 400) {
-          toast.error("나의 종목 불러오기 실패!");
         } else {
-          toast.error("알 수 없는 오류가 발생했습니다.");
+          console.log("나의 종목이 없음");
         }
       })
       .catch((error) => {
         console.error("API 호출 실패", error);
-        toast.error("나의 종목 불러오기 요청 중 오류가 발생했습니다.");
       });
 
     getTelegramID();
@@ -88,12 +85,11 @@ const MyPage = () => {
           setStockComments(data.data.commentsS);
           setPortfolioComments(data.data.commentsP);
         } else {
-          toast.error("댓글 데이터를 불러오지 못했습니다.");
+          console.log("댓글 데이터 없음");
         }
       })
       .catch((error) => {
         console.error("댓글 API 호출 에러", error);
-        toast.error("댓글 데이터를 불러오지 못했습니다.");
       });
   }, []);
 
@@ -105,6 +101,24 @@ const MyPage = () => {
   };
 
   const profileEdit = () => {
+    // 이메일: 기본적인 이메일 형식 검사
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      toast.error("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 닉네임: 10자 이내
+    if (nickname.length > 10) {
+      toast.error("닉네임은 10자 이내여야 합니다.");
+      return;
+    }
+
+    // 닉네임: 공백 처리
+    if (nickname.length < 1) {
+      toast.error("닉네임을 입력하세요.");
+      return;
+    }
+
     updateProfileAPI(nickname, email)
       .then((data) => {
         if (data.status === 200) {
