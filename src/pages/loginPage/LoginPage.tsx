@@ -175,7 +175,7 @@ const SignUpPage = () => {
           <FormField>
             <FormLabel>아이디</FormLabel>
             <FormInput
-              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="아이디"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -185,7 +185,7 @@ const SignUpPage = () => {
             <FormLabel>비밀번호</FormLabel>
             <FormInput
               type="password"
-              placeholder="8자 이상, 소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

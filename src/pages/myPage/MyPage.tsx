@@ -113,6 +113,12 @@ const MyPage = () => {
       return;
     }
 
+    // 닉네임: 공백 처리
+    if (nickname.length < 1) {
+      toast.error("닉네임을 입력하세요.");
+      return;
+    }
+
     updateProfileAPI(nickname, email)
       .then((data) => {
         if (data.status === 200) {

@@ -153,6 +153,12 @@ const SignupPage = () => {
       return;
     }
 
+    // 닉네임: 공백 처리
+    if (nickname.length < 1) {
+      toast.error("닉네임을 입력하세요.");
+      return;
+    }
+
     // 모든 유효성 검사를 통과한 경우 API 호출 진행
     signupAPI(username, password, email, nickname)
       .then((data) => {
@@ -190,7 +196,7 @@ const SignupPage = () => {
           <FormField>
             <FormLabel>아이디</FormLabel>
             <FormInput
-              placeholder="소문자 + 숫자 조합으로 입력해주세요"
+              placeholder="소문자 또는 숫자로 입력해주세요"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
