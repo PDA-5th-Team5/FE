@@ -121,7 +121,7 @@ const StyledButton = styled.button`
   }
 `;
 
-const SignUpPage = () => {
+const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -130,8 +130,10 @@ const SignUpPage = () => {
   useEffect(() => {
     if (location.state && location.state.toastMessage) {
       toast.success(location.state.toastMessage);
+      // toast 메시지를 표시한 후, location.state 초기화
+      navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location]);
+  }, [location, navigate]);
 
   // 로그인 확인 핸들러
   const loginSubmit = () => {
@@ -220,4 +222,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;
