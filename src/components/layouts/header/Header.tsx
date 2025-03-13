@@ -8,13 +8,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Autocomplete from "./autocomplete/Autocomplete";
 import { logoutAPI } from "../../../apis/user";
 import { toast, ToastContainer } from "react-toastify";
+import { myPortfolioListAPI } from "../../../apis/portfolio";
 
-const Header: FC = () => {
+const Header = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const isPortfolioActive = location.pathname.startsWith("/portfolio/my");
 
   useEffect(() => {
     setUserMenuOpen(false);
@@ -74,6 +76,20 @@ const Header: FC = () => {
     setUserMenuOpen(false);
   };
 
+  const handlePortfolioClick = async () => {
+    try {
+      const portfolioList = await myPortfolioListAPI();
+      if (portfolioList && portfolioList.myPortfolios.length > 0) {
+        const firstPortfolioId = portfolioList.myPortfolios[0].myPortfolioId;
+        navigate(`/portfolio/my/${firstPortfolioId}`);
+      } else {
+        toast.error("포트폴리오가 존재하지 않습니다.");
+      }
+    } catch (error) {
+      console.error("포트폴리오 조회 실패", error);
+    }
+  };
+
   return (
     <S.HeaderContainer>
       <S.HeaderWrapper>
@@ -88,8 +104,10 @@ const Header: FC = () => {
               종목 필터링
             </S.HeaderLink>
           </S.HeaderLi>
-          <S.HeaderLi>
-            <S.HeaderLink to="/portfolio/my/1">포트폴리오</S.HeaderLink>
+          <S.HeaderLi onClick={handlePortfolioClick}>
+            <S.HeaderLinkSpan active={isPortfolioActive}>
+              포트폴리오
+            </S.HeaderLinkSpan>
           </S.HeaderLi>
           <S.HeaderLi>
             <S.HeaderLink to="/portfolio/share">공유 포트폴리오</S.HeaderLink>
