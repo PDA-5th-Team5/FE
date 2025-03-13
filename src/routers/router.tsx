@@ -8,6 +8,7 @@ import MyPortfolioPage from "../pages/portfolioPage/myPortfolioPage/MyPortfolioP
 import SharePortfolioPage from "../pages/sharePortfolioPage/SharePortfolioPage";
 import SharePortfolioDetailPage from "../pages/portfolioPage/sharePortfolioPage/SharePortfolioDetailPage";
 import StockPage from "../pages/stockPage/StockPage";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 const router = createBrowserRouter([
   {
@@ -17,8 +18,13 @@ const router = createBrowserRouter([
       { element: <MainPage />, index: true },
       { element: <LoginPage />, path: "login" },
       { element: <SignupPage />, path: "signup" },
-      { element: <MyPage />, path: "mypage" },
-      { element: <MyPortfolioPage />, path: "portfolio/my/:num" },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { element: <MyPage />, path: "mypage" },
+          { element: <MyPortfolioPage />, path: "portfolio/my/:num" },
+        ],
+      },
       { element: <SharePortfolioPage />, path: "portfolio/share" },
       { element: <SharePortfolioDetailPage />, path: "portfolio/share/:num" },
       { element: <StockPage />, path: "stock/:num" },
