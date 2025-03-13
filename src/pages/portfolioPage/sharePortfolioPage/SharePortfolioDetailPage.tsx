@@ -1,6 +1,6 @@
 import Comment from "../../../components/comment/Comment";
 import PageHeader from "../../../components/pageHeader/PageHeader";
-import { CommentsData } from "../../../types/commentTypes";
+// import { CommentsData } from "../../../types/commentTypes";
 import PortfolioPage from "../PortfolioPage";
 import * as S from "./SharePortfolioDetailPage.styled";
 import { useParams } from "react-router-dom";
@@ -11,8 +11,10 @@ import {
   deletePortfolioCommentAPI,
   editPortfolioCommentAPI,
   saveSharePortfolioAPI,
+  PortfolioDetailResponse,
 } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
+import { CommentsResponse } from "../../../apis/stock";
 const SharePortfolioDetailPage = () => {
   const { num } = useParams<{ num: string }>();
   const sharePortfolioId = num ? parseInt(num, 10) : 1;
@@ -24,16 +26,15 @@ const SharePortfolioDetailPage = () => {
     {}
   );
   const [snowflakeItems, setSnowflakeItems] = useState<any[]>([]);
-  const [hasData, setHasData] = useState(false);
+  // const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [page, setPage] = useState(1);
+  // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
-  const size = 10;
+  // const size = 10;
   const [error, setError] = useState<string | null>(null);
-  const [commentsData, setCommentsData] = useState({
-    commentsCnt: 0,
+  const [commentsData, setCommentsData] = useState<CommentsResponse>({
     comments: [],
   });
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -42,17 +43,20 @@ const SharePortfolioDetailPage = () => {
   //1. 댓글 조회
   useEffect(() => {
     fetchComments();
-  }, [sharePortfolioId, page]);
+  }, [sharePortfolioId]);
 
   const fetchComments = async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const data = await getPortfolioCommentsAPI(sharePortfolioId);
-      setCommentsData(data);
+      const result: CommentsResponse = data ?? { comments: [], commentsCnt: 0 };
+      setCommentsData(result);
+      return result;
     } catch (error) {
       console.error("댓글 로딩 실패:", error);
+      return { comments: [], commentsCnt: 0 };
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
@@ -67,7 +71,7 @@ const SharePortfolioDetailPage = () => {
         console.error("댓글 삭제 실패:", error);
         alert("댓글 삭제에 실패했습니다.");
       }
-      setOpenDropdownId(null);
+      // setOpenDropdownId(null);
     }
   };
 
@@ -77,7 +81,7 @@ const SharePortfolioDetailPage = () => {
 
     setEditingCommentId(commentId);
     setEditContent(currentContent);
-    setOpenDropdownId(null);
+    // setOpenDropdownId(null);
   };
 
   const handleCancelEdit = () => {
@@ -231,7 +235,7 @@ const SharePortfolioDetailPage = () => {
 
         // 데이터 존재 여부 확인
         const hasFinancialData = Object.keys(tempElements).length > 0;
-        setHasData(hasFinancialData);
+        // setHasData(hasFinancialData);
 
         // 스노우플레이크 아이템 생성
         if (hasFinancialData) {

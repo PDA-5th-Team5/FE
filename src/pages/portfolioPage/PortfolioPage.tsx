@@ -2,7 +2,7 @@ import * as S from "./PortfolioPage.styled";
 import StockResult from "../../components/stock/result/StockResult";
 import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
-import LineGraph from "../../components/lineGraph/LineGraph";
+// import LineGraph from "../../components/lineGraph/LineGraph";
 // import { Stock } from "../../types/stockType";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -12,11 +12,11 @@ import {
   SummaryResponse,
   getSharePortfolioStocksAPI,
   getMyPortfolioStocksAPI,
-  SharePortfolioStocksResponse,
+  // SharePortfolioStocksResponse,
   Stock,
 } from "../../apis/portfolio";
 import { formatMarketCap } from "../../utils/transferUtils";
-import { FilterStock } from "../../types/stockTypes";
+// import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
   totalCount: number;
@@ -32,33 +32,34 @@ interface PortfolioPageProps {
   description?: string;
   isMy?: boolean;
 }
-interface StocksResponse {
+
+export interface StocksResponse {
   totalCount: number;
   stocks: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
 }
-const lineGraphData = {
-  status: 200,
-  message: "성공입니다.",
-  data: {
-    lineGraph: [
-      {
-        market: "KOSDAQ",
-        price: { "20230101": 53000, "20230102": 54001 },
-      },
-      {
-        portfolioTitle: "myPortfolio",
-        avgClosePrice: { "20230101": 54200, "20230102": 39440 },
-      },
-    ],
-  },
-};
+// const lineGraphData = {
+//   status: 200,
+//   message: "성공입니다.",
+//   data: {
+//     lineGraph: [
+//       {
+//         market: "KOSDAQ",
+//         price: { "20230101": 53000, "20230102": 54001 },
+//       },
+//       {
+//         portfolioTitle: "myPortfolio",
+//         avgClosePrice: { "20230101": 54200, "20230102": 39440 },
+//       },
+//     ],
+//   },
+// };
 
 const PortfolioPage = ({
   portfolioData,
-  elementsObj,
-  snowflakeItems,
+  // elementsObj,
+  // snowflakeItems,
   isMy,
 
   // description,
@@ -196,7 +197,7 @@ const PortfolioPage = ({
             <S.PortfolioContentTitle>
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
-            <LineGraph data={lineGraphData} />
+            {/* <LineGraph data={lineGraphData} /> */}
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>

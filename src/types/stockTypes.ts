@@ -76,9 +76,7 @@ export interface Stock {
   companyName: string;
   sector: string;
   companyOverview?: string;
-  snowflakeS?: {
-    [key: string]: number | undefined;
-  };
+  snowflakeS?: SnowflakeS;
   marketCap: number;
   per: number;
   bps?: number;
@@ -94,6 +92,6 @@ export interface Stock {
 }
 
 // FilterStock을 Stock의 확장으로 정의
-export interface FilterStock extends Stock {
-  totalCount?: number; // 필요한 경우에만 포함
-}
+// export interface FilterStock extends Stock {
+//   totalCount?: number; // 필요한 경우에만 포함
+// }

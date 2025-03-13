@@ -1,7 +1,7 @@
 // CommentList.tsx
 import * as S from "./CommentList.styled";
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+// import { useParams } from "react-router-dom";
 import MoreIcon from "../../../assets/images/icons/more.png";
 
 interface Comment {
@@ -41,10 +41,10 @@ const CommentList = ({
   editContent,
   setEditContent,
 }: CommentsProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const { num } = useParams<{ num: string }>();
-  const stockId = num ? parseInt(num, 10) : 1;
+  // const { num } = useParams<{ num: string }>();
+  // const stockId = num ? parseInt(num, 10) : 1;
   const currentUserId = localStorage.getItem("userId");
 
   const handleToggleDropdown = (commentId: number) => {

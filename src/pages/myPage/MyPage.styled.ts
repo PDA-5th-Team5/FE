@@ -1,4 +1,3 @@
-import Toggle from "react-toggle";
 import styled from "styled-components";
 
 export const MyPageContainer = styled.div`

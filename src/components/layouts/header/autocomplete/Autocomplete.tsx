@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as S from "./Autocomplete.styled";
 import { autocompleteAPI, AutocompleteStock } from "../../../../apis/stock";
-import SamsungImg from "../../../../assets/images/samsung.png";
 import { useNavigate } from "react-router-dom";
 
 interface AutocompleteProps {

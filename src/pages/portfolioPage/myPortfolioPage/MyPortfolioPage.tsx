@@ -11,7 +11,7 @@ import { shareMyPortfolioAPI } from "../../../apis/portfolio";
 import { deleteMyPortfolioAPI } from "../../../apis/portfolio";
 import { myPortfolioListAPI } from "../../../apis/portfolio"; // 나의 포트폴리오 리스트 API 가져오기
 import { MyPortfolio } from "../../../types/portfolioTypes"; // 타입 추가
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 
 const MyPortfolioPage = () => {
   const { num } = useParams<{ num: string }>();
@@ -27,18 +27,18 @@ const MyPortfolioPage = () => {
   );
   const [portfolioList, setPortfolioList] = useState<MyPortfolio[]>([]);
 
-  const [portfolioName, setPortfolioName] = useState("내 포트폴리오 123");
+  // const [portfolioName, setPortfolioName] = useState("내 포트폴리오 123");
   const [elementsObj, setElementsObj] = useState<{ [key: string]: number[] }>(
     {}
   );
   const [snowflakeItems, setSnowflakeItems] = useState<any[]>([]);
-  const [hasData, setHasData] = useState(false);
+  // const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [commentsData, setCommentsData] = useState({
-    commentsCnt: 0,
-    comments: [],
-  });
+  // const [commentsData, setCommentsData] = useState({
+  //   commentsCnt: 0,
+  //   comments: [],
+  // });
   // const [portfolioList] = useState([
   //   "내 포트폴리오 123",
   //   "주식 공부용 포트폴리오",
@@ -100,7 +100,7 @@ const MyPortfolioPage = () => {
         navigate(`/portfolio/my/${firstPortfolioId}`);
       } else {
         // 남은 포트폴리오가 없으면 초기 페이지 등으로 이동
-        setPortfolioName("");
+        // setPortfolioName("");
         setSelectedPortfolioId(null);
         navigate("/");
       }
@@ -249,7 +249,7 @@ const MyPortfolioPage = () => {
 
         // 데이터 존재 여부 확인
         const hasFinancialData = Object.keys(tempElements).length > 0;
-        setHasData(hasFinancialData);
+        // setHasData(hasFinancialData);
 
         // 스노우플레이크 아이템 생성
         if (hasFinancialData) {
