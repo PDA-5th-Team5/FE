@@ -38,7 +38,7 @@ interface LineGraphItem {
 //   value: number;
 // }
 
-interface LineGraphData {
+export interface LineGraphData {
   status: number;
   message: string;
   data: LineGraphItem[];

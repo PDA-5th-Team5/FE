@@ -3,7 +3,7 @@ import StockResult from "../../components/stock/result/StockResult";
 import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
-// import { Stock } from "../../types/stockType";
+import { LineGraphData } from "../../components/lineGraph/LineGraph";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -13,12 +13,9 @@ import {
   getSharePortfolioStocksAPI,
   getMyPortfolioStocksAPI,
   getPortfolioGraphAPI,
-  LineGraphResponse,
-  SharePortfolioStocksResponse,
   Stock,
 } from "../../apis/portfolio";
 import { formatMarketCap } from "../../utils/transferUtils";
-import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
   totalCount: number;
@@ -40,31 +37,8 @@ interface StocksResponse {
   portfolioTitle?: string;
   portfolioDescription?: string;
 }
-const lineGraphData = {
-  status: 200,
-  message: "성공입니다.",
-  data: {
-    lineGraph: [
-      {
-        market: "KOSDAQ",
-        price: { "20230101": 53000, "20230102": 54001 },
-      },
-      {
-        portfolioTitle: "myPortfolio",
-        avgClosePrice: { "20230101": 54200, "20230102": 39440 },
-      },
-    ],
-  },
-};
 
-const PortfolioPage = ({
-  portfolioData,
-  elementsObj,
-  snowflakeItems,
-  isMy,
-
-  // description,
-}: PortfolioPageProps) => {
+const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
   const [summary, setSummary] = useState<SummaryResponse>();
   const [stocksData, setStocksData] = useState<StocksResponse>({
@@ -72,7 +46,12 @@ const PortfolioPage = ({
     stocks: [],
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [graphData, setGraphData] = useState<LineGraphResponse | null>(null);
+  const [graphData, setGraphData] = useState<LineGraphData>({
+    status: 0,
+    message: "",
+    data: [],
+  });
+
   // 그래프 데이터 로드 함수
   const loadGraphData = async (portfolioId: number, market?: string) => {
     try {
@@ -137,7 +116,7 @@ const PortfolioPage = ({
 
           setStocksData(apiResponse);
           // 종목 ID 목록 추출
-          const stockIds = apiResponse.stocks.map((stock) => stock.stockId);
+          //  const stockIds = apiResponse.stocks.map((stock) => stock.stockId);
 
           // 시장 타입 결정 (모든 종목이 같은 시장인 경우 해당 시장 사용, 아니면 "ALL")
           const marketTypes = [

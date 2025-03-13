@@ -483,14 +483,28 @@ export interface LineGraphResponse {
     avgClosePrice: { [date: string]: number };
   }
 }
-
 export const getPortfolioGraphAPI = async (
   portfolioId: number,
-  market: string = "ALL",
+  market: string = "ALL"
 ): Promise<LineGraphResponse> => {
+  const isMy = location.pathname.includes('/my/');
+
+  const endpoint = isMy 
+    ? `/my/graph?portfolioId=${portfolioId}&market=${market}` 
+    : `/share/graph?portfolioId=${portfolioId}&market=${market}`;
+  
   const response = await portfolioAPI.post<APIResponse<LineGraphResponse>>(
-    `/share/graph?portfolioId=${portfolioId}&market=${market}`,
-    {  }
+    endpoint,
+    {
+      portfolioId,
+      market
+    },
+    {
+      headers: isMy 
+        ? { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+        : {}
+    }
   );
+  
   return response.data.data;
 };
