@@ -75,7 +75,10 @@ const StockList = ({ stocks }: StockProps) => {
                 <S.StockListTicker>{stock.ticker}</S.StockListTicker>
                 <S.StockListName>{stock.companyName}</S.StockListName>
               </td>
-              <td>{stock.currentPrice.toLocaleString() ?? ""}원</td>
+              <td>
+                {stock.currentPrice ? stock.currentPrice.toLocaleString() : "-"}
+                원
+              </td>
 
               <S.ChangeTd $isPositive={stock.weekRateChange >= 0}>
                 {(stock.weekRateChange * 100).toFixed(0)}%
