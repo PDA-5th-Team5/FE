@@ -28,7 +28,6 @@ import { FilterStock } from "../../types/stockTypes";
 import { useInView } from "react-intersection-observer";
 import { useThresholds } from "./hooks/useThresholds";
 import Button from "../../components/button/Button";
-import Tooltip from "../../components/tooltip/tooltip";
 
 type ThresholdRange = {
   label: string;
