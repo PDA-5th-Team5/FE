@@ -31,6 +31,7 @@ const LogoWrapper = styled.div`
   align-items: center;
   margin-top: 59px;
   margin-bottom: 44px;
+  cursor: pointer;
 `;
 
 // 폼 전체 감싸는 컨테이너
@@ -172,11 +173,15 @@ const SignupPage = () => {
       });
   };
 
+  const logoHandler = () => {
+    navigate("/");
+  };
+
   return (
     <SignUpPageContainer>
       <SignUpPageBox>
         {/* 상단 로고 */}
-        <LogoWrapper>
+        <LogoWrapper onClick={logoHandler}>
           <S.HeaderImg src={Logo} alt="로고 이미지" />
         </LogoWrapper>
 

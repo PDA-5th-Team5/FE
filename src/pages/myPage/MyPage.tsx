@@ -105,6 +105,18 @@ const MyPage = () => {
   };
 
   const profileEdit = () => {
+    // 이메일: 기본적인 이메일 형식 검사
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      toast.error("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 닉네임: 10자 이내
+    if (nickname.length > 10) {
+      toast.error("닉네임은 10자 이내여야 합니다.");
+      return;
+    }
+
     updateProfileAPI(nickname, email)
       .then((data) => {
         if (data.status === 200) {
