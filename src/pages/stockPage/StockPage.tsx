@@ -29,7 +29,8 @@ import {
   editCommentAPI,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
-import { formatMarketCapS } from "../../utils/capTransferUtils";
+import { formatMarketCapS } from "../../utils/transferUtils";
+import { isNumber } from "chart.js/helpers";
 
 const IMAGE_BASE = "../../assets/images/stocks/";
 
@@ -154,8 +155,12 @@ const StockPage = () => {
           data: {
             stockInfo: {
               ...response.data.stockInfo,
-              "1WeekProfitRate": response.data.stockInfo.weekRateChange * 100,
-              "1YearProfitRate": response.data.stockInfo.yearRateChange * 100,
+              "1WeekProfitRate": Number(
+                (response.data.stockInfo.weekRateChange * 100).toFixed(0)
+              ),
+              "1YearProfitRate": Number(
+                (response.data.stockInfo.yearRateChange * 100).toFixed(0)
+              ),
               dividendYeild: response.data.snowflakeS.dividendYield || 0,
 
               isBookmark: response.data.stockInfo.fav,
@@ -340,7 +345,7 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>현재가</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.currentPrice.toLocaleString()}원
+              {stockData.data.stockInfo.currentPrice.toLocaleString() ?? ""}원
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
@@ -384,7 +389,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>eps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.eps.toLocaleString()}원
+                {stockData.data.stockInfo.eps.toLocaleString() ?? ""}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -400,7 +405,7 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>bps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.bps.toLocaleString()}원
+                {stockData.data.stockInfo.bps.toLocaleString() ?? ""}원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}

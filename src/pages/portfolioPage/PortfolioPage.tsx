@@ -11,7 +11,7 @@ import {
   getMySummaryAPI,
   SummaryResponse,
 } from "../../apis/portfolio";
-import { formatMarketCap } from "../../utils/capTransferUtils";
+import { formatMarketCap } from "../../utils/transferUtils";
 
 export interface StockResultData {
   stockCnt: number;
