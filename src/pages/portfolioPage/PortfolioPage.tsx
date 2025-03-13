@@ -118,6 +118,15 @@ const PortfolioPage = ({
   const { num } = useParams<{ num: string }>();
   const [summary, setSummary] = useState<SummaryResponse>();
 
+  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
+  const formatMarketCap = (marketCap: number): string => {
+    // 1조 = 10000억
+    if (marketCap >= 10000) {
+      return `${(marketCap / 10000).toFixed(2)}조`;
+    }
+    return `${marketCap.toLocaleString()}억`;
+  };
+
   // 공유 포트폴리오 평균값 조회
   useEffect(() => {
     if (num) {
@@ -177,7 +186,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 50조 */}
-                    {summary?.avgMarketCap}억
+                    {formatMarketCap(summary?.avgMarketCap ?? 0)}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 시가총액
@@ -191,7 +200,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 23.08 */}
-                    {summary?.avgPer}배
+                    {summary?.avgPer}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 PER

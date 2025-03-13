@@ -24,7 +24,7 @@ const StockList = ({ stocks }: StockProps) => {
     if (marketCap >= 10000) {
       return `${(marketCap / 10000).toFixed(2)}조`;
     }
-    return `${marketCap}억`;
+    return `${marketCap.toLocaleString()}억`;
   };
 
   return (
@@ -91,7 +91,7 @@ const StockList = ({ stocks }: StockProps) => {
               <S.ChangeTd $isPositive={stock.yearRateChange >= 0}>
                 {stock.yearRateChange}%
               </S.ChangeTd>
-              <td>{formatMarketCap(stock.marketCap)}</td>
+              <td>{formatMarketCap(stock.marketCap ?? 0)}</td>
               <td>{stock.per}</td>
               <td>{stock.lbltRate}%</td>
               <td>{stock.sector}</td>
