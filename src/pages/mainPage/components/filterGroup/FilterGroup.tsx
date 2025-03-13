@@ -40,7 +40,8 @@ export const MainPageFilterItem = styled.div<{ $isSelected: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 104px;
+  /* min-width: 104px; */
+  min-width: 134px;
   height: 36px;
   flex-shrink: 0;
   border-radius: 8px;
