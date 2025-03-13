@@ -480,6 +480,7 @@ const MainPage: React.FC = () => {
               <S.SaveModalInput
                 placeholder="20자 이내로 작성해주세요"
                 value={portfolioTitle}
+                maxLength={20}
                 onChange={(e) => setPortfolioTitle(e.target.value)}
               />
             </S.SaveModalContent>
@@ -487,8 +488,9 @@ const MainPage: React.FC = () => {
             <S.SaveModalContent>
               <S.SaveModalTitle>포트폴리오 설명</S.SaveModalTitle>
               <S.SaveModalTextArea
-                placeholder="50자 이내로 작성해주세요"
+                placeholder="500자 이내로 작성해주세요"
                 value={portfolioDesc}
+                maxLength={500}
                 onChange={(e) => setPortfolioDesc(e.target.value)}
               />
             </S.SaveModalContent>
