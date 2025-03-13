@@ -4,7 +4,7 @@ import DropdownIcon from "../../../assets/images/icons/arrowDown.png";
 import PlusIcon from "../../../assets/images/icons/plus_blue.png";
 import HeaderButtons from "../../../components/pageHeader/HeaderButtons";
 import PortfolioPage from "../PortfolioPage";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getMyPortfolioDetailAPI } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 import { shareMyPortfolioAPI } from "../../../apis/portfolio";
@@ -15,6 +15,7 @@ import { MyPortfolio } from "../../../types/portfolioTypes"; // 타입 추가
 const MyPortfolioPage = () => {
   const { num } = useParams<{ num: string }>();
   const portfolioId = num ? Number(num) : null;
+  const navigate = useNavigate();
 
   const [portfolio, setPortfolio] = useState<PortfolioDetailResponse | null>(
     null
@@ -73,8 +74,8 @@ const MyPortfolioPage = () => {
   };
 
   const handleCreateNew = () => {
-    alert("새로운 포트폴리오 만들기");
     setIsOpen(false);
+    navigate('/')
   };
 
   const onClickDelete = () => {
