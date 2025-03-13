@@ -21,6 +21,7 @@ const SignUpPageBox = styled.div`
   height: 720px;
   background-color: #1b212d;
   border: 1px solid #3c4049;
+  border-radius: 8px;
 `;
 
 // 로고/타이틀 영역
