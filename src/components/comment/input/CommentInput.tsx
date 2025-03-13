@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import PersonIcon from "../../../assets/images/icons/person_gray.png";
 import Button from "../../button/Button";
@@ -65,8 +65,20 @@ const CommentInput = ({
   const actualPageType = location.includes("/portfolio")
     ? "portfolio"
     : pageType;
+  const [nickname, setNickname] = useState("");
+
+  useEffect(() => {
+    const fetchNickname = localStorage.getItem("nickname");
+    setNickname(fetchNickname);
+  }, []);
 
   const saveComment = async () => {
+
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+      alert("로그인이 필요한 기능입니다.");
+      return;
+    }
+
     if (!content.trim()) {
       alert("댓글 내용을 입력해주세요.");
       return;
@@ -113,14 +125,14 @@ const CommentInput = ({
     <CommentInputContainer>
       <CommentInputHeader>
         <CommentInputImg src={PersonIcon} />
-        <CommentInputName>이유진</CommentInputName>
+        <CommentInputName>{nickname}</CommentInputName>
       </CommentInputHeader>
 
       <CommentInputTextarea
         placeholder={
           actualPageType === "stock"
             ? "주식에 대한 의견을 나누어 보세요."
-            : "포트폴리오오에 대한 의견을 나누어 보세요."
+            : "포트폴리오에 대한 의견을 나누어 보세요."
         }
         value={content}
         onChange={(e) => setContent(e.target.value)}

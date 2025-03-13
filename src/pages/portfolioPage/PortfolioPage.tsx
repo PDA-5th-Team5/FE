@@ -17,6 +17,7 @@ import {
   SharePortfolioStocksResponse,
   Stock,
 } from "../../apis/portfolio";
+import { formatMarketCap } from "../../utils/transferUtils";
 import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
@@ -73,9 +74,9 @@ const PortfolioPage = ({
   const [loading, setLoading] = useState<boolean>(true);
   const [graphData, setGraphData] = useState<LineGraphResponse | null>(null);
   // 그래프 데이터 로드 함수
-  const loadGraphData = async (stockIds: number[], market?: string) => {
+  const loadGraphData = async (portfolioId: number, market?: string) => {
     try {
-      const response = await getPortfolioGraphAPI(stockIds, market);
+      const response = await getPortfolioGraphAPI(portfolioId, market);
 
       // API 응답을 LineGraph 컴포넌트가 기대하는 형식으로 변환
       const formattedData: LineGraphData = {
@@ -145,7 +146,7 @@ const PortfolioPage = ({
           const market = marketTypes.length === 1 ? marketTypes[0] : "ALL";
 
           // 그래프 데이터 로드
-          await loadGraphData(stockIds, market);
+          await loadGraphData(portfolioId, market);
         } catch (error) {
           console.error(
             `${isMy ? "나의" : "공유"} 포트폴리오 종목 조회 실패`,
@@ -181,7 +182,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 50조 */}
-                    {summary?.avgMarketCap}억
+                    {formatMarketCap(summary?.avgMarketCap ?? 0)}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 시가총액
@@ -195,7 +196,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 23.08 */}
-                    {summary?.avgPer}배
+                    {summary?.avgPer}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 PER

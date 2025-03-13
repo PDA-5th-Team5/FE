@@ -80,7 +80,6 @@ export interface SharePortfolioItem {
   };
 }
 
-
 export const sharePortfolioListAPI = async (
   sortBy: string = "loadCount"
 ): Promise<FilterStock[]> => {
@@ -154,8 +153,7 @@ export const getMyPortfolioDetailAPI = async (
     `/my/${portfolioId}`
   );
   return response.data.data;
-
-}
+};
 
 // 내 포트폴리오 알림 조회 API (GET)
 export interface TelegramAlerts {
@@ -183,7 +181,6 @@ export const postTelegramAlertAPI = async (
   });
   return response.data;
 };
-
 
 // 내 포트폴리오 알림 삭제
 export const deleteTelegramAlertAPI = async (
@@ -236,7 +233,7 @@ export interface Comment {
 }
 
 export interface CommentsResponse {
-  commentCnt: number;
+  commentsCnt: number;
   comments: Comment[];
 }
 
@@ -248,7 +245,7 @@ export const getPortfolioCommentsAPI = async (
   );
   // API 응답 형식에 맞게 데이터 변환
   return {
-    commentCnt: response.data.data.commentCnt,
+    commentsCnt: response.data.data.commentsCnt,
     comments: response.data.data.comments,
   };
 };
@@ -400,7 +397,7 @@ export const saveSharePortfolioAPI = async (
 
 // 공유포폴 종목리스트 조회
 export interface SharePortfolioStocksResponse {
- // stockCnt: number;
+  // stockCnt: number;
   stocks: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
@@ -439,12 +436,12 @@ export const getSharePortfolioStocksAPI = async (
   portfolioId: number,
   page: number = 0
 ): Promise<SharePortfolioStocksResponse> => {
-  const response = await portfolioAPI.get<APIResponse<SharePortfolioStocksResponse>>(
-    `/share/${portfolioId}/stock?page=${page}`
-  );
+  const response = await portfolioAPI.get<
+    APIResponse<SharePortfolioStocksResponse>
+  >(`/share/${portfolioId}/stock?page=${page}`);
   console.log("API 원시 응답:", response);
   console.log("API 데이터:", response.data);
-  
+
   return response.data.data;
 };
 
@@ -458,14 +455,13 @@ export const getMyPortfolioStocksAPI = async (
     throw new Error("로그인 해주세요!");
   }
 
-  const response = await portfolioAPI.get<APIResponse<SharePortfolioStocksResponse>>(
-    `/my/${portfolioId}/stock?page=${page}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+  const response = await portfolioAPI.get<
+    APIResponse<SharePortfolioStocksResponse>
+  >(`/my/${portfolioId}/stock?page=${page}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data.data;
 };
 
@@ -489,12 +485,12 @@ export interface LineGraphResponse {
 }
 
 export const getPortfolioGraphAPI = async (
-  stockIds: number[],
-  market: string = "ALL"
+  portfolioId: number,
+  market: string = "ALL",
 ): Promise<LineGraphResponse> => {
   const response = await portfolioAPI.post<APIResponse<LineGraphResponse>>(
-    `/share/graph?market=${market}`,
-    { stockIds }
+    `/share/graph?portfolioId=${portfolioId}&market=${market}`,
+    {  }
   );
   return response.data.data;
 };

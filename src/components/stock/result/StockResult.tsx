@@ -77,7 +77,9 @@ const StockResult = ({
   return (
     <S.StockResultContainer>
       <S.StockResultHeader>
-        <S.StockResultTitle>검색 결과 {totalCount}개</S.StockResultTitle>
+        <S.StockResultTitle>
+          검색 결과 {totalCount.toLocaleString()}개
+        </S.StockResultTitle>
         <S.StockResultTool>
           {/* 정렬부분 */}
           {/* <S.StockResultSortWrapper>

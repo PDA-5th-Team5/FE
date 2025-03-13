@@ -33,7 +33,7 @@ const SharePortfolioDetailPage = () => {
   const size = 10;
   const [error, setError] = useState<string | null>(null);
   const [commentsData, setCommentsData] = useState({
-    commentCnt: 0,
+    commentsCnt: 0,
     comments: [],
   });
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);

@@ -1,4 +1,6 @@
 import { Line } from "react-chartjs-2";
+import * as S from "../stock/result/StockResult.styled";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,6 +24,7 @@ ChartJS.register(
   Legend,
   TimeScale
 );
+import { PulseLoader } from "react-spinners";
 
 interface LineGraphItem {
   market?: string;
@@ -55,8 +58,19 @@ const convertDate = (dateStr: string): Date => {
 
 const LineGraph = ({ data }: LineGraphProps) => {
   if (!data || !data.data) {
-    return <div>그래프 데이터를 불러오는 중...</div>;
+    return (
+      <S.LoadingResultContainer>
+        <PulseLoader size={10} color="#2595E0" />
+      </S.LoadingResultContainer>
+    );
   }
+  // if (loading) {
+  //   return (
+  //     <S.LoadingResultContainer>
+  //       <PulseLoader size={10} color="#2595E0" />
+  //     </S.LoadingResultContainer>
+  //   );
+  // }
   const datasets = data.data.map((item) => {
     let key: keyof LineGraphItem | "" = "";
     if (item.price) {
