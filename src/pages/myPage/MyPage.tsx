@@ -164,13 +164,13 @@ const MyPage = () => {
     activeCommentTab === "stock" ? stockComments : portfolioComments;
 
   // 북마크 토글 상태 업데이트 함수
-  const handleToggleBookmark = (stockId: number, newState: boolean) => {
-    setStocks((prevStocks) =>
-      prevStocks.map((stock) =>
-        stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
-      )
-    );
-  };
+  // const handleToggleBookmark = (stockId: number, newState: boolean) => {
+  //   setStocks((prevStocks) =>
+  //     prevStocks.map((stock) =>
+  //       stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
+  //     )
+  //   );
+  // };
 
   const addTelegramID = (telegramID: string) => {
     postTelegramIDAPI(telegramID)

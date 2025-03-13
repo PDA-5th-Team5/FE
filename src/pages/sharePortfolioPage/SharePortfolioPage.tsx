@@ -6,6 +6,69 @@ import PortfolioCard from "./portfolioCard/PortfolioCard";
 import { SnowflakeP } from "../../types/snowflakeTypes";
 import { sharePortfolioListAPI } from "../../apis/portfolio";
 import { transformElementsToItems } from "../../utils/snowflakeUtils";
+
+// src/types/portfolioTypes.ts
+
+// API에서 반환하는 포트폴리오 객체 구조
+export interface APIPortfolio {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  portfolioId: number;
+  market: string;
+  sector: string[];
+  marketCap?: {
+    min: number;
+    max: number;
+  };
+  per?: {
+    min: number;
+    max: number;
+  };
+  dividendYield?: {
+    min: number;
+    max: number;
+  };
+  foreignerRatio?: {
+    min: number;
+    max: number;
+  };
+  lbltRate?: {
+    min: number;
+    max: number;
+  };
+  ntinInrt?: {
+    min: number;
+    max: number;
+  };
+  grs?: {
+    min: number;
+    max: number;
+  };
+  roeVal?: {
+    min: number;
+    max: number;
+  };
+}
+
+// 단일 공유 포트폴리오 항목의 응답 타입
+export interface SharePortfolioResponseItem {
+  sharePortfolioId: number;
+  loadCount: number;
+  createdAt: string;
+  portfolio: APIPortfolio;
+}
+
+// 전체 응답 구조
+export interface SharePortfolioListResponse {
+  status: number;
+  message: string;
+  data: SharePortfolioResponseItem[];
+}
+
+
+
 export interface SharePortfolio {
   sharePortfolioId: number;
   sharePortfolioTitle: string;
@@ -14,10 +77,10 @@ export interface SharePortfolio {
   snowflakeP: SnowflakeP;
 }
 
-interface SharePortfolioData {
-  sharePortfoliosCnt: number;
-  sharePortfolios: SharePortfolio[];
-}
+// interface SharePortfolioData {
+//   sharePortfoliosCnt: number;
+//   sharePortfolios: SharePortfolio[];
+// }
 
 const SharePortfolioPage = () => {
   const [sortKey, setSortKey] = useState("최신순");

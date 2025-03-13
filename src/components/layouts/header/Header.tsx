@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as S from "./Header.styled";
 import Logo from "../../../assets/images/logo.png";
 import ArrowDownIcon from "../../../assets/images/icons/arrowDown.png";

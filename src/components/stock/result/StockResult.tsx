@@ -6,12 +6,12 @@ import GridOnIcon from "../../../assets/images/icons/view/grid_on.png";
 import GridOffIcon from "../../../assets/images/icons/view/grid_off.png";
 import StockList from "../list/StockList";
 import StockGrid from "../grid/StockGrid";
-import SortDropdown from "../../sortDropdown/SortDropdown";
-import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
-import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
+// import SortDropdown from "../../sortDropdown/SortDropdown";
+// import SortKeyIcon from "../../../assets/images/icons/sortKey.png";
+// import SortDirectionIcon from "../../../assets/images/icons/sortDirection.png";
 import { FilterStock } from "../../../types/stockTypes";
 import { PulseLoader } from "react-spinners";
-import { StockResultData } from "../../../pages/portfolioPage/PortfolioPage";
+// import { StockResultData } from "../../../pages/portfolioPage/PortfolioPage";
 // StockResult 컴포넌트 Props 정의
 interface StockResultProps {
   data: any;
@@ -27,28 +27,28 @@ const StockResult = ({
 
   const [stocks, setStocks] = useState<FilterStock[]>(stocksArray);
   const [view, setView] = useState("list");
-  const [sortKey, setSortKey] = useState("시가총액");
-  const [sortDirection, setSortDirection] = useState("내림차순");
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const handleSortKeyChange = (value: string) => {
-    setSortKey(value);
-    // TODO API 연결
-  };
-  const handleSortDirectionChange = (value: string) => {
-    setSortDirection(value);
-    // TODO API 연결
-  };
-  const toggleDropdown = (id: string) => {
-    setOpenDropdown((prev) => (prev === id ? null : id));
-  };
-  // 북마크 토글 상태 업데이트 함수
-  const handleToggleBookmark = (stockId: number, newState: boolean) => {
-    setStocks((prevStocks) =>
-      prevStocks.map((stock) =>
-        stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
-      )
-    );
-  };
+  // const [sortKey, setSortKey] = useState("시가총액");
+  // const [sortDirection, setSortDirection] = useState("내림차순");
+  // const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  // const handleSortKeyChange = (value: string) => {
+  //   setSortKey(value);
+  //   // TODO API 연결
+  // };
+  // const handleSortDirectionChange = (value: string) => {
+  //   setSortDirection(value);
+  //   // TODO API 연결
+  // };
+  // const toggleDropdown = (id: string) => {
+  //   setOpenDropdown((prev) => (prev === id ? null : id));
+  // };
+  // // 북마크 토글 상태 업데이트 함수
+  // const handleToggleBookmark = (stockId: number, newState: boolean) => {
+  //   setStocks((prevStocks) =>
+  //     prevStocks.map((stock) =>
+  //       stock.stockId === stockId ? { ...stock, isBookmark: newState } : stock
+  //     )
+  //   );
+  // };
   useEffect(() => {
     if (data) {
       // 배열인 경우 (첫 번째 API 응답 - 종목 리스트 조회)

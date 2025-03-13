@@ -2,7 +2,7 @@ import { APIResponse, stockAPI } from ".";
 
 import {
   SnowflakeItems,
-  SnowflakeS,
+  // SnowflakeS,
   SnowflakeSElements,
   SnowflakePElements,
 } from "../types/snowflakeTypes";
@@ -67,24 +67,19 @@ export interface Comment {
 }
 
 export interface CommentsResponse {
-  commentCnt: number;
+  commentCnt?: number;
   comments: Comment[];
 }
 
 export const getCommentsAPI = async (
   stockId: number,
-  page: number = 1,
-  size: number = 10
 ): Promise<CommentsResponse> => {
   const response = await stockAPI.get<APIResponse<CommentsResponse>>(
-    `/${stockId}/comments?page=${page}&size=${size}`
+    `/${stockId}/comments`
   );
 
   // API 응답 형식에 맞게 데이터 변환
-  return {
-    commentCnt: response.data.data.commentCnt,
-    comments: response.data.data.comments,
-  };
+  return response.data.data;
 };
 
 //캔들차트 조회

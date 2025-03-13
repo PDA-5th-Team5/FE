@@ -195,7 +195,7 @@ const MainPage: React.FC = () => {
         sector: selectedSectorKeys,
       };
 
-      const response = await saveMyPortfolioAPI(payload);
+      await saveMyPortfolioAPI(payload);
       alert("저장 성공");
       // TODO : 나의 포트폴리오 페이지로 연결
       closeSaveModal();
