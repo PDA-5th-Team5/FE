@@ -19,6 +19,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: 환경 변수 설정
+        run: echo "VITE_BASE_URL=$VITE_BASE_URL" >> .env.production
+        env:
+          VITE_BASE_URL: ${{secrets.VITE_BASE_URL}}
+
       - name: 리액트 빌드
         run: |
           npm install
