@@ -127,6 +127,31 @@ const SignupPage = () => {
 
   // 회원가입 확인 핸들러
   const signupSubmit = () => {
+    // 아이디: 소문자와 숫자만 허용
+    if (!/^[a-z0-9]+$/.test(username)) {
+      toast.error("아이디는 소문자와 숫자만 사용 가능합니다.");
+      return;
+    }
+
+    // 비밀번호: 8자 이상, 소문자와 숫자가 모두 포함되어야 함
+    if (!/^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$/.test(password)) {
+      toast.error("비밀번호는 8자 이상이며, 소문자와 숫자 조합이어야 합니다.");
+      return;
+    }
+
+    // 이메일: 기본적인 이메일 형식 검사
+    if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      toast.error("올바른 이메일 형식을 입력해주세요.");
+      return;
+    }
+
+    // 닉네임: 10자 이내
+    if (nickname.length > 10) {
+      toast.error("닉네임은 10자 이내여야 합니다.");
+      return;
+    }
+
+    // 모든 유효성 검사를 통과한 경우 API 호출 진행
     signupAPI(username, password, email, nickname)
       .then((data) => {
         if (data.status === 200) {
