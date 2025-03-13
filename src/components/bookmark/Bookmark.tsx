@@ -40,6 +40,7 @@ const Bookmark = ({ stockId, isBookmarked, isMyWatchlist }: BookmarkProps) => {
   }, []);
 
   const handleClick = async (e: React.MouseEvent) => {
+    console.log("북마크 클릭");
     setsubBookmarked(false);
     e.preventDefault();
     e.stopPropagation();
@@ -66,6 +67,22 @@ const Bookmark = ({ stockId, isBookmarked, isMyWatchlist }: BookmarkProps) => {
         }
       } else {
         return; // 취소한 경우 API 호출 로직 실행하지 않음
+      }
+    } else {
+      try {
+        const response = newState
+          ? await addToWatchlist(stockId)
+          : await removeFromWatchlist(stockId);
+        if (response.status === 200) {
+          setBookmarked(newState);
+        } else {
+          console.error(
+            `관심종목 ${newState ? "추가" : "삭제"} 실패:`,
+            response.message
+          );
+        }
+      } catch (error) {
+        console.error("API 호출 오류:", error);
       }
     }
   };
