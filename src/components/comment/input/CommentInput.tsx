@@ -120,7 +120,7 @@ const CommentInput = ({
         placeholder={
           actualPageType === "stock"
             ? "주식에 대한 의견을 나누어 보세요."
-            : "포트폴리오오에 대한 의견을 나누어 보세요."
+            : "포트폴리오에 대한 의견을 나누어 보세요."
         }
         value={content}
         onChange={(e) => setContent(e.target.value)}
