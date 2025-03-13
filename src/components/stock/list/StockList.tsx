@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FilterStock } from "../../../types/stockTypes";
 import { labelMapping } from "../../../types/snowflakeTypes";
 import StockSnowflake from "../../snowflake/StockSnowflake";
+import { formatMarketCap } from "../../../utils/transferUtils";
+
 export interface StockProps {
   stocks: FilterStock[];
   setStocks: React.Dispatch<React.SetStateAction<FilterStock[]>>;
@@ -73,16 +75,16 @@ const StockList = ({ stocks }: StockProps) => {
                 <S.StockListTicker>{stock.ticker}</S.StockListTicker>
                 <S.StockListName>{stock.companyName}</S.StockListName>
               </td>
-              <td>₩{stock.currentPrice}</td>
+              <td>{stock.currentPrice.toLocaleString() ?? ""}원</td>
 
               <S.ChangeTd $isPositive={stock.weekRateChange >= 0}>
-                {stock.weekRateChange}
+                {(stock.weekRateChange * 100).toFixed(0)}%
               </S.ChangeTd>
 
               <S.ChangeTd $isPositive={stock.yearRateChange >= 0}>
-                {stock.yearRateChange}%
+                {(stock.yearRateChange * 100).toFixed(0)}%
               </S.ChangeTd>
-              <td>{stock.marketCap}</td>
+              <td>{formatMarketCap(stock.marketCap ?? 0)}</td>
               <td>{stock.per}</td>
               <td>{stock.lbltRate}%</td>
               <td>{stock.sector}</td>

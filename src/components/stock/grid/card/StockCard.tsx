@@ -4,6 +4,7 @@ import { getRandomColor } from "../../../../utils/colorUtils";
 import { FilterStock } from "../../../../types/stockTypes";
 import { Item } from "../../../../types/snowflakeTypes";
 import StockSnowflake from "../../../snowflake/StockSnowflake";
+import { formatMarketCap } from "../../../../utils/transferUtils";
 
 export interface StockCardProps {
   stock: FilterStock;
@@ -27,7 +28,9 @@ const StockCard = ({
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.companyName}</S.CardTitle>
-          <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
+          <S.CardMarketCap>
+            {formatMarketCap(stock.marketCap ?? 0)}
+          </S.CardMarketCap>
         </S.CardHeaderLeft>
 
         <S.CardHeaderRight>
@@ -61,18 +64,20 @@ const StockCard = ({
       <S.CardFooter>
         <S.CardFooterItem>
           <S.CardFooterTitle>{stock.ticker}</S.CardFooterTitle>
-          <S.CardFooterPrice>₩{stock.currentPrice}</S.CardFooterPrice>
+          <S.CardFooterPrice>
+            {stock.currentPrice.toLocaleString() ?? ""}원
+          </S.CardFooterPrice>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>7D</S.CardFooterTitle>
           <S.CardFooterChange $isPositive={stock.weekRateChange >= 0}>
-            {stock.weekRateChange}%
+            {(stock.weekRateChange * 100).toFixed(0)}%
           </S.CardFooterChange>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>1Y</S.CardFooterTitle>
           <S.CardFooterChange $isPositive={stock.yearRateChange >= 0}>
-            {stock.yearRateChange}%
+            {(stock.yearRateChange * 100).toFixed(0)}%
           </S.CardFooterChange>
         </S.CardFooterItem>
       </S.CardFooter>

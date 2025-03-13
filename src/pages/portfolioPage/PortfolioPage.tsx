@@ -15,6 +15,7 @@ import {
   SharePortfolioStocksResponse,
   Stock,
 } from "../../apis/portfolio";
+import { formatMarketCap } from "../../utils/transferUtils";
 import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
@@ -140,7 +141,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 50조 */}
-                    {summary?.avgMarketCap}억
+                    {formatMarketCap(summary?.avgMarketCap ?? 0)}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 시가총액
@@ -154,7 +155,7 @@ const PortfolioPage = ({
                 <S.PortfolioSummaryItemData>
                   <S.PortfolioSummaryItemDataValue>
                     {/* 23.08 */}
-                    {summary?.avgPer}배
+                    {summary?.avgPer}
                   </S.PortfolioSummaryItemDataValue>
                   <S.PortfolioSummaryItemDataTitle>
                     평균 PER
