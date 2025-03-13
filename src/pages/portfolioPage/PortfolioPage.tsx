@@ -11,6 +11,7 @@ import {
   getMySummaryAPI,
   SummaryResponse,
 } from "../../apis/portfolio";
+import { formatMarketCap } from "../../utils/capTransferUtils";
 
 export interface StockResultData {
   stockCnt: number;
@@ -117,15 +118,6 @@ const PortfolioPage = ({
 }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
   const [summary, setSummary] = useState<SummaryResponse>();
-
-  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
-  const formatMarketCap = (marketCap: number): string => {
-    // 1조 = 10000억
-    if (marketCap >= 10000) {
-      return `${(marketCap / 10000).toFixed(2)}조`;
-    }
-    return `${marketCap.toLocaleString()}억`;
-  };
 
   // 공유 포트폴리오 평균값 조회
   useEffect(() => {

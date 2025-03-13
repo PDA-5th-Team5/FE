@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FilterStock } from "../../../types/stockTypes";
 import { labelMapping } from "../../../types/snowflakeTypes";
 import StockSnowflake from "../../snowflake/StockSnowflake";
+import { formatMarketCap } from "../../../utils/capTransferUtils";
 
 export interface StockProps {
   stocks: FilterStock[];
@@ -16,15 +17,6 @@ const StockList = ({ stocks }: StockProps) => {
 
   const handleRowClick = (id: number) => {
     navigate(`/stock/${id}`);
-  };
-
-  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
-  const formatMarketCap = (marketCap: number): string => {
-    // 1조 = 10000억
-    if (marketCap >= 10000) {
-      return `${(marketCap / 10000).toFixed(2)}조`;
-    }
-    return `${marketCap.toLocaleString()}억`;
   };
 
   return (

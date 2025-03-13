@@ -4,6 +4,7 @@ import { getRandomColor } from "../../../../utils/colorUtils";
 import { FilterStock } from "../../../../types/stockTypes";
 import { Item } from "../../../../types/snowflakeTypes";
 import StockSnowflake from "../../../snowflake/StockSnowflake";
+import { formatMarketCap } from "../../../../utils/capTransferUtils";
 
 export interface StockCardProps {
   stock: FilterStock;
@@ -27,7 +28,9 @@ const StockCard = ({
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.companyName}</S.CardTitle>
-          <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
+          <S.CardMarketCap>
+            {formatMarketCap(stock.marketCap ?? 0)}
+          </S.CardMarketCap>
         </S.CardHeaderLeft>
 
         <S.CardHeaderRight>

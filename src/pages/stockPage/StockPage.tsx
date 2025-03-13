@@ -29,6 +29,7 @@ import {
   editCommentAPI,
 } from "../../apis/stock";
 import { useParams } from "react-router-dom";
+import { formatMarketCapS } from "../../utils/capTransferUtils";
 
 const IMAGE_BASE = "../../assets/images/stocks/";
 
@@ -298,16 +299,6 @@ const StockPage = () => {
     return { competitor, items };
   });
 
-  // 시장가치를 변환하는 함수 (억 단위 -> 조 단위 변환)
-  const formatMarketCap = (marketCapS: string): string => {
-    // 1조 = 10000억
-    const marketCap = Number(marketCapS);
-    if (marketCap >= 10000) {
-      return `${(marketCap / 10000).toFixed(2)}조`;
-    }
-    return `${marketCap.toLocaleString()}억`;
-  };
-
   return (
     <S.StockPageContainer>
       <S.StockInfoContainer>
@@ -357,7 +348,7 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>시가총액</S.StockInfoTitle>
             <S.StockInfoContent>
-              {formatMarketCap(stockData.data.stockInfo.marketCap ?? "")}
+              {formatMarketCapS(stockData.data.stockInfo.marketCap ?? "")}
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
