@@ -5,7 +5,7 @@ import PlusIcon from "../../../assets/images/icons/plus_blue.png";
 import HeaderButtons from "../../../components/pageHeader/HeaderButtons";
 import PortfolioPage from "../PortfolioPage";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyPortfolioDetailAPI } from "../../../apis/portfolio";
+import { getMyPortfolioDetailAPI, PortfolioDetailResponse } from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 import { shareMyPortfolioAPI } from "../../../apis/portfolio";
 import { deleteMyPortfolioAPI } from "../../../apis/portfolio";
@@ -71,6 +71,7 @@ const MyPortfolioPage = () => {
   const handleSelect = (portfolioId: number) => {
     setSelectedPortfolioId(portfolioId);
     setIsOpen(false);
+    navigate(`/portfolio/my/${portfolioId}`)
   };
 
   const handleCreateNew = () => {
@@ -286,8 +287,7 @@ const MyPortfolioPage = () => {
       <S.MyPortfolioPageHeader>
         <S.MyPortfolioNameContainer>
           <S.MyPortfolioName onClick={handleTitleClick}>
-            {portfolioList.find((p) => p.myPortfolioId === selectedPortfolioId)
-              ?.myPortfolioTitle || "포트폴리오 없음"}
+            {portfolio.title}
             <S.DropdownIcon src={DropdownIcon} />
           </S.MyPortfolioName>
 
