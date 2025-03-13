@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import PersonIcon from "../../../assets/images/icons/person_gray.png";
 import Button from "../../button/Button";
@@ -65,7 +65,7 @@ const CommentInput = ({
   const actualPageType = location.includes("/portfolio")
     ? "portfolio"
     : pageType;
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNickname = localStorage.getItem("nickname");

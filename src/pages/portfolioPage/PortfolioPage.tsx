@@ -4,6 +4,7 @@ import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
 import LineGraph from "../../components/lineGraph/LineGraph";
 import { LineGraphData } from "../../components/lineGraph/LineGraph";
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -16,6 +17,7 @@ import {
   Stock,
 } from "../../apis/portfolio";
 import { formatMarketCap } from "../../utils/transferUtils";
+
 
 export interface StockResultData {
   totalCount: number;
@@ -31,12 +33,16 @@ interface PortfolioPageProps {
   description?: string;
   isMy?: boolean;
 }
-interface StocksResponse {
+
+export interface StocksResponse {
   totalCount: number;
   stocks: Stock[];
   portfolioTitle?: string;
   portfolioDescription?: string;
 }
+
+
+
 
 const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
@@ -216,7 +222,9 @@ const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
             <S.PortfolioContentTitle>
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
+
             <LineGraph data={graphData} />
+
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>

@@ -20,18 +20,18 @@ import {
   MouseCoordinateX,
   MouseCoordinateY,
 } from "react-financial-charts";
-import { apiResponse } from "./api";
+// import { apiResponse } from "./api";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getCandleAPI } from "../../../../apis/stock";
-interface CandleDataAPI {
-  date: string;
-  openPrice: number;
-  closePrice: number;
-  highPrice: number;
-  lowPrice: number;
-  volume: number;
-}
+// interface CandleDataAPI {
+//   date: string;
+//   openPrice: number;
+//   closePrice: number;
+//   highPrice: number;
+//   lowPrice: number;
+//   volume: number;
+// }
 
 // 차트 데이터 타입 선언
 export interface CandleData {
@@ -72,13 +72,13 @@ const CandleChart: React.FC = () => {
   const stockId = num ? parseInt(num, 10) : 1;
 
   const [candleData, setCandleData] = useState<CandleData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
   //const transformedData = transformData(apiResponse);
   useEffect(() => {
     const fetchCandleData = async () => {
       try {
-        setIsLoading(true);
+        // setIsLoading(true);
         const response = await getCandleAPI(stockId);
         // console.log(response);
         if (response.data) {
@@ -89,9 +89,9 @@ const CandleChart: React.FC = () => {
         }
       } catch (error) {
         console.error("캔들 차트 데이터 로딩 실패:", error);
-        setError("차트 데이터를 불러오는데 실패했습니다.");
+        // setError("차트 데이터를 불러오는데 실패했습니다.");
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
