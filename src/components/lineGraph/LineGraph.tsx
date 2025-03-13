@@ -54,7 +54,10 @@ const convertDate = (dateStr: string): Date => {
 };
 
 const LineGraph = ({ data }: LineGraphProps) => {
-  const datasets = data.data.lineGraph.map((item) => {
+  if (!data || !data.data) {
+    return <div>그래프 데이터를 불러오는 중...</div>;
+  }
+  const datasets = data.data.map((item) => {
     let key: keyof LineGraphItem | "" = "";
     if (item.price) {
       key = "price";
@@ -79,6 +82,8 @@ const LineGraph = ({ data }: LineGraphProps) => {
       borderColor = "#D44F48";
     } else if (item.market === "KOSDAQ") {
       borderColor = "#E5B443";
+    } else if (item.market === "ALL") {
+      borderColor = "#3366FF";
     } else {
       borderColor = "#63C685";
       customLabel = item.avgClosePrice ? "종가 평균" : "종가";
