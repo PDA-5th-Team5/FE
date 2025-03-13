@@ -1,25 +1,25 @@
 import Bookmark from "../../../bookmark/Bookmark";
 import * as S from "./StockCard.styled";
 import { getRandomColor } from "../../../../utils/colorUtils";
-import { Stock } from "../../../../types/stockTypes";
+import { FilterStock } from "../../../../types/stockTypes";
 import { Item } from "../../../../types/snowflakeTypes";
 import StockSnowflake from "../../../snowflake/StockSnowflake";
+import { formatMarketCap } from "../../../../utils/transferUtils";
 
 export interface StockCardProps {
-  stock: Stock;
-  stocks: Stock[];
-  setStocks: React.Dispatch<React.SetStateAction<Stock[]>>;
+  stock: FilterStock;
+  stocks: FilterStock[];
+  setStocks: React.Dispatch<React.SetStateAction<FilterStock[]>>;
   allItems: Item[];
   selectedKeys: string[];
-  onToggleBookmark: (stockId: number, newState: boolean) => void;
+  isMyWatchlist?: boolean;
 }
 
 const StockCard = ({
   stock,
-
   allItems,
   selectedKeys,
-  onToggleBookmark,
+  isMyWatchlist,
 }: StockCardProps) => {
   const bgColor = getRandomColor(stock.stockId);
 
@@ -28,14 +28,16 @@ const StockCard = ({
       <S.CardHeader>
         <S.CardHeaderLeft>
           <S.CardTitle>{stock.companyName}</S.CardTitle>
-          <S.CardMarketCap>₩{stock.marketCap}</S.CardMarketCap>
+          <S.CardMarketCap>
+            {formatMarketCap(stock.marketCap ?? 0)}
+          </S.CardMarketCap>
         </S.CardHeaderLeft>
 
         <S.CardHeaderRight>
           <Bookmark
             stockId={stock.stockId}
-            isBookmarked={stock.isBookmark}
-            onToggleBookmark={onToggleBookmark}
+            isBookmarked={stock.fav}
+            isMyWatchlist={isMyWatchlist}
           />
         </S.CardHeaderRight>
       </S.CardHeader>
@@ -43,7 +45,7 @@ const StockCard = ({
       <S.CardContent>
         {/* 앞면: 줄임표 설명 + 이미지 */}
         <S.FrontContent className="front">
-          <S.ShortDescription>{stock.description}</S.ShortDescription>
+          <S.ShortDescription>{stock.companyOverview}</S.ShortDescription>
           <S.CardImgWrapper>
             <StockSnowflake
               allItems={allItems}
@@ -55,25 +57,27 @@ const StockCard = ({
 
         {/* 뒷면: 더 많은 텍스트 (이미지 없이) */}
         <S.BackContent className="back">
-          <S.LongDescription>{stock.description}</S.LongDescription>
+          <S.LongDescription>{stock.companyOverview}</S.LongDescription>
         </S.BackContent>
       </S.CardContent>
 
       <S.CardFooter>
         <S.CardFooterItem>
           <S.CardFooterTitle>{stock.ticker}</S.CardFooterTitle>
-          <S.CardFooterPrice>₩{stock.currentPrice}</S.CardFooterPrice>
+          <S.CardFooterPrice>
+            {stock.currentPrice.toLocaleString() ?? ""}원
+          </S.CardFooterPrice>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>7D</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={stock["1WeekFluctuationRate"] >= 0}>
-            {stock["1WeekFluctuationRate"]}%
+          <S.CardFooterChange $isPositive={stock.weekRateChange >= 0}>
+            {(stock.weekRateChange * 100).toFixed(0)}%
           </S.CardFooterChange>
         </S.CardFooterItem>
         <S.CardFooterItem>
           <S.CardFooterTitle>1Y</S.CardFooterTitle>
-          <S.CardFooterChange $isPositive={stock["1YearFluctuationRate"] >= 0}>
-            {stock["1YearFluctuationRate"]}%
+          <S.CardFooterChange $isPositive={stock.yearRateChange >= 0}>
+            {(stock.yearRateChange * 100).toFixed(0)}%
           </S.CardFooterChange>
         </S.CardFooterItem>
       </S.CardFooter>

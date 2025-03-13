@@ -27,6 +27,12 @@ export const HeaderLink = styled(NavLink)`
   }
 `;
 
+export const HeaderLinkSpan = styled.div<{ active?: boolean }>`
+  color: ${({ active }) => (active ? "#fff" : "#8b8c90")};
+  font-weight: ${({ active }) => (active ? "700" : "")};
+  cursor: pointer;
+`;
+
 export const HeaderImg = styled.img`
   width: 131px;
   height: 24px;
@@ -96,5 +102,24 @@ export const UserDropdownItem = styled.div`
   cursor: pointer;
   &:hover {
     background: #2595e0;
+  }
+`;
+
+export const loginSignupButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 124px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: #2595e0;
+  color: #fff;
+  font-family: "Pretendard";
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    background: #1e7ec0;
   }
 `;
