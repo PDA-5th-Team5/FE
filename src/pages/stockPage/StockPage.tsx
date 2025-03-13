@@ -74,7 +74,7 @@ const StockPage = () => {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
 
-  // 이거 line 그래프 구현하면서 삭제해주세요. 
+  // 이거 line 그래프 구현하면서 삭제해주세요.
   console.log(lineGraphData);
   console.log(lineGraphData);
 
@@ -92,14 +92,14 @@ const StockPage = () => {
       result = data;
     } catch (error) {
       console.error("댓글 로딩 실패:", error);
-      result = { comments: []};
+      result = { comments: [] };
       setCommentsData(result);
     } finally {
       setIsLoading(false);
     }
     return result;
   };
-  
+
   //2. 댓글 삭제
   const handleDelete = async (commentId: number) => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
@@ -233,7 +233,9 @@ const StockPage = () => {
         if (response.status === 200) {
           setCompetitors(response.data.competitors);
         } else {
-          console.error(response.message || "경쟁사 정보를 불러오는데 실패했습니다.")
+          console.error(
+            response.message || "경쟁사 정보를 불러오는데 실패했습니다."
+          );
           // setCompetitorsError(
           //   response.message || "경쟁사 정보를 불러오는데 실패했습니다."
           // );
@@ -356,7 +358,10 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>현재가</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.currentPrice.toLocaleString() ?? ""}원
+              {stockData.data.stockInfo.currentPrice
+                ? stockData.data.stockInfo.currentPrice.toLocaleString()
+                : "-"}
+              원
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
@@ -400,7 +405,10 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>eps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.eps.toLocaleString() ?? ""}원
+                {stockData.data.stockInfo.eps
+                  ? stockData.data.stockInfo.eps.toLocaleString()
+                  : "-"}
+                원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -416,7 +424,10 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>bps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.bps.toLocaleString() ?? ""}원
+                {stockData.data.stockInfo.bps
+                  ? stockData.data.stockInfo.bps.toLocaleString()
+                  : "-"}
+                원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
