@@ -51,6 +51,7 @@ export interface Competitor {
 }
 
 export interface FilterStock extends SnowflakeSElements {
+  totalCount: number;
   stockId: number;
   ticker: string;
   marketType: "ALL" | "KOSPI" | "KOSDAQ";
@@ -65,4 +66,34 @@ export interface FilterStock extends SnowflakeSElements {
   currentPrice: number;
   changeRate: number;
   fav: boolean;
+}
+
+// 통합된 Stock 타입 정의
+export interface Stock {
+  stockId: number;
+  ticker: string;
+  marketType: string;
+  companyName: string;
+  sector: string;
+  companyOverview?: string;
+  snowflakeS?: {
+    [key: string]: number | undefined;
+  };
+  marketCap: number;
+  per: number;
+  bps?: number;
+  dividendYield?: number;
+  foreignerRatio?: number;
+  lbltRate: number;
+  roeVal?: number;
+  weekRateChange: number;
+  yearRateChange: number;
+  currentPrice: number;
+  changeRate: number;
+  fav: boolean;
+}
+
+// FilterStock을 Stock의 확장으로 정의
+export interface FilterStock extends Stock {
+  totalCount?: number; // 필요한 경우에만 포함
 }
