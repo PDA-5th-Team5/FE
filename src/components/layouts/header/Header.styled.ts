@@ -27,6 +27,12 @@ export const HeaderLink = styled(NavLink)`
   }
 `;
 
+export const HeaderLinkSpan = styled.div<{ active?: boolean }>`
+  color: ${({ active }) => (active ? "#fff" : "#8b8c90")};
+  font-weight: ${({ active }) => (active ? "700" : "")};
+  cursor: pointer;
+`;
+
 export const HeaderImg = styled.img`
   width: 131px;
   height: 24px;
