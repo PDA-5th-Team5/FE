@@ -4,7 +4,7 @@ import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
 //port { stockLineGraph } from "./dummy";
 
-// import LineGraph from "../../components/lineGraph/LineGraph";
+import LineGraphStock from "../../components/lineGraph/LineGraphStock";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 //import { stockLineGraph } from "../stockPage/dummy";
@@ -28,7 +28,7 @@ import {
   editCommentAPI,
   Competitors,
 } from "../../apis/stock";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatMarketCapS } from "../../utils/transferUtils";
 // import { isNumber } from "chart.js/helpers";
 
@@ -73,6 +73,8 @@ const StockPage = () => {
   // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
+
+  const navigate = useNavigate();
 
   // 이거 line 그래프 구현하면서 삭제해주세요.
   console.log(lineGraphData);
@@ -486,6 +488,7 @@ const StockPage = () => {
       <S.StockCompetitor>
         <S.Title>{stockData.data.stockInfo.companyName} 경쟁사</S.Title>
         <S.StockCompetitorItemContainer>
+
           {competitorSnowflakeData.map(({ competitor, items }, index) => {
             const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
               items,
@@ -493,7 +496,11 @@ const StockPage = () => {
             );
 
             return (
-              <S.StockCompetitorItem key={index}>
+            <S.StockCompetitorItem
+              key={index}
+              onClick={() => navigate(`/stock/${competitor.stockId}`)}
+              style={{ cursor: "pointer" }}
+            >
                 {/* 스노우플레이크 차트 */}
                 <S.StockSnowflakeWrapper>
                   <StockSnowflake
@@ -516,6 +523,7 @@ const StockPage = () => {
               </S.StockCompetitorItem>
             );
           })}
+
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
@@ -526,8 +534,7 @@ const StockPage = () => {
         ) : lineGraphError ? (
           <div>라인그래프 로드 실패: {lineGraphError}</div>
         ) : (
-          <>임시</>
-          // <LineGraph data={lineGraphData} />
+          <LineGraphStock data={lineGraphData} />
         )}
       </S.StockLineGraph>
 
