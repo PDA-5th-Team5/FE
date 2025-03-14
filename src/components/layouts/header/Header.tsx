@@ -47,8 +47,8 @@ const Header = () => {
   const handleLogout = () => {
     logoutAPI()
       .then((data) => {
-        if (data.status === 200) {
-          // 로컬 스토리지에서 삭제
+        // 로컬 스토리지에서 삭제
+        if (data) {
           const keys = [
             "accessToken",
             "email",
@@ -61,23 +61,31 @@ const Header = () => {
             localStorage.removeItem(key);
           });
           sessionStorage.removeItem("isLoggedIn");
-          window.location.href = "/login"; // 로그아웃 성공 시 로그인 페이지로 이동
-        } else if (data.status === 400) {
-          toast.error("로그아웃 실패!");
-        } else {
-          toast.error("알 수 없는 오류가 발생했습니다.");
+          window.location.href = "/login";
         }
       })
       .catch((error) => {
         console.error("API 호출 실패", error);
-        toast.error("로그아웃 요청 중 오류가 발생했습니다.");
+        // 로컬 스토리지에서 삭제
+        const keys = [
+          "accessToken",
+          "email",
+          "nickname",
+          "refreshToken",
+          "userId",
+          "username",
+        ];
+        keys.forEach((key) => {
+          localStorage.removeItem(key);
+        });
+        sessionStorage.removeItem("isLoggedIn");
+        window.location.href = "/login";
       });
 
     setUserMenuOpen(false);
   };
 
   const handlePortfolioClick = async () => {
-
     if (!isLoggedIn) {
       alert("로그인이 필요한 기능입니다.");
       return;

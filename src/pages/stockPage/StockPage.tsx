@@ -4,7 +4,7 @@ import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
 //port { stockLineGraph } from "./dummy";
 
-// import LineGraph from "../../components/lineGraph/LineGraph";
+import LineGraphStock from "../../components/lineGraph/LineGraphStock";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 //import { stockLineGraph } from "../stockPage/dummy";
@@ -28,7 +28,7 @@ import {
   editCommentAPI,
   Competitors,
 } from "../../apis/stock";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formatMarketCapS } from "../../utils/transferUtils";
 // import { isNumber } from "chart.js/helpers";
 
@@ -74,7 +74,9 @@ const StockPage = () => {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
 
-  // 이거 line 그래프 구현하면서 삭제해주세요. 
+  const navigate = useNavigate();
+
+  // 이거 line 그래프 구현하면서 삭제해주세요.
   console.log(lineGraphData);
   console.log(lineGraphData);
 
@@ -92,14 +94,14 @@ const StockPage = () => {
       result = data;
     } catch (error) {
       console.error("댓글 로딩 실패:", error);
-      result = { comments: []};
+      result = { comments: [] };
       setCommentsData(result);
     } finally {
       setIsLoading(false);
     }
     return result;
   };
-  
+
   //2. 댓글 삭제
   const handleDelete = async (commentId: number) => {
     if (window.confirm("댓글을 삭제하시겠습니까?")) {
@@ -233,7 +235,9 @@ const StockPage = () => {
         if (response.status === 200) {
           setCompetitors(response.data.competitors);
         } else {
-          console.error(response.message || "경쟁사 정보를 불러오는데 실패했습니다.")
+          console.error(
+            response.message || "경쟁사 정보를 불러오는데 실패했습니다."
+          );
           // setCompetitorsError(
           //   response.message || "경쟁사 정보를 불러오는데 실패했습니다."
           // );
@@ -252,6 +256,26 @@ const StockPage = () => {
     }
   }, [stockId, isLoading, stockData]);
 
+  // 순서
+  const snowflakeOrder = [
+    "marketCap",
+    "per",
+    "lbltRate",
+    "dividendYield",
+    "divYield",
+    "foreignerRatio",
+  ];
+
+  const sortSnowflakeData = (items: Item[], order: string[]) => {
+    const sortedItems = order
+      .map((key) => items.find((item) => item.key === key))
+      .filter((item): item is Item => !!item);
+    const sortedSelectedKeys = order.filter((key) =>
+      items.some((item) => item.key === key)
+    );
+    return { sortedItems, sortedSelectedKeys };
+  };
+
   const snowflakeItems: Item[] = stockData?.data?.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
         key,
@@ -261,10 +285,11 @@ const StockPage = () => {
       }))
     : [];
 
-  // 각 주식의 스노우플레이크 요소의 키 목록
-  const snowflakeSelectedKeys: string[] = stockData?.data?.snowflakeS
-    ? Object.keys(stockData.data.snowflakeS)
-    : [];
+  const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
+    snowflakeItems,
+    snowflakeOrder
+  );
+
   // const handleToggleBookmark = async (stockId: number, newState: boolean) => {
   //   try {
   //     // newState가 true면 추가, false면 삭제
@@ -356,7 +381,10 @@ const StockPage = () => {
           <S.StockInfoItem>
             <S.StockInfoTitle>현재가</S.StockInfoTitle>
             <S.StockInfoContent>
-              {stockData.data.stockInfo.currentPrice.toLocaleString() ?? ""}원
+              {stockData.data.stockInfo.currentPrice
+                ? stockData.data.stockInfo.currentPrice.toLocaleString()
+                : "-"}
+              원
             </S.StockInfoContent>
           </S.StockInfoItem>
           {/* ------- */}
@@ -400,7 +428,10 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>eps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.eps.toLocaleString() ?? ""}원
+                {stockData.data.stockInfo.eps
+                  ? stockData.data.stockInfo.eps.toLocaleString()
+                  : "-"}
+                원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -416,7 +447,10 @@ const StockPage = () => {
             <S.StockOutlineItem>
               <S.StockOutlineTitle>bps</S.StockOutlineTitle>
               <S.StockOutlineContent>
-                {stockData.data.stockInfo.bps.toLocaleString() ?? ""}원
+                {stockData.data.stockInfo.bps
+                  ? stockData.data.stockInfo.bps.toLocaleString()
+                  : "-"}
+                원
               </S.StockOutlineContent>
             </S.StockOutlineItem>
             {/* ------- */}
@@ -435,8 +469,8 @@ const StockPage = () => {
         </S.StockOutline>
         <S.StockSnowflake>
           <StockSnowflake
-            allItems={snowflakeItems}
-            selectedKeys={snowflakeSelectedKeys}
+            allItems={sortedItems}
+            selectedKeys={sortedSelectedKeys}
             showLabels={true}
             fontSize={12}
           />
@@ -454,29 +488,42 @@ const StockPage = () => {
       <S.StockCompetitor>
         <S.Title>{stockData.data.stockInfo.companyName} 경쟁사</S.Title>
         <S.StockCompetitorItemContainer>
-          {competitorSnowflakeData.map(({ competitor, items }, index) => (
-            <S.StockCompetitorItem key={index}>
-              {/* 스노우플레이크 차트 */}
-              <S.StockSnowflakeWrapper>
-                <StockSnowflake
-                  allItems={items}
-                  selectedKeys={items.map((item) => item.key)}
-                  showLabels={true}
-                  fontSize={10}
-                />
-              </S.StockSnowflakeWrapper>
 
-              {/* 회사명 + 티커 */}
-              <S.StockCompetitorNameWrapper>
-                <S.StockCompetitorName>
-                  {competitor.companyName}
-                </S.StockCompetitorName>
-                <S.StockCompetitorTicker>
-                  {competitor.ticker}
-                </S.StockCompetitorTicker>
-              </S.StockCompetitorNameWrapper>
-            </S.StockCompetitorItem>
-          ))}
+          {competitorSnowflakeData.map(({ competitor, items }, index) => {
+            const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
+              items,
+              snowflakeOrder
+            );
+
+            return (
+            <S.StockCompetitorItem
+              key={index}
+              onClick={() => navigate(`/stock/${competitor.stockId}`)}
+              style={{ cursor: "pointer" }}
+            >
+                {/* 스노우플레이크 차트 */}
+                <S.StockSnowflakeWrapper>
+                  <StockSnowflake
+                    allItems={sortedItems}
+                    selectedKeys={sortedSelectedKeys}
+                    showLabels={true}
+                    fontSize={10}
+                  />
+                </S.StockSnowflakeWrapper>
+
+                {/* 회사명 + 티커 */}
+                <S.StockCompetitorNameWrapper>
+                  <S.StockCompetitorName>
+                    {competitor.companyName}
+                  </S.StockCompetitorName>
+                  <S.StockCompetitorTicker>
+                    {competitor.ticker}
+                  </S.StockCompetitorTicker>
+                </S.StockCompetitorNameWrapper>
+              </S.StockCompetitorItem>
+            );
+          })}
+
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
@@ -487,8 +534,7 @@ const StockPage = () => {
         ) : lineGraphError ? (
           <div>라인그래프 로드 실패: {lineGraphError}</div>
         ) : (
-          <>임시</>
-          // <LineGraph data={lineGraphData} />
+          <LineGraphStock data={lineGraphData} />
         )}
       </S.StockLineGraph>
 

@@ -2,8 +2,9 @@ import * as S from "./PortfolioPage.styled";
 import StockResult from "../../components/stock/result/StockResult";
 import { transformPortfolioToItems } from "../../utils/snowflakeUtils";
 import PortfolioSnowflake from "../../components/snowflake/PortfolioSnowflake";
-// import LineGraph from "../../components/lineGraph/LineGraph";
-// import { Stock } from "../../types/stockType";
+import LineGraph from "../../components/lineGraph/LineGraph";
+import { LineGraphData } from "../../components/lineGraph/LineGraph";
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -12,11 +13,10 @@ import {
   SummaryResponse,
   getSharePortfolioStocksAPI,
   getMyPortfolioStocksAPI,
-  // SharePortfolioStocksResponse,
+  getPortfolioGraphAPI,
   Stock,
 } from "../../apis/portfolio";
 import { formatMarketCap } from "../../utils/transferUtils";
-// import { FilterStock } from "../../types/stockTypes";
 
 export interface StockResultData {
   totalCount: number;
@@ -39,31 +39,8 @@ export interface StocksResponse {
   portfolioTitle?: string;
   portfolioDescription?: string;
 }
-// const lineGraphData = {
-//   status: 200,
-//   message: "성공입니다.",
-//   data: {
-//     lineGraph: [
-//       {
-//         market: "KOSDAQ",
-//         price: { "20230101": 53000, "20230102": 54001 },
-//       },
-//       {
-//         portfolioTitle: "myPortfolio",
-//         avgClosePrice: { "20230101": 54200, "20230102": 39440 },
-//       },
-//     ],
-//   },
-// };
 
-const PortfolioPage = ({
-  portfolioData,
-  // elementsObj,
-  // snowflakeItems,
-  isMy,
-
-  // description,
-}: PortfolioPageProps) => {
+const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
   const { num } = useParams<{ num: string }>();
   const [summary, setSummary] = useState<SummaryResponse>();
   const [stocksData, setStocksData] = useState<StocksResponse>({
@@ -71,9 +48,43 @@ const PortfolioPage = ({
     stocks: [],
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [graphData, setGraphData] = useState<LineGraphData>({
+    status: 0,
+    message: "",
+    data: [],
+  });
+
+  // 그래프 데이터 로드 함수
+  const loadGraphData = async (portfolioId: number, market?: string) => {
+    try {
+      const response = await getPortfolioGraphAPI(portfolioId, market);
+
+      // API 응답을 LineGraph 컴포넌트가 기대하는 형식으로 변환
+      const formattedData: LineGraphData = {
+        status: 200,
+        message: "성공입니다.",
+        data: [
+          {
+            market: response.lineGraph.market,
+            price: response.lineGraph.price,
+          },
+          {
+            portfolioTitle: response.lineGraph.portfolioTitle,
+            avgClosePrice: response.lineGraph.avgClosePrice,
+          },
+        ],
+      };
+
+      setGraphData(formattedData);
+      console.log("그래프ㅡ프프", formattedData);
+    } catch (error) {
+      console.error("그래프 데이터 로드 실패:", error);
+    }
+  };
 
   // 공유 포트폴리오 평균값 조회
   useEffect(() => {
+    setLoading(true);
     if (num) {
       const portfolioId = parseInt(num);
 
@@ -107,6 +118,17 @@ const PortfolioPage = ({
             : await getSharePortfolioStocksAPI(portfolioId);
 
           setStocksData(apiResponse);
+          // 종목 ID 목록 추출
+          //  const stockIds = apiResponse.stocks.map((stock) => stock.stockId);
+
+          // 시장 타입 결정 (모든 종목이 같은 시장인 경우 해당 시장 사용, 아니면 "ALL")
+          const marketTypes = [
+            ...new Set(apiResponse.stocks.map((stock) => stock.marketType)),
+          ];
+          const market = marketTypes.length === 1 ? marketTypes[0] : "ALL";
+
+          // 그래프 데이터 로드
+          await loadGraphData(portfolioId, market);
         } catch (error) {
           console.error(
             `${isMy ? "나의" : "공유"} 포트폴리오 종목 조회 실패`,
@@ -197,7 +219,8 @@ const PortfolioPage = ({
             <S.PortfolioContentTitle>
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
-            {/* <LineGraph data={lineGraphData} /> */}
+
+            <LineGraph data={graphData} loading={loading} />
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>

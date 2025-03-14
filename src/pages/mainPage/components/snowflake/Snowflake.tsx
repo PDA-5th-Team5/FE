@@ -84,17 +84,17 @@ const Snowflake: React.FC<SnowflakeProps> = ({
         if (item.key !== targetKey) return item; // 대상 아님
 
         if (datasetIndex === 1) {
-          // D1
+          // D1 업데이트: 최소값(D2Value)보다 반드시 1 커야함
           return {
             ...item,
             D1Value: Math.max(roundedValue, item.D2Value + 1),
           };
         } else {
-          // D2
+          // D2 업데이트: 0 대신 최소 1로 제한 (드래그로 0이 되지 않도록)
           const candidate = Math.min(roundedValue, item.D1Value) - 1;
           return {
             ...item,
-            D2Value: Math.max(candidate, 0),
+            D2Value: Math.max(candidate, 1),
           };
         }
       });
@@ -111,14 +111,11 @@ const Snowflake: React.FC<SnowflakeProps> = ({
           max: 20,
           grid: {
             circular: true, // 격자를 원형으로
-            // color: '#414b58', // 거미줄 중간 중간 선 색상
-            // borderRadius: 12
           },
           ticks: {
             display: false, // 숫자 라벨(0,2,4,6...) 숨기기
             color: "#414b58", // 숫자 라벨(6, 8, 10, 12...)의 색
             stepSize: 2,
-            // showLabelBackdrop: false,
           },
           pointLabels: {
             font: {
@@ -131,13 +128,9 @@ const Snowflake: React.FC<SnowflakeProps> = ({
               return value.replace(" ", "\n"); // 첫 번째 공백을 기준으로 줄 바꿈
             },
           },
-          angleLines: {
-            // display: false, // 중심에서 바깥으로 뻗는 각도선 제거
-            // color: "#ddd", // 보이게 할 경우 색상 지정
-          },
+          angleLines: {},
         },
       },
-
       plugins: {
         dragData: {
           onDrag: (
@@ -156,7 +149,7 @@ const Snowflake: React.FC<SnowflakeProps> = ({
           display: false,
         },
         tooltip: {
-          enabled: true, // 툴팁 숨기기
+          enabled: true,
         },
       },
     };

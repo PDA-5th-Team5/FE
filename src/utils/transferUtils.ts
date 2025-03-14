@@ -6,7 +6,7 @@ export const formatMarketCap = (marketCap: number): string => {
   if (marketCap >= 10000) {
     return `${(marketCap / 10000).toFixed(2)}조`;
   }
-  return `${marketCap.toLocaleString()}억`;
+  return `${marketCap ? marketCap.toLocaleString() : "-"}억`;
 };
 
 // string
@@ -16,5 +16,5 @@ export const formatMarketCapS = (marketCapS: string): string => {
   if (marketCap >= 10000) {
     return `${(marketCap / 10000).toFixed(2)}조`;
   }
-  return `${marketCap.toLocaleString()}억`;
+  return `${marketCap ? marketCap.toLocaleString() : "-"}억`;
 };

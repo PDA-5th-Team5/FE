@@ -303,15 +303,16 @@ const MainPage: React.FC = () => {
       const engKey = reverseMapping[item.key] || item.key;
       const thresholdArr = thresholds[engKey];
       const maxIndex = item.D1Value;
-      const minIndex = item.D2Value;
+      const minIndex = item.D2Value - 2;
+      
       let minText = "";
       let maxText = "";
 
       if (thresholdArr) {
-        if (minIndex === 0) {
+        if (minIndex === -1) {
           minText = "-∞";
-        } else if (minIndex > 0 && minIndex < thresholdArr.length) {
-          minText = thresholdArr[minIndex - 1].toString();
+        } else if (minIndex > -1 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex].toString();
         }
         if (maxIndex >= 1 && maxIndex <= thresholdArr.length) {
           maxText = thresholdArr[maxIndex - 1].toString();
@@ -422,7 +423,7 @@ const MainPage: React.FC = () => {
               newD2Value = 0;
             } else {
               const index = thresholdArr.indexOf(closestMinValue);
-              if (index !== -1) newD2Value = index + 1;
+              if (index !== -1) newD2Value = index + 2;
             }
           }
           // 최대값 업데이트
@@ -567,6 +568,7 @@ const MainPage: React.FC = () => {
                   multiple={true}
                   onChange={(newSelected) => setSelectedKeys(newSelected)}
                   maxSelection={8}
+                  showTooltip={true}
                 />
               </S.MainPageFilterWrapper>
             </S.MainPageFilterSection>

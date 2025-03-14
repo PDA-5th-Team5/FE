@@ -113,12 +113,14 @@ export const MainPageFilterReset = styled.img`
 export const MainPageFilterWrapper = styled.div`
   display: flex;
   width: 100%;
-  gap: 12px;
+  /* gap: 12px; */
+  gap: 10px;
   flex-wrap: wrap;
 `;
 
 export const MainPageSectorFilterWrapper = styled(MainPageFilterWrapper)`
-  max-height: 146px;
+  /* max-height: 146px; */
+  max-height: 102px;
   box-sizing: border-box;
   overflow-y: auto;
 
