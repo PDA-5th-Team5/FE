@@ -138,4 +138,22 @@ export const PortfolioContentMarket = styled.div`
 
 export const PortfolioStock = styled.div`
   margin-top: 60px;
+  /* max-height: 1200px; */
+
+  /* overflow-y: auto; */
+
+  /* 
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #272e3b;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #8b8c90;
+    border-radius: 4px;
+  } */
 `;
