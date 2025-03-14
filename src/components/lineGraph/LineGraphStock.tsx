@@ -35,14 +35,6 @@ interface LineGraphItem {
 //   value: number;
 // }
 
-interface LineGraphData {
-  status: number;
-  message: string;
-  data: {
-    lineGraph: LineGraphItem[];
-  };
-}
-
 interface LineGraphProps {
   data: LineGraphResponse | null;
 }
