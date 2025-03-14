@@ -1,6 +1,4 @@
 import { Line } from "react-chartjs-2";
-import * as S from "../stock/result/StockResult.styled";
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +11,7 @@ import {
   TimeScale,
 } from "chart.js";
 import "chartjs-adapter-date-fns";
-
+import { LineGraphResponse } from "../../apis/stock";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,7 +22,6 @@ ChartJS.register(
   Legend,
   TimeScale
 );
-import { PulseLoader } from "react-spinners";
 
 interface LineGraphItem {
   market?: string;
@@ -33,20 +30,21 @@ interface LineGraphItem {
   closePrice?: { [date: string]: number };
   avgClosePrice?: { [date: string]: number };
 }
-export interface LineGraphDataPoint {
-  date: string;
-  value: number;
-}
+// export interface LineGraphDataPoint {
+//   date: string;
+//   value: number;
+// }
 
-export interface LineGraphData {
+interface LineGraphData {
   status: number;
   message: string;
-  data: LineGraphItem[];
+  data: {
+    lineGraph: LineGraphItem[];
+  };
 }
 
 interface LineGraphProps {
-  data: LineGraphData;
-  loading?: boolean;
+  data: LineGraphResponse | null;
 }
 
 // YYYYMMDD 문자열을 Date 객체로 변환하는 함수
@@ -57,30 +55,19 @@ const convertDate = (dateStr: string): Date => {
   return new Date(year, month, day);
 };
 
-const LineGraph = ({ data, loading = false }: LineGraphProps) => {
-  if (loading || !data || !data.data) {
-    return (
-      <S.LoadingResultContainer>
-        <PulseLoader size={10} color="#2595E0" />
-      </S.LoadingResultContainer>
-    );
+const LineGraphStock = ({ data }: LineGraphProps) => {
+  if (!data || !data.data || !data.data.lineGraph) {
+    return <div>No data available</div>;
   }
-  // if (loading) {
-  //   return (
-  //     <S.LoadingResultContainer>
-  //       <PulseLoader size={10} color="#2595E0" />
-  //     </S.LoadingResultContainer>
-  //   );
-  // }
-  const datasets = data.data.map((item) => {
+  const datasets = data.data.lineGraph.map((item) => {
+    console.log("라인", data.data);
     let key: keyof LineGraphItem | "" = "";
     if (item.price) {
       key = "price";
-    } else if (item.avgClosePrice) {
-      key = "avgClosePrice";
     } else if (item.closePrice) {
       key = "closePrice";
     }
+
     const dataPoints = key
       ? Object.entries(item[key] || {})
           .map(([dateStr, value]) => ({
@@ -92,14 +79,13 @@ const LineGraph = ({ data, loading = false }: LineGraphProps) => {
 
     let borderColor;
     let customLabel;
-    if (item.market === "KOSPI" || item.market === "ALL") {
+    if (item.market === "KOSPI") {
       borderColor = "#D44F48";
-      customLabel = "KOSPI";
     } else if (item.market === "KOSDAQ") {
       borderColor = "#E5B443";
     } else {
       borderColor = "#63C685";
-      customLabel = item.avgClosePrice ? "종가 평균" : "종가";
+      customLabel = item.closePrice ? "종가" : "종가";
     }
 
     return {
@@ -145,4 +131,5 @@ const LineGraph = ({ data, loading = false }: LineGraphProps) => {
 
   return <Line data={chartData} options={options} />;
 };
-export default LineGraph;
+
+export default LineGraphStock;
