@@ -75,11 +75,36 @@ export const NoResultContainer = styled.div`
 export const LoadingResultContainer = styled.div`
   display: flex;
   justify-content: center;
-  min-height: 1000px;`;
+  min-height: 1000px;
+`;
 
 export const LoadingLineResultContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100%;
+`;
+
+export const Scroll = styled.div<{ $isScroll: boolean }>`
+  /* overflow-y: ${(props) => (props.$isScroll ? "none" : "auto")}; */
+  ${(props) =>
+    props.$isScroll
+      ? `
+         max-height: 1000px;
+         overflow-y: auto;
+         &::-webkit-scrollbar {
+           width: 8px;
+         }
+         &::-webkit-scrollbar-track {
+           background: #272e3b;
+           border-radius: 4px;
+         }
+         &::-webkit-scrollbar-thumb {
+           background: #8b8c90;
+           border-radius: 4px;
+         }
+      `
+      : `
+         overflow-y: hidden;
+      `}
 `;
