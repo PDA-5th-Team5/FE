@@ -60,9 +60,9 @@ const convertDate = (dateStr: string): Date => {
 const LineGraph = ({ data, loading = false }: LineGraphProps) => {
   if (loading || !data || !data.data) {
     return (
-      <S.LoadingResultContainer>
+      <S.LoadingLineResultContainer>
         <PulseLoader size={10} color="#2595E0" />
-      </S.LoadingResultContainer>
+      </S.LoadingLineResultContainer>
     );
   }
   // if (loading) {
