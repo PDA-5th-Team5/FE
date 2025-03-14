@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Tooltip from "../../../../components/tooltip/tooltip";
+import Tooltip from "../../../../components/tooltip/Tooltip";
 
 type StockIndicatorsType = {
   [key: string]: string;

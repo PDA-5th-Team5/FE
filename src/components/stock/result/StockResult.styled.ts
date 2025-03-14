@@ -74,6 +74,12 @@ export const NoResultContainer = styled.div`
 
 export const LoadingResultContainer = styled.div`
   display: flex;
+  justify-content: center;
+  min-height: 1000px;
+`;
+
+export const LoadingLineResultContainer = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100%;

@@ -48,19 +48,21 @@ const Header = () => {
     logoutAPI()
       .then((data) => {
         // 로컬 스토리지에서 삭제
-        const keys = [
-          "accessToken",
-          "email",
-          "nickname",
-          "refreshToken",
-          "userId",
-          "username",
-        ];
-        keys.forEach((key) => {
-          localStorage.removeItem(key);
-        });
-        sessionStorage.removeItem("isLoggedIn");
-        window.location.href = "/login";
+        if (data) {
+          const keys = [
+            "accessToken",
+            "email",
+            "nickname",
+            "refreshToken",
+            "userId",
+            "username",
+          ];
+          keys.forEach((key) => {
+            localStorage.removeItem(key);
+          });
+          sessionStorage.removeItem("isLoggedIn");
+          window.location.href = "/login";
+        }
       })
       .catch((error) => {
         console.error("API 호출 실패", error);

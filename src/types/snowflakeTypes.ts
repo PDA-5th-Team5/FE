@@ -36,6 +36,7 @@ export interface SnowflakeSElements {
   marketCap?: number; // 시가총액
   sps?: number; // 주당매출액 (SPS)
   dividendYield?: number; // 배당수익률
+  divYield?: number;
   foreignerRatio?: number; // 외국인 보유율
 }
 
@@ -72,7 +73,7 @@ export const labelMapping: Record<string, string> = {
   sps: "주당매출액",
   saleAccount: "매출액",
   crntRate: "유동비율",
-  lbltRate: "부채비율", 
+  lbltRate: "부채비율",
   ntinInrt: "순이익 증가율",
   bsopPrfiInrt: "영업이익 증가율",
   grs: "매출액 증가율",

@@ -346,8 +346,11 @@ const PortfolioPage = ({
 
   // 포트폴리오 요약 및 종목 데이터 로드 (초기 로딩 및 무한 스크롤 적용)
   useEffect(() => {
-    if (num && portfolioId) {
-      // 요약 데이터 로드
+    setLoading(true);
+    if (num) {
+      const portfolioId = parseInt(num);
+
+      // 포트폴리오 요약 정보 로드
       const loadSummary = async () => {
         try {
           const summaryData = isMy
@@ -506,7 +509,8 @@ const PortfolioPage = ({
             <S.PortfolioContentTitle>
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
-            <LineGraph data={graphData} />
+
+            <LineGraph data={graphData} loading={loading} />
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>

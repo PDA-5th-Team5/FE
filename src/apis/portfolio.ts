@@ -485,13 +485,13 @@ export interface LineGraphResponse {
 }
 export const getPortfolioGraphAPI = async (
   portfolioId: number,
-  market: string = "ALL"
+  market: string = "KOSPI"
 ): Promise<LineGraphResponse> => {
   const isMy = location.pathname.includes("/my/");
 
   const endpoint = isMy
-    ? `/my/graph?portfolioId=${portfolioId}&market=${market}`
-    : `/share/graph?portfolioId=${portfolioId}&market=${market}`;
+    ? `/my/graph?portfolioId=${portfolioId}&market=KOSPI`
+    : `/share/graph?portfolioId=${portfolioId}&market=KOSPI`;
 
   const response = await portfolioAPI.post<APIResponse<LineGraphResponse>>(
     endpoint,

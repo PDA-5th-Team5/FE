@@ -92,7 +92,7 @@ const MainPage: React.FC = () => {
     useState<string[]>(initialSelectedKeys);
 
   // 3) 마켓 필터 항목
-  const [marketFilter, setMarketFilter] = useState<string>("전체");
+  const [marketFilter, setMarketFilter] = useState<string>("ALL");
 
   // 4) 섹터 필터 항목
   const { data: sectorsData } = useSectors();
@@ -115,7 +115,7 @@ const MainPage: React.FC = () => {
 
   const handleAllReset = () => {
     handleReset();
-    setMarketFilter("전체");
+    setMarketFilter("ALL");
     setSelectedSectorKeys([]);
   };
 
@@ -190,7 +190,7 @@ const MainPage: React.FC = () => {
         category: "my",
         title: portfolioTitle,
         description: portfolioDesc,
-        market: marketFilter === "전체" ? "ALL" : marketFilter,
+        market: marketFilter,
         ...selectedMetrics,
         sector: selectedSectorKeys,
       };
@@ -234,7 +234,7 @@ const MainPage: React.FC = () => {
       );
 
       const marketType: "ALL" | "KOSPI" | "KOSDAQ" =
-        marketFilter === "전체" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
+        marketFilter === "ALL" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
 
       // payload 구성
       const payload = {
@@ -304,15 +304,16 @@ const MainPage: React.FC = () => {
       const engKey = reverseMapping[item.key] || item.key;
       const thresholdArr = thresholds[engKey];
       const maxIndex = item.D1Value;
-      const minIndex = item.D2Value;
+      const minIndex = item.D2Value - 2;
+
       let minText = "";
       let maxText = "";
 
       if (thresholdArr) {
-        if (minIndex === 0) {
+        if (minIndex === -1) {
           minText = "-∞";
-        } else if (minIndex > 0 && minIndex < thresholdArr.length) {
-          minText = thresholdArr[minIndex - 1].toString();
+        } else if (minIndex > -1 && minIndex < thresholdArr.length) {
+          minText = thresholdArr[minIndex].toString();
         }
         if (maxIndex >= 1 && maxIndex <= thresholdArr.length) {
           maxText = thresholdArr[maxIndex - 1].toString();
@@ -423,7 +424,7 @@ const MainPage: React.FC = () => {
               newD2Value = 0;
             } else {
               const index = thresholdArr.indexOf(closestMinValue);
-              if (index !== -1) newD2Value = index + 1;
+              if (index !== -1) newD2Value = index + 2;
             }
           }
           // 최대값 업데이트
@@ -579,7 +580,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={["전체", "KOSPI", "KOSDAQ"]}
+                  options={["ALL", "KOSPI", "KOSDAQ"]}
                   selected={marketFilter}
                   onChange={(newValue) => setMarketFilter(newValue)}
                 />
