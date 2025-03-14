@@ -84,6 +84,7 @@ const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
 
   // 공유 포트폴리오 평균값 조회
   useEffect(() => {
+    setLoading(true);
     if (num) {
       const portfolioId = parseInt(num);
 
@@ -219,7 +220,7 @@ const PortfolioPage = ({ portfolioData, isMy }: PortfolioPageProps) => {
               포트폴리오 vs 시장 그래프 비교
             </S.PortfolioContentTitle>
 
-            <LineGraph data={graphData} />
+            <LineGraph data={graphData} loading={loading} />
           </S.PortfolioLineGraph>
         </S.PortfolioContentLeft>
         <S.PortfolioContentRight>

@@ -4,7 +4,7 @@ import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
 //port { stockLineGraph } from "./dummy";
 
-// import LineGraph from "../../components/lineGraph/LineGraph";
+import LineGraphStock from "../../components/lineGraph/LineGraphStock";
 import { useEffect, useState } from "react";
 import { StockDetail } from "../../types/stockTypes";
 //import { stockLineGraph } from "../stockPage/dummy";
@@ -504,8 +504,7 @@ const StockPage = () => {
         ) : lineGraphError ? (
           <div>라인그래프 로드 실패: {lineGraphError}</div>
         ) : (
-          <>임시</>
-          // <LineGraph data={lineGraphData} />
+          <LineGraphStock data={lineGraphData} />
         )}
       </S.StockLineGraph>
 
