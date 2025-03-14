@@ -256,6 +256,26 @@ const StockPage = () => {
     }
   }, [stockId, isLoading, stockData]);
 
+  // 순서
+  const snowflakeOrder = [
+    "marketCap",
+    "per",
+    "lbltRate",
+    "dividendYield",
+    "divYield",
+    "foreignerRatio",
+  ];
+
+  const sortSnowflakeData = (items: Item[], order: string[]) => {
+    const sortedItems = order
+      .map((key) => items.find((item) => item.key === key))
+      .filter((item): item is Item => !!item);
+    const sortedSelectedKeys = order.filter((key) =>
+      items.some((item) => item.key === key)
+    );
+    return { sortedItems, sortedSelectedKeys };
+  };
+
   const snowflakeItems: Item[] = stockData?.data?.snowflakeS
     ? Object.entries(stockData.data.snowflakeS).map(([key, values]) => ({
         key,
@@ -265,10 +285,11 @@ const StockPage = () => {
       }))
     : [];
 
-  // 각 주식의 스노우플레이크 요소의 키 목록
-  const snowflakeSelectedKeys: string[] = stockData?.data?.snowflakeS
-    ? Object.keys(stockData.data.snowflakeS)
-    : [];
+  const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
+    snowflakeItems,
+    snowflakeOrder
+  );
+
   // const handleToggleBookmark = async (stockId: number, newState: boolean) => {
   //   try {
   //     // newState가 true면 추가, false면 삭제
@@ -448,8 +469,8 @@ const StockPage = () => {
         </S.StockOutline>
         <S.StockSnowflake>
           <StockSnowflake
-            allItems={snowflakeItems}
-            selectedKeys={snowflakeSelectedKeys}
+            allItems={sortedItems}
+            selectedKeys={sortedSelectedKeys}
             showLabels={true}
             fontSize={12}
           />
@@ -467,33 +488,42 @@ const StockPage = () => {
       <S.StockCompetitor>
         <S.Title>{stockData.data.stockInfo.companyName} 경쟁사</S.Title>
         <S.StockCompetitorItemContainer>
-          {competitorSnowflakeData.map(({ competitor, items }, index) => (
+
+          {competitorSnowflakeData.map(({ competitor, items }, index) => {
+            const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
+              items,
+              snowflakeOrder
+            );
+
+            return (
             <S.StockCompetitorItem
               key={index}
               onClick={() => navigate(`/stock/${competitor.stockId}`)}
               style={{ cursor: "pointer" }}
             >
-              {/* 스노우플레이크 차트 */}
-              <S.StockSnowflakeWrapper>
-                <StockSnowflake
-                  allItems={items}
-                  selectedKeys={items.map((item) => item.key)}
-                  showLabels={true}
-                  fontSize={10}
-                />
-              </S.StockSnowflakeWrapper>
+                {/* 스노우플레이크 차트 */}
+                <S.StockSnowflakeWrapper>
+                  <StockSnowflake
+                    allItems={sortedItems}
+                    selectedKeys={sortedSelectedKeys}
+                    showLabels={true}
+                    fontSize={10}
+                  />
+                </S.StockSnowflakeWrapper>
 
-              {/* 회사명 + 티커 */}
-              <S.StockCompetitorNameWrapper>
-                <S.StockCompetitorName>
-                  {competitor.companyName}
-                </S.StockCompetitorName>
-                <S.StockCompetitorTicker>
-                  {competitor.ticker}
-                </S.StockCompetitorTicker>
-              </S.StockCompetitorNameWrapper>
-            </S.StockCompetitorItem>
-          ))}
+                {/* 회사명 + 티커 */}
+                <S.StockCompetitorNameWrapper>
+                  <S.StockCompetitorName>
+                    {competitor.companyName}
+                  </S.StockCompetitorName>
+                  <S.StockCompetitorTicker>
+                    {competitor.ticker}
+                  </S.StockCompetitorTicker>
+                </S.StockCompetitorNameWrapper>
+              </S.StockCompetitorItem>
+            );
+          })}
+
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
