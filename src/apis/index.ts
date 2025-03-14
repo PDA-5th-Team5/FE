@@ -9,12 +9,15 @@ export interface APIResponse<T> {
   data: T;
 }
 
+// 재시도 횟수를 관리하기 위해 타입 확장
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  _retryCount?: number;
+}
+
 export const stockAPI = axios.create({
   baseURL: `${baseURL}/stock/api/stocks`,
   headers: {
     "Content-Type": "application/json",
-    // 초기에는 인터셉터에서 헤더를 처리하므로 기본값 설정은 생략할 수 있습니다.
-    // Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -23,7 +26,6 @@ export const portfolioAPI = axios.create({
   baseURL: `${baseURL}/portfolio/api/portfolio`,
   headers: {
     "Content-Type": "application/json",
-    // Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
@@ -32,17 +34,9 @@ export const userAPI = axios.create({
   baseURL: `${baseURL}/user`,
   headers: {
     "Content-Type": "application/json",
-    // Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
 });
-
-/*
-<지금 문제 정리>
-401 에러(API-gateway에서 토큰 만료 관련 에러) 뜰 때, reissue 쏘는 것까지는 OK.
-근데 쿠키에 있는 refresh 토큰값을 자동으로 헤더에 넣어서 쏴줘야하는데,
-그게 동작을 안함. 그것만 되면 될듯.
-*/
 
 const reissueToken = async (): Promise<string> => {
   const response = await userAPI.post<APIResponse<null>>("/reissue", null, {
@@ -59,19 +53,16 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
   // ===== 요청 인터셉터 (Request Interceptor) =====
   apiInstance.interceptors.request.use(
     (config) => {
-      // sessionStorage의 isLoggedIn 값을 확인하여 Authorization 헤더를 추가 또는 삭제합니다.
       if (sessionStorage.getItem("isLoggedIn") === "true") {
         console.log("로그인 되어있음 :", config);
         const token = localStorage.getItem("accessToken");
         if (config.headers) {
           console.log("토큰넣기 :", config);
-
           config.headers.Authorization = `Bearer ${token}`;
         }
       } else {
         if (config.headers) {
           console.log("토큰 null 삭제 :", config);
-
           delete config.headers.Authorization;
         }
       }
@@ -106,7 +97,7 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
             `Bearer ${newAccessToken}`;
 
           // 원래 요청의 헤더도 업데이트 후 재시도
-          const originalRequest = response.config as AxiosRequestConfig;
+          const originalRequest = response.config as CustomAxiosRequestConfig;
           originalRequest.headers = {
             ...originalRequest.headers,
             Authorization: `Bearer ${newAccessToken}`,
@@ -120,24 +111,29 @@ const attachInterceptor = (apiInstance: AxiosInstance) => {
         }
       }
 
-      // // 403 (Access 토큰 null)
-      // if (
-      //   response.data &&
-      //   response.data.status === 403 &&
-      //   response.data.message === "Access 토큰이 없습니다."
-      // ) {
-      //   console.log("Access 토큰이 없습니다. 로그인 페이지로 이동합니다.");
-      //   localStorage.removeItem("accessToken");
-      //   localStorage.removeItem("refreshToken");
-      //   window.location.href = "/login"; // 로그인 페이지로 이동
-      //   return Promise.reject(new Error("Access 토큰이 없습니다."));
-      // }
-
       console.log("Response Interceptor - Success:", response);
       return response;
     },
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
       console.log("Response Interceptor - Error:", error);
+
+      // 재시도 요청 처리 (2번) -> 최초 요청 1번 + 재시도 2번: 총 3번까지
+      const originalRequest = error.config as CustomAxiosRequestConfig;
+      if (originalRequest) {
+        originalRequest._retryCount = originalRequest._retryCount || 0;
+        if (originalRequest._retryCount < 2) {
+          originalRequest._retryCount++;
+          console.log(
+            `Retrying failed request... attempt ${originalRequest._retryCount}`
+          );
+          try {
+            return await apiInstance.request(originalRequest);
+          } catch (retryError) {
+            console.log("Retry attempt failed:", retryError);
+            return Promise.reject(retryError);
+          }
+        }
+      }
       return Promise.reject(error);
     }
   );
