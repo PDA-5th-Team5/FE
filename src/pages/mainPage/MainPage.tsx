@@ -91,7 +91,7 @@ const MainPage: React.FC = () => {
     useState<string[]>(initialSelectedKeys);
 
   // 3) 마켓 필터 항목
-  const [marketFilter, setMarketFilter] = useState<string>("전체");
+  const [marketFilter, setMarketFilter] = useState<string>("ALL");
 
   // 4) 섹터 필터 항목
   const { data: sectorsData } = useSectors();
@@ -114,7 +114,7 @@ const MainPage: React.FC = () => {
 
   const handleAllReset = () => {
     handleReset();
-    setMarketFilter("전체");
+    setMarketFilter("ALL");
     setSelectedSectorKeys([]);
   };
 
@@ -189,7 +189,7 @@ const MainPage: React.FC = () => {
         category: "my",
         title: portfolioTitle,
         description: portfolioDesc,
-        market: marketFilter === "전체" ? "ALL" : marketFilter,
+        market: marketFilter,
         ...selectedMetrics,
         sector: selectedSectorKeys,
       };
@@ -233,7 +233,7 @@ const MainPage: React.FC = () => {
       );
 
       const marketType: "ALL" | "KOSPI" | "KOSDAQ" =
-        marketFilter === "전체" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
+        marketFilter === "ALL" ? "ALL" : (marketFilter as "KOSPI" | "KOSDAQ");
 
       // payload 구성
       const payload = {
@@ -304,7 +304,7 @@ const MainPage: React.FC = () => {
       const thresholdArr = thresholds[engKey];
       const maxIndex = item.D1Value;
       const minIndex = item.D2Value - 2;
-      
+
       let minText = "";
       let maxText = "";
 
@@ -579,7 +579,7 @@ const MainPage: React.FC = () => {
 
               <S.MainPageFilterWrapper>
                 <FilterGroup
-                  options={["전체", "KOSPI", "KOSDAQ"]}
+                  options={["ALL", "KOSPI", "KOSDAQ"]}
                   selected={marketFilter}
                   onChange={(newValue) => setMarketFilter(newValue)}
                 />
