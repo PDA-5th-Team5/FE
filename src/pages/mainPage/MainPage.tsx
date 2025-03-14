@@ -44,6 +44,7 @@ const MainPage: React.FC = () => {
   >({});
 
   // 무한 스크롤을 위한
+  const pageName: "main" | "my" | "share" = "main";
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [ref, inView] = useInView();
@@ -690,6 +691,7 @@ const MainPage: React.FC = () => {
         data={filteredStocks}
         filteredStocksCnt={filteredStocksCnt}
         loading={isLoading}
+        pageName={pageName}
       />
       <div ref={ref}></div>
     </S.MainPageContainer>
