@@ -24,6 +24,8 @@ interface CommentProps {
   setEditContent: React.Dispatch<React.SetStateAction<string>>;
   pageType?: "stock" | "portfolio";
   fetchComments: () => Promise<CommentsResponse>;
+  openDropdownId: number | null;
+  setOpenDropdownId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const Comment = ({
@@ -36,6 +38,8 @@ const Comment = ({
   editContent,
   setEditContent,
   fetchComments,
+  openDropdownId, // ✅ 추가
+  setOpenDropdownId, // ✅ 추가
   pageType = "stock",
 }: CommentProps) => {
   const [refreshComments, setRefreshComments] = useState(false);
@@ -63,6 +67,8 @@ const Comment = ({
         editingCommentId={editingCommentId}
         editContent={editContent}
         setEditContent={setEditContent}
+        openDropdownId={openDropdownId}
+        setOpenDropdownId={setOpenDropdownId}
       />
     </CommentContainer>
   );

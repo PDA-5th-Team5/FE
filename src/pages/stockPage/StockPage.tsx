@@ -5,7 +5,7 @@ import CandleChart from "./components/candleChart/CandleChart";
 //port { stockLineGraph } from "./dummy";
 
 import LineGraphStock from "../../components/lineGraph/LineGraphStock";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { StockDetail } from "../../types/stockTypes";
 //import { stockLineGraph } from "../stockPage/dummy";
 import {
@@ -70,37 +70,42 @@ const StockPage = () => {
   });
   // const [page, setPage] = useState(1);
   // const size = 10;
-  // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
 
   const navigate = useNavigate();
+  const scrollRef = useRef(0);
 
   // 이거 line 그래프 구현하면서 삭제해주세요.
   console.log(lineGraphData);
   console.log(lineGraphData);
 
+  const fetchComments = async (): Promise<CommentsResponse> => {
+    // let result: CommentsResponse;
+    scrollRef.current = window.scrollY;
+    try {
+      // setIsLoading(true);
+      const data = await getCommentsAPI(stockId);
+      setCommentsData(data);
+      // result = data;
+      return data;
+    } catch (error) {
+      console.error("댓글 로딩 실패:", error);
+      // result = { comments: [] };
+      return { comments: [] };
+      // setCommentsData(result);
+    } finally {
+      // setIsLoading(false);
+      setTimeout(() => window.scrollTo(0, scrollRef.current), 0);
+    }
+    // return result;
+  };
+
   //1. 댓글 조회
   useEffect(() => {
     fetchComments();
   }, [stockId]);
-
-  const fetchComments = async (): Promise<CommentsResponse> => {
-    let result: CommentsResponse;
-    try {
-      setIsLoading(true);
-      const data = await getCommentsAPI(stockId);
-      setCommentsData(data);
-      result = data;
-    } catch (error) {
-      console.error("댓글 로딩 실패:", error);
-      result = { comments: [] };
-      setCommentsData(result);
-    } finally {
-      setIsLoading(false);
-    }
-    return result;
-  };
 
   //2. 댓글 삭제
   const handleDelete = async (commentId: number) => {
@@ -119,11 +124,13 @@ const StockPage = () => {
 
   //3. 댓글 수정
   const handleEdit = (commentId: number, currentContent: string) => {
-    console.log("adddd");
-
-    setEditingCommentId(commentId);
-    setEditContent(currentContent);
-    // setOpenDropdownId(null);
+    if (editingCommentId === commentId) {
+      setEditingCommentId(null);
+      setEditContent("");
+    } else {
+      setEditingCommentId(commentId);
+      setEditContent(currentContent);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -488,7 +495,6 @@ const StockPage = () => {
       <S.StockCompetitor>
         <S.Title>{stockData.data.stockInfo.companyName} 경쟁사</S.Title>
         <S.StockCompetitorItemContainer>
-
           {competitorSnowflakeData.map(({ competitor, items }, index) => {
             const { sortedItems, sortedSelectedKeys } = sortSnowflakeData(
               items,
@@ -496,11 +502,11 @@ const StockPage = () => {
             );
 
             return (
-            <S.StockCompetitorItem
-              key={index}
-              onClick={() => navigate(`/stock/${competitor.stockId}`)}
-              style={{ cursor: "pointer" }}
-            >
+              <S.StockCompetitorItem
+                key={index}
+                onClick={() => navigate(`/stock/${competitor.stockId}`)}
+                style={{ cursor: "pointer" }}
+              >
                 {/* 스노우플레이크 차트 */}
                 <S.StockSnowflakeWrapper>
                   <StockSnowflake
@@ -523,7 +529,6 @@ const StockPage = () => {
               </S.StockCompetitorItem>
             );
           })}
-
         </S.StockCompetitorItemContainer>
       </S.StockCompetitor>
 
