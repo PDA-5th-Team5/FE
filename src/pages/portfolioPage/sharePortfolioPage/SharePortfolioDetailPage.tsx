@@ -31,7 +31,7 @@ const SharePortfolioDetailPage = () => {
   const pageName: "main" | "my" | "share" = "share";
   // const [isLoading, setIsLoading] = useState(true);
   // const [page, setPage] = useState(1);
-  // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   // const size = 10;
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +72,7 @@ const SharePortfolioDetailPage = () => {
         console.error("댓글 삭제 실패:", error);
         alert("댓글 삭제에 실패했습니다.");
       }
-      // setOpenDropdownId(null);
+      setOpenDropdownId(null);
     }
   };
 
@@ -82,7 +82,7 @@ const SharePortfolioDetailPage = () => {
 
     setEditingCommentId(commentId);
     setEditContent(currentContent);
-    // setOpenDropdownId(null);
+    setOpenDropdownId(null);
   };
 
   const handleCancelEdit = () => {
@@ -104,13 +104,19 @@ const SharePortfolioDetailPage = () => {
       alert("댓글이 수정되었습니다.");
       setEditingCommentId(null);
       setEditContent("");
-      fetchComments(); // 댓글 목록 새로고침
+
+      setOpenDropdownId(null);
+      await fetchComments(); // 댓글 목록 새로고침
     } catch (error) {
       console.error("댓글 수정 실패:", error);
       alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
     }
   };
-
+  useEffect(() => {
+    if (editingCommentId === null) {
+      setOpenDropdownId(null); // 수정 완료 후 드롭다운 닫기
+    }
+  }, [editingCommentId]);
   useEffect(() => {
     const fetchPortfolioDetail = async () => {
       try {
@@ -311,6 +317,8 @@ const SharePortfolioDetailPage = () => {
           editContent={editContent}
           setEditContent={setEditContent}
           fetchComments={fetchComments}
+          openDropdownId={openDropdownId}
+          setOpenDropdownId={setOpenDropdownId}
         />
       </S.PortfolioDetailComments>
     </S.PortfolioDetailContainer>

@@ -1,6 +1,5 @@
 // CommentList.tsx
 import * as S from "./CommentList.styled";
-import { useState } from "react";
 // import { useParams } from "react-router-dom";
 import MoreIcon from "../../../assets/images/icons/more.png";
 
@@ -29,6 +28,8 @@ interface CommentsProps {
   editingCommentId: number | null;
   editContent: string;
   setEditContent: React.Dispatch<React.SetStateAction<string>>;
+  openDropdownId: number | null; // ✅ 타입 지정
+  setOpenDropdownId: React.Dispatch<React.SetStateAction<number | null>>; // ✅ 타입 지정
 }
 
 const CommentList = ({
@@ -40,9 +41,11 @@ const CommentList = ({
   editingCommentId,
   editContent,
   setEditContent,
+  openDropdownId,
+  setOpenDropdownId,
 }: CommentsProps) => {
   // const [isLoading, setIsLoading] = useState(true);
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
+  // const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
   // const { num } = useParams<{ num: string }>();
   // const stockId = num ? parseInt(num, 10) : 1;
   const currentUserId = localStorage.getItem("userId");
