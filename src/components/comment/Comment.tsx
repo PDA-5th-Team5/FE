@@ -38,8 +38,8 @@ const Comment = ({
   editContent,
   setEditContent,
   fetchComments,
-  openDropdownId, // ✅ 추가
-  setOpenDropdownId, // ✅ 추가
+  openDropdownId,
+  setOpenDropdownId,
   pageType = "stock",
 }: CommentProps) => {
   const [refreshComments, setRefreshComments] = useState(false);

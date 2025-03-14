@@ -2,8 +2,6 @@ import Bookmark from "../../components/bookmark/Bookmark";
 import * as S from "./StockPage.styled";
 import Comment from "../../components/comment/Comment";
 import CandleChart from "./components/candleChart/CandleChart";
-//port { stockLineGraph } from "./dummy";
-
 import LineGraphStock from "../../components/lineGraph/LineGraphStock";
 import { useEffect, useState, useRef } from "react";
 import { StockDetail } from "../../types/stockTypes";
@@ -157,6 +155,7 @@ const StockPage = () => {
       console.error("댓글 수정 실패:", error);
       alert("댓글 수정에 실패했습니다. 다시 시도해주세요.");
     }
+    setOpenDropdownId(null);
   };
 
   useEffect(() => {
@@ -554,6 +553,8 @@ const StockPage = () => {
           editContent={editContent}
           setEditContent={setEditContent}
           fetchComments={fetchComments}
+          openDropdownId={openDropdownId}
+          setOpenDropdownId={setOpenDropdownId}
         />
       </S.StockComments>
     </S.StockPageContainer>
