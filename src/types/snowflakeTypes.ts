@@ -69,7 +69,6 @@ export const labelMapping: Record<string, string> = {
   bps: "BPS",
   pbr: "PBR",
   dividendYield: "배당수익률",
-  // divYield: "배당수익률",
   foreignerRatio: "외국인 보유율",
   sps: "주당매출액",
   saleAccount: "매출액",
