@@ -1,6 +1,5 @@
 // CommentList.tsx
 import * as S from "./CommentList.styled";
-import { useState } from "react";
 // import { useParams } from "react-router-dom";
 import MoreIcon from "../../../assets/images/icons/more.png";
 
