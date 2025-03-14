@@ -5,7 +5,10 @@ import PlusIcon from "../../../assets/images/icons/plus_blue.png";
 import HeaderButtons from "../../../components/pageHeader/HeaderButtons";
 import PortfolioPage from "../PortfolioPage";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyPortfolioDetailAPI, PortfolioDetailResponse } from "../../../apis/portfolio";
+import {
+  getMyPortfolioDetailAPI,
+  PortfolioDetailResponse,
+} from "../../../apis/portfolio";
 import { transformElementsToItems } from "../../../utils/snowflakeUtils";
 import { shareMyPortfolioAPI } from "../../../apis/portfolio";
 import { deleteMyPortfolioAPI } from "../../../apis/portfolio";
@@ -35,6 +38,7 @@ const MyPortfolioPage = () => {
   // const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const pageName: "main" | "my" | "share" = "my";
   // const [commentsData, setCommentsData] = useState({
   //   commentsCnt: 0,
   //   comments: [],
@@ -47,18 +51,18 @@ const MyPortfolioPage = () => {
   //   "내 포트폴리오아무거나",
   // ]);
 
-      // 나의 포트폴리오 리스트 불러오기
-      const fetchMyPortfolios = async () => {
-        try {
-          const response = await myPortfolioListAPI(); // API 호출
-            setPortfolioList(response.myPortfolios);
-            setSelectedPortfolioId(response.myPortfolios[0].myPortfolioId); // 첫 번째 포트폴리오 ID를 기본값으로 설정
-            return response.myPortfolios;
-        } catch (error) {
-          console.error("나의 포트폴리오 리스트 불러오기 실패:", error);
-          return []; 
-        }
-      };
+  // 나의 포트폴리오 리스트 불러오기
+  const fetchMyPortfolios = async () => {
+    try {
+      const response = await myPortfolioListAPI(); // API 호출
+      setPortfolioList(response.myPortfolios);
+      setSelectedPortfolioId(response.myPortfolios[0].myPortfolioId); // 첫 번째 포트폴리오 ID를 기본값으로 설정
+      return response.myPortfolios;
+    } catch (error) {
+      console.error("나의 포트폴리오 리스트 불러오기 실패:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     fetchMyPortfolios();
@@ -71,29 +75,29 @@ const MyPortfolioPage = () => {
   const handleSelect = (portfolioId: number) => {
     setSelectedPortfolioId(portfolioId);
     setIsOpen(false);
-    navigate(`/portfolio/my/${portfolioId}`)
+    navigate(`/portfolio/my/${portfolioId}`);
   };
 
   const handleCreateNew = () => {
     setIsOpen(false);
-    navigate('/')
+    navigate("/");
   };
 
   const onClickDelete = async () => {
     if (!selectedPortfolioId) {
       return;
     }
-  
+
     if (!window.confirm("정말 삭제하시겠습니까?")) {
       return;
     }
-  
+
     try {
       await deleteMyPortfolioAPI(selectedPortfolioId);
       alert("포트폴리오가 삭제되었습니다.");
-  
+
       const newPortfolioList = await fetchMyPortfolios();
-  
+
       if (newPortfolioList.length > 0) {
         const firstPortfolioId = newPortfolioList[0].myPortfolioId;
         // 첫 번째 포트폴리오 페이지로 이동
@@ -329,6 +333,7 @@ const MyPortfolioPage = () => {
         elementsObj={elementsObj}
         snowflakeItems={snowflakeItems}
         isMy={true}
+        pageName={pageName}
       />
     </S.MyPortfolioPageContainer>
   );

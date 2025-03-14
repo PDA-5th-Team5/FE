@@ -28,6 +28,7 @@ const SharePortfolioDetailPage = () => {
   const [snowflakeItems, setSnowflakeItems] = useState<any[]>([]);
   // const [hasData, setHasData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const pageName: "main" | "my" | "share" = "share";
   // const [isLoading, setIsLoading] = useState(true);
   // const [page, setPage] = useState(1);
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
@@ -301,6 +302,7 @@ const SharePortfolioDetailPage = () => {
           elementsObj={elementsObj}
           snowflakeItems={snowflakeItems}
           isMy={false}
+          pageName={pageName}
         />
       </S.PortfolioDetailContent>
 

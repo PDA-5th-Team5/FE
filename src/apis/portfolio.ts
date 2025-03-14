@@ -82,10 +82,11 @@ export interface SharePortfolioItem {
 }
 
 export const sharePortfolioListAPI = async (
-  sortBy: string = "loadCount"
+  sortBy: string = "loadCount",
+  page: number = 0
 ): Promise<SharePortfolioItem[]> => {
   const response = await portfolioAPI.get<APIResponse<SharePortfolioItem[]>>(
-    `/share/board?page=0&sortBy=${sortBy}`
+    `/share/board?page=${page}&sortBy=${sortBy}`
   );
   return response.data.data;
 };
@@ -245,8 +246,7 @@ export const getPortfolioCommentsAPI = async (
     `/share/${sharePortfolioId}/comments`
   );
   // API 응답 형식에 맞게 데이터 변환
-  return response.data.data
- 
+  return response.data.data;
 };
 
 // 댓글 삭제 API
@@ -436,9 +436,9 @@ export const getSharePortfolioStocksAPI = async (
   portfolioId: number,
   page: number = 0
 ): Promise<StocksResponse> => {
-  const response = await portfolioAPI.get<
-    APIResponse<StocksResponse>
-  >(`/share/${portfolioId}/stock?page=${page}`);
+  const response = await portfolioAPI.get<APIResponse<StocksResponse>>(
+    `/share/${portfolioId}/stock?page=${page}`
+  );
   console.log("API 원시 응답:", response);
   console.log("API 데이터:", response.data);
 
@@ -455,16 +455,16 @@ export const getMyPortfolioStocksAPI = async (
     throw new Error("로그인 해주세요!");
   }
 
-  const response = await portfolioAPI.get<
-    APIResponse<StocksResponse>
-  >(`/my/${portfolioId}/stock?page=${page}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const response = await portfolioAPI.get<APIResponse<StocksResponse>>(
+    `/my/${portfolioId}/stock?page=${page}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
   return response.data.data;
 };
-
 
 //라인그래프
 export interface LineGraphItem {
@@ -481,30 +481,30 @@ export interface LineGraphResponse {
     price: { [date: string]: number };
     portfolioTitle: string;
     avgClosePrice: { [date: string]: number };
-  }
+  };
 }
 export const getPortfolioGraphAPI = async (
   portfolioId: number,
   market: string = "KOSPI"
 ): Promise<LineGraphResponse> => {
-  const isMy = location.pathname.includes('/my/');
+  const isMy = location.pathname.includes("/my/");
 
-  const endpoint = isMy 
-    ? `/my/graph?portfolioId=${portfolioId}&market=KOSPI` 
+  const endpoint = isMy
+    ? `/my/graph?portfolioId=${portfolioId}&market=KOSPI`
     : `/share/graph?portfolioId=${portfolioId}&market=KOSPI`;
-  
+
   const response = await portfolioAPI.post<APIResponse<LineGraphResponse>>(
     endpoint,
     {
       portfolioId,
-      market
+      market,
     },
     {
-      headers: isMy 
-        ? { Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
-        : {}
+      headers: isMy
+        ? { Authorization: `Bearer ${localStorage.getItem("accessToken")}` }
+        : {},
     }
   );
-  
+
   return response.data.data;
 };
