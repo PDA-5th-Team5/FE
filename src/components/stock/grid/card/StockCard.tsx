@@ -65,7 +65,7 @@ const StockCard = ({
         <S.CardFooterItem>
           <S.CardFooterTitle>{stock.ticker}</S.CardFooterTitle>
           <S.CardFooterPrice>
-            {stock.currentPrice.toLocaleString() ?? ""}원
+            {stock.currentPrice ? stock.currentPrice.toLocaleString() : "-"}원
           </S.CardFooterPrice>
         </S.CardFooterItem>
         <S.CardFooterItem>
